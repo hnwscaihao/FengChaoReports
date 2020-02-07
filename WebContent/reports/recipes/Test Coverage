@@ -1,0 +1,169 @@
+<%version 1%>
+<%description
+    <b>Data: </b>Test Coverage<br>
+    <b>Notes: </b>This report displays documents with traces to Test Cases along with a percentage of passed tests.<br>
+%>
+<%param 
+    name="reporttitle" 
+    type="String" 
+    prompt="Report Title" 
+    value="Test Coverage" 
+    description="Descriptive title for your report."
+%>
+<%param
+    name="reportheader" 
+    type="MultiString" 
+    prompt="Report Header" 
+    value="" 
+    description="Text appearing at the top of the report page."
+%>
+<%param
+    name="reportfooter" 
+    type="MultiString" 
+    prompt="Report Footer" 
+    value="" 
+    description="Text appearing at the bottom of the report page."
+%>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>&reporttitle</title>
+    <%screenStyleSheet%>
+    <%printerStyleSheet%>
+	<script type="text/javascript">
+		var REPORT_ISSUES = "";
+	</script>
+	<style>
+		
+		.spanRight { float: right; margin-left: 30px;}
+		
+		.selectWid { width: 225px; border-radius: 5px;}
+		.selectNarr { width: 124px; border-radius: 5px;}
+	</style>
+</head>
+<%dateformat MM/dd/yy HH:mm:ss%>
+<%datetimeformat MM/dd/yyyy h:mm:ss a%>
+<%sortby &sortby%>
+<body>
+<table class="heading">
+<tr>
+	<td><%logoURL%></td>
+	<td class="title_white" align="right" width="100%">&reporttitle</td>
+	<td>&nbsp;</td>
+</tr>
+</table>
+<table class="white_bg">
+    <tr><td></td></tr>
+</table>
+<table width="100%" class="heading">
+    <tr><td></td></tr>
+</tr>
+</table>
+<p class="header">&reportheader</p>
+<p class="date"><%currentdate%></p>
+<p><a id="RERUNLINK"><img src="http://192.168.6.130:7001/MKS_ALM_2009/refresh.gif"></a><select>
+	<span class="spanRight">
+		<strong> Document:</strong>
+		<select class="selectWid">
+			<option value=""> - Please Select - </option>
+			<option value="">Document Stakeholder1（10407）</option>
+			<option value="">Document Stakeholder2（10542）</option>
+		</select>
+	</span>
+	<span class="spanRight">
+		<strong>Project: </strong>
+		<select class="selectNarr">
+			<option value=""> - Please Select - </option>
+			<option value="">/TestProject</option>
+			<option value="">/TestProject2</option>
+		</select>
+	</span>
+</p> 
+<%begindetail%>
+<script type="text/javascript">
+	if(REPORT_ISSUES == "") REPORT_ISSUES = <%<%builtin ID%>%>;
+	else REPORT_ISSUES = REPORT_ISSUES+","+<%<%builtin ID%>%>;
+</script>
+
+<style>
+    .graph { 
+        position: relative; /* IE is dumb */
+        width: 200px; 
+        border: 1px solid #B1D632; 
+        padding: 2px; 
+    }
+    .graph .bar { 
+        display: block;
+        position: relative;
+        background: #B1D632; 
+        text-align: center; 
+        color: #333; 
+        height: 2em; 
+        line-height: 2em;            
+    }
+    .graph .bar span { position: absolute; left: 1em; }
+	
+</style>
+
+
+
+
+
+<h2>Test Coverage for <%<%builtin Type%>%>&nbsp;:&nbsp;<%<%builtin ID%>%></h2>
+
+<table class="detailrows">
+	<tr>
+		<th>ID</th>
+		<th>Category</th>
+		<th>Description</th>
+		<th>Tests</th>
+		<th>% Passed</th>
+	</tr>
+	<%beginrelationshipsdetail Query[(walkdocordered[<%<%builtin ID%>%>])]%><%filter%>(item is node)<%endfilter%>
+		<script type="text/javascript">
+		if ("<%Relationship Category%>" == "Heading" || "<%Relationship Category%>" == "Comment") {
+			document.write('<tr class="odd_row">');
+			
+		} else {
+			document.write('<tr class="even_row">');
+		}
+		</script>
+			<td valign="top"><a href="http://192.168.6.130:7001/im/WebClient?IssueID=<%Relationship ID%>"><%Relationship ID%></a></td>
+			<td valign="top"><%Relationship Category%></td>
+			<td valign="top"><%Relationship Text%></td>
+			<script type="text/javascript">
+			if ("<%Relationship Category%>" == "Heading" || "<%Relationship Category%>" == "Comment") {
+				document.write('<td valign="top">&nbsp;</td><td valign="top">&nbsp;</td>');
+			} else {
+				if("<%Relationship Validated By Trace Count%>" <= 1 | "<%Relationship Validated By Trace Count%>" == "" ){
+				document.write('<td valign="top">0</td>');
+				document.write('<td valign="top"><div class="graph"><strong class="bar" style="width:0px;">0</strong></div></td>');
+				}else{
+				document.write('<td valign="top"><%Relationship Validated By Trace Count%></td><td valign="top"><div class="graph"><strong class="bar" style="width:<%Relationship Validated By Pass Percentage%>;"><%Relationship Validated By Pass Percentage%></strong></div></td>');
+				}
+				
+				
+				
+				
+			}
+			</script>
+		</tr>
+			
+			
+
+	<%endrelationshipsdetail%>
+</table>
+&nbsp;
+<%enddetail%>
+<center class="footer">&reportfooter</center>
+
+<script type="text/javascript">
+	if (REPORT_ISSUES == "") {
+		document.all.RERUNLINK.href = "http://192.168.6.130:7001/im/runreport?selection=&currentReportName";
+	} else {
+		document.all.RERUNLINK.href = "http://192.168.6.130:7001/im/runreport?selection=&currentReportName&issues=" + REPORT_ISSUES;
+	}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,260 @@
+<%version 1%>
+<%description 
+    <b>Data: </b>Item fields<br>
+    <b>Notes: </b>This report displays a listing of items in column format.<br/>
+	This recipe has been modified from the "Basic - HTML, Column" recipe to<br/> utilize new sample CSS shipped with the ALM 2009 Solution.<br>
+%>
+<%param 
+    name="reporttitle" 
+    type="String" 
+    prompt="Report Title" 
+    value="" 
+    description="Descriptive title for your report."
+%>
+<%param
+    name="reportheader" 
+    type="MultiString" 
+    prompt="Report Header" 
+    value="" 
+    description="Text appearing at the top of the report page."
+%>
+<%param
+    name="reportfooter" 
+    type="MultiString" 
+    prompt="Report Footer" 
+    value="" 
+    description="Text appearing at the bottom of the report page."
+%>
+
+
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>&reporttitle</title>
+	<style>
+	.one{
+		font-family:"微软雅黑";
+		}
+	</style>
+    <%screenStyleSheet%>
+    <%printerStyleSheet%>
+	
+    <script  language="javascript">
+		var line_count=0;
+		
+		var REPORT_ISSUES = "";
+		
+		function writeEvenOddTRTag() {
+			line_count++; 
+			
+			if (line_count%2 == 0)
+				document.write("<tr class='even_row'>");
+			else
+				document.write("<tr class='odd_row'>"); 
+				
+			
+		}
+		var projectInt=0;
+		function printnoi(){
+			
+			
+			
+			for(var i=0;i<1;i++){	
+				projectInt++;
+				if (projectInt%2 == 0){
+				document.write("<tr class='even_row'>");
+				}else{
+				document.write("<tr class='odd_row'>");
+				}		
+				document.write("<td class='border'>"+projectInt+"</td>");
+				
+				
+				
+			}
+		}
+
+		function printText(field){
+			
+			var list1 = ['SYS.1','SYS.2','SYS.2','SYS.3','SYS.4','SYS.4','SYS.5','SYS.5','SWE.1','SWE.1','SWE.2','SWE.4','SWE.4','SWE.5','SWE,5','SWE.6','SWE.6','SUP.1','SUP.4','SUP.8','SUP.10','SYS.1'];
+			
+			var list2 = ['Number of stakeholder requirements by type','Completeness rate of system requirements traceability','Number of system requirements by type','System Design System Requirements Implementation Rate','System Integration Test Performance rate by Test objectives','Fault Resolution / Removal Rate of all system integration test','System Qualification Test Performance rate by test objectives','Fault Resolution Rate/Removal Rate of all system qualification test','Completeness rate of software requirement s traceability','Number of software requirements by type','(Software Design) software Requirements Implementation Rate','Software Unit Test Performance rate by test objectives','Fault Resolution/Removal Rate of software unit test','Software Integration Test Performance rate by test objectives','Fault Resolution Rate/Remove Rate of all software integration test','Software Qualification Test Performance rate by test objectives','Fault Resolution/Removal Rate of all software qualification test','Quality audit corrective action rate','Fault Resolution/Removal Rate of all review defect tracking list','Configuration Audit corrective action rate','Change request Audit corrective action rate','Defects resolved and total'];
+			var list3 = ['To find out the schedule, cost, and number of inputs for each type of stakeholder requirements development through the number of stakeholder','To check completeness of system requirement traceability','To find out the schedule, cost, and number of inputs for each type of system requirements development through the number of system','To verify the completeness of the design through the percentage of system requirements met in the product or component design','To monitor and verify the validity of the system verification activities through the actual performance ratio compared to the system integration test','To verify product completeness by defects found in system integration test and the defects resolved ratio','To monitor and verify the validity of the system qualification activities through the actual performance ratio compared to the system qualification test plan for the verification activities','To verify product completeness by defects found in system qualification  test evaluation and the defects resolved ratio','To check completeness of traceability about software requirements','To find out the schedule, cost, and number of inputs for each type of software requirements development through the number of software requirements by type.','To verify the completeness of the design through the percentage of software requirements met in the product or component design','To monitor and verify the validity of the software unit activities through the actual performance ratio compared to the software unit test plan for the verification activities','To verify product completeness by defects found in software unit test evaluation and the defects resolved ratio','To monitor and verify the validity of the software verification activities through the actual performance ratio compared to the software integration test plan for the verification activities','To verify product completeness by defects found in software integration test evaluation and the defects resolved (resolved) ratio','To monitor and verify the validity of the software qualification activities through the actual performance ratio compared to the software qualification','To verify product completeness by defects found in software qualification test evaluation and the defects resolved ratio','Corrective action can be checked for nonconformances during quality audit','To verify product completeness by defects found in review defect tracking list and the defects resolved ratio','Check the status of corrective action for nonconformances during configuration audit','Check the status of corrective action for nonconformances during change request audit','Defects resolved and total'];
+			
+			var list4 = ['Number','%','Number','%','%','%','%','%','%','Number','%','%','%','%','%','%','%','%','%','%','%','%'];
+			
+			var list5 = ['&sum;A, &sum;A1&hellip;&hellip;, &sum;An','A / B * 100','&sum;A, &sum;A1&hellip;&hellip;, &sum;An','A / B * 100','A / B * 100','A / B * 100','A / B * 100','A / B * 100','A / B * 100','&sum;A, &sum;A1&hellip;&hellip;, &sum;An','A / B * 100','A / B * 100','A / B * 100','A / B * 100','A / B * 100','A / B * 100','A / B * 100','A / B * 100','A / B * 100','A / B * 100','A / B * 100','A / B * 100'];
+			
+			var list6 =  ['N/A','100%','N/A','100%','100%','100%','100%','100%','100%','N/A','100%','100%','100%','100%','100%','100%','100%','100%','100%','100%','100%','100%'];
+			var list66 = ['N/A','100%','N/A','90%','80%','80%','80%','90%','100%','N/A','80%','80%','80%','80%','80%','80%','80%','80%','95%','80%','95%','95%'];
+			
+			
+			var list7 = [];
+			
+			var list8 = ['Each phase’s SYS.1','Each phase’s SYS.2','Each phase’s SYS.2','Each phase’s SYS.3','Each phase’s SYS.4','Each phase’s SYS.4','Each phase’s SYS.5','Each phase’s SYS.5','Each phase’s SWE.1','Each phase’s SWE.1','Each phase’s SWE.2','Each phase’s SWE.4','Each phase’s SWE.4','Each phase’s SWE.5','Each phase’s SWE.5','Each phase’s SWE.6','Each phase’s SWE.6','Each phase','Each phase','Each phase','Each phase','Total phase’s'];
+			
+			var list9 = ['System Leader','System Leader','System Leader','System Leader','Test Leader','Test Leader','Test Leader','Test Leader','Software leader','Software leader','Software leader','Software leader','Software leader','Test Leader','Test Leader','Test Leader','Test Leader','DPM team','Joint Review leader, PM','CM','CCB leader','System Leader'];
+			
+			var list10 = ['End of Each phase’s SYS.1','End of Each phase’s SYS.2','End of Each phase’s SYS.2','End of Each phase’s SYS.3','End of Each phase’s SYS.4','End of Each phase’s SYS.4','End of Each phase’s SYS.5','End of Each phase’s SYS.5','End of Each phase’s SWE.1','End of Each phase’s SWE.1','End of Each phase’s SYS.2','End of Each phase’s SWE.4','End of Each phase’s SWE.4','End of Each phase’s SWE.5','End of Each phase’s SWE.5','End of Each phase’s SWE.6','End of Each phase’s SWE.6','End of Each phase','End of Each phase','End of Each phase','End of Each phase','End of Each phase’s SYS.1'];
+			
+			var list11 = ['PM，system leader','PM，system leader','PM，system leader','PM，system leader','PM,system leader,test leader','PM,system leader,test leader','PM,system leader,test leader','PM,system leader,test leader','PM,software Leader','PM,software Leader','PM,software Leader','PM,software Leader','PM,software Leader','PM，software leader,test leader','PM，software leader,test leader','PM，software leader,test leader','PM，software leader,test leader','DPM team，PM','DPM team，PM','PM,system leader, software leader,test leader, DPM Team','DPM team，PM','PM，system leader'];
+			
+			var list12 = ['A:Stakeholder requirements', 'A: Number of completeness of traceability about system requirements.</br> B: Number of System requirements', 'A: System requirements', 'A: Number of achieved system requirements of the product or component design </br> B: Number of System requirements', 'A: Number of system intergration test verification activities performed </br> B: Number of planned system intergration test verification activities', 'A: Number of resolved defects during system integration test evaluation </br> B: Number of defects found during system integration test evaluation', 'A: Number of system qualification test verification activities performed</br> B: Number of planned system qualification test verification activities', 'A: Number of resolved defects during system qualification test evaluation</br>B: Number of defects found during system qualification test evaluation', 'A: Number of completeness of traceability about software requirements </br> B: Number of software  requirements', 'A: Software requirements', 'A: The quantity of the achieved  software requirements of the product or component design </br> B: Software requirements quantity', 'A: Number of software unit test verification activities performedB: Number of planned software unit test verification activities', 'A: Number of resolved defects during software unit test evaluation </br> B: Number of found defects during software unit test evaluation', 'A: Number of software intergration test verification activities performed </br> B: Number of software planned intergration test verification activities', 'A: Number of defects resolved during software integration test evaluation </br> B: Number of defects found during software integration test evaluation', 'A: Number of software qualification test verification activities performedB: Number of planned software qualification test verification activities', 'A: Number of defects resolved during software qualification test evaluation </br> B: Number of defects found during software qualification test evaluation', 'A: Number of corrective actions resolved/terminated among identified nonconformances </br> B: Number of nonconformances identified during quality audit', 'A: Number of defects resolved in review defect tracking list </br> B: Number of defects found in review defect tracking list', 'A: Number of corrective actions resolved of nonconformances </br>  B: Number of nonconformances of configuration audit', 'A: Number of corrective actions resolved of nonconformances </br> B: Number of nonconformances of change request audit','Defects resolved and total'];
+			var project= "";
+			var field2 = "";
+			var field4 = "";
+			var field5 = "";
+			var field6 = "";
+			var field7 = "";
+			var field8 = "";
+			var field9 = "";
+			var field10 = "";
+			var field11 = "";
+			var field12 = "";
+			var field13 = "";
+			var field14 = "";
+			var field15 = "";
+			var field16 = "";
+			var field17 = "";
+			var field18 = "";
+			var field19 = "";
+			var field20 = "";
+			var field21 = "";
+			var field22 = "";
+			for(var i=0;i<list1.length;i++){
+				
+				if(i>22){
+				}else{			
+					printnoi();  
+					var fieldList = new Array(); 
+					
+					fieldList = field.split(",");  
+					
+					for(var j=0;j<fieldList.length;j++){
+						 if(j==0){
+							project =fieldList[0];  
+						 } 
+						 if(j==1){
+							
+							
+						 }
+						 
+		
+							
+						 
+					}
+					 
+					
+					
+					
+					paramField(project)
+					document.write("<td class='border'>"+list1[i]+"</td>");
+					document.write("<td class='border'>"+list2[i]+"</td>");
+					
+					document.write("<td class='border' align='center'>"+list4[i]+"</td>");
+					document.write("<td class='border' align='center' width='100px'>"+list5[i]+"</td>");
+					document.write("<td class='border' align='center' colspan='2'width='220px'><TABLE height='100px' width='100px' border='1px' cellspacing='0px'><TR><TD>"+'UCL'+"</TD><TD >"+list6[i]+"</TD></TR><TR><TD>"+'LCL'+"</TD><TD>"+list66[i]+"</TD></TR></TABLE></td>");
+					
+					
+					
+					
+					document.write("<td class='border' align='center' width='100px' >"+fieldList[i+1]+"</td>");  
+					
+					
+					document.write("<td class='border' align='center' width='100px' >"+list12[i]+"</td>");
+					
+					
+					
+					
+					
+					
+				}
+				
+				
+			} 
+			
+		}
+		function paramField(field){
+		 document.write("<td class='border'>"+field+"</td>");
+		}
+		
+	</script> 
+	
+</head>
+<%dateformat%>
+<%datetimeformat%>
+<%sortby &sortby%>
+<body>
+<table class="heading">
+<tr>
+	<td><%logoURL%></td>
+	<td class="title_white" align="right" width="100%">&reporttitle</td>
+	<td>&nbsp;</td>
+</tr>
+</table>
+<table class="white_bg">
+    <tr><td></td></tr>
+</table>
+<table width="100%" class="heading">
+    <tr><td></td></tr>
+</tr>
+</table>
+<p class="header">&reportheader</p>
+<p class="date"><%currentdate%></p>
+
+<table border="0" cellspacing="0" cellpadding="0">
+<tr>
+	<td align="left"><a id="RERUNLINK"><img src="<%hosturl%>MKS_ALM_2009/refresh.gif" border="0"></a></td>
+</tr>
+</table>
+<table class="detailcols fullWidth">
+<tr>
+	<!-- Display issue field headings -->
+	<td align="center" rowspan="1"  bgcolor="#A6CAF0" ><font color="#FFFFFF" size="2px">No.</td>
+	<td align="center" rowspan="1"bgcolor="#A6CAF0"><font color="#FFFFFF" size="2px">Project</td>
+	<td align="center" rowspan="1"bgcolor="#A6CAF0"><font color="#FFFFFF" size="2px">Process area</td>
+	<td align="center" rowspan="1"bgcolor="#A6CAF0">&nbsp&nbsp&nbsp&nbsp&nbsp<font color="#FFFFFF" size="2px">KPI indicator&nbsp&nbsp&nbsp</td>
+	<td align="center" rowspan="1" bgcolor="#A6CAF0"><font color="#FFFFFF" size="2px">Unit of Measurement</td>
+	<td align="center" rowspan="1" bgcolor="#A6CAF0"><font color="#FFFFFF" size="2px">Formula</th>
+	<td align="center" rowspan="1" colspan='2' bgcolor="#A6CAF0"><font color="#FFFFFF" size="2px">Target value</td>
+	<td class = "one" align="center" rowspan="1" bgcolor="#5499EF"><font color="#FFFFFF" size="2px">Actual value</font></td>
+	<td align="center" rowspan="1" bgcolor="#A6CAF0">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<font color="#FFFFFF" size="2px">Remark&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+
+	
+</tr>
+<!-- Display issue field values -->
+<%begindetail%>
+	<script type="text/javascript">
+		writeEvenOddTRTag();
+		if(REPORT_ISSUES == "") REPORT_ISSUES = <%<%builtin ID%>%>;
+		else REPORT_ISSUES = REPORT_ISSUES+","+<%<%builtin ID%>%>;
+	</script>
+	<%iteratefields%>
+	 <%/iteratefields%>
+	<script type="text/javascript">printnoi();
+	
+	
+	
+	<script type="text/javascript">
+		 
+		 document.write("<td class='border'>"+<%Project%>+"</td>");
+	</script>
+	
+	 
+	
+	<script type="text/javascript">printText('<%Project%>,<%Stakeholder Requirements Total%>,<%Decomposed From Trace Count%>,<%System Requirements Total%>,<%Architectes From Trace Count%>,<%Test Objective Integration Result Percentage%>,<%Defect Pass Architectes Percentage%>,<%Test Objective Integration Result Percentage%>,<%Defect Pass Requirement Percentage%>,<%Satisfies Form Trace Count%>,<%Software Requirements Total%>,<%Architected Form Software Trace Count%>,<%Test Objective Software Unit Result Percentage%>,<%Defect Pass Software Unit Percentage%>,<%Test Objective Software Integration Result Percentage%>,<%Defect Pass Software Integration Percentage%>,<%Test Objective Software Confirm Result Percentage%>,<%Defect Pass Software Confirm Percentage%>,<%Conformance Issue Pass Percentage%>,<%Defect Pass Software Review Percentage%>,<%Conformance Issue Pass Configuration Percentage%>,<%Conformance Issue  Resolving non-conformities%>,<%Defect Closed Percentage%>');  </script>
+	
+	
+	</script>
+	
+  
+
+<%enddetail%>
+</table>
+<center class="footer">&reportfooter</center>
+
+<script type="text/javascript">
+	if (REPORT_ISSUES == "") document.all.RERUNLINK.href = "<%hosturl%>im/runreport?selection=&currentReportName";
+	else document.all.RERUNLINK.href = "<%hosturl%>im/runreport?selection=&currentReportName&issues=" + REPORT_ISSUES;
+</script>
+</body>
+</html>
