@@ -32,6 +32,7 @@
     <%printerStyleSheet%>
 	<script type="text/javascript">
 		var REPORT_ISSUES = "";
+		var DocmentIDs =  [];
 	</script>
 	<style>
 		
@@ -61,28 +62,32 @@
 </table>
 <p class="header">&reportheader</p>
 <p class="date"><%currentdate%></p>
-<p><a id="RERUNLINK"><img src="http://192.168.6.130:7001/MKS_ALM_2009/refresh.gif"></a><select>
+<p><a id="RERUNLINK"><img src="http://http://192.168.229.133/:7001/MKS_ALM_2009/refresh.gif"></a>
 	<span class="spanRight">
 		<strong> Document:</strong>
-		<select class="selectWid">
-			<option value=""> - Please Select - </option>
-			<option value="">Document Stakeholder1（10407）</option>
-			<option value="">Document Stakeholder2（10542）</option>
+		<select class="selectWid" id="DocumentID" name="DocumentID">
+			<option value="all"> - Please Select - </option>
 		</select>
 	</span>
 	<span class="spanRight">
 		<strong>Project: </strong>
-		<select class="selectNarr">
-			<option value=""> - Please Select - </option>
-			<option value="">/TestProject</option>
-			<option value="">/TestProject2</option>
+		<select class="selectNarr" id="ProjectID" name="ProjectID">
+			<option value="all"> - Please Select - </option>
+
 		</select>
 	</span>
 </p> 
 <%begindetail%>
 <script type="text/javascript">
+
 	if(REPORT_ISSUES == "") REPORT_ISSUES = <%<%builtin ID%>%>;
 	else REPORT_ISSUES = REPORT_ISSUES+","+<%<%builtin ID%>%>;
+
+	var row = {};
+    var pro = "<%<%builtin Project%>%>";
+		row.pro = pro;
+    	row.doc = <%<%builtin ID%>%>;
+    DocmentIDs.push(row);
 </script>
 
 <style>
@@ -109,9 +114,9 @@
 
 
 
-<h2>Test Coverage for <%<%builtin Type%>%>&nbsp;:&nbsp;<%<%builtin ID%>%></h2>
+<h2 class="tabh" name ="<%<%builtin ID%>%>">Test Coverage for <%<%builtin Type%>%>&nbsp;:&nbsp;<%<%builtin ID%>%></h2>
 
-<table class="detailrows">
+<table class="detailrows" name ="<%<%builtin ID%>%>">
 	<tr>
 		<th>ID</th>
 		<th>Category</th>
@@ -128,7 +133,7 @@
 			document.write('<tr class="even_row">');
 		}
 		</script>
-			<td valign="top"><a href="http://192.168.6.130:7001/im/WebClient?IssueID=<%Relationship ID%>"><%Relationship ID%></a></td>
+			<td valign="top"><a href="http://192.168.229.133:7001/im/WebClient?IssueID=<%Relationship ID%>"><%Relationship ID%></a></td>
 			<td valign="top"><%Relationship Category%></td>
 			<td valign="top"><%Relationship Text%></td>
 			<script type="text/javascript">
@@ -153,16 +158,116 @@
 
 	<%endrelationshipsdetail%>
 </table>
-&nbsp;
+
 <%enddetail%>
 <center class="footer">&reportfooter</center>
 
 <script type="text/javascript">
-	if (REPORT_ISSUES == "") {
-		document.all.RERUNLINK.href = "http://192.168.6.130:7001/im/runreport?selection=&currentReportName";
-	} else {
-		document.all.RERUNLINK.href = "http://192.168.6.130:7001/im/runreport?selection=&currentReportName&issues=" + REPORT_ISSUES;
-	}
+        var array = [];
+        	for(var i=0;i<DocmentIDs.length;i++){
+        		if (array.indexOf(DocmentIDs[i].pro) === -1) {
+        			array.push(DocmentIDs[i].pro);
+        		}
+        	}
+        var selectPro = document.getElementById('ProjectID');
+    	var selectDoc = document.getElementById('DocumentID');
+
+    	var ary = REPORT_ISSUES.split(",");
+    	for(var i = 0;i<ary.length;i++){
+    		selectDoc.add(new Option(ary[i],ary[i]));
+    	}
+    	selectDoc.onchange = function(){
+    		// 通过对象获取value和text
+            var key = this.value;
+            if("all" == key){
+                var docids ="";
+                if(selectPro.value == "all"){
+                       docids = "all";
+                 }else {
+                       for(var i=0;i<DocmentIDs.length;i++){
+                              if (selectPro.value == DocmentIDs[i].pro) {
+                                   docids +=  DocmentIDs[i].doc + ",";
+                               }
+                       }
+                  }
+                  tiger(docids);
+
+            } else {
+                tiger(key);
+            }
+
+    	};
+
+
+    	for(var i = 0;i<array.length;i++){
+            selectPro.add(new Option(array[i],array[i]));
+         }
+    	selectPro.onchange = function(){
+    		// 通过对象获取value和text
+    		//console.log(this.value);
+    		var docids ="";
+    		if(this.value == "all"){
+    		    docids = "all";
+    		    removeAll(selectDoc);
+    		    selectDoc.add(new Option("- Please Select -","all"));
+    		    for(var i = 0;i<ary.length;i++){
+                    selectDoc.add(new Option(ary[i],ary[i]));
+                }
+    		}else {
+    		     removeAll(selectDoc);
+    		     selectDoc.add(new Option("- Please Select -","all"));
+    		    for(var i=0;i<DocmentIDs.length;i++){
+                    if (this.value == DocmentIDs[i].pro) {
+                        docids +=  DocmentIDs[i].doc + ",";
+                        selectDoc.add(new Option(ary[i],ary[i]));
+                     }
+                 }
+                 //docids = docids.substring(0,docids.length-1);
+    		}
+
+            tiger(docids);
+    	};
+
+    	if (REPORT_ISSUES == "") {
+            document.all.RERUNLINK.href = "http://http://192.168.229.133:7001/im/runreport?selection=&currentReportName";
+        } else {
+            document.all.RERUNLINK.href = "http://http://192.168.229.133:7001/im/runreport?selection=&currentReportName&issues=" + REPORT_ISSUES;
+        }
+
+
+function tiger(key) {
+        var tables =  document.getElementsByClassName("detailrows");
+        for(var i =0;i<tables.length;i++){
+            var tabName = tables[i].getAttribute("name");
+
+            if("all" == key){
+                tables[i].style.display="block";
+            }else if(key.indexOf(tabName) == -1){
+                tables[i].style.display="none";
+            }else {
+                tables[i].style.display="block";
+            }
+        }
+        var tabhs =  document.getElementsByClassName("tabh");
+        for(var i =0;i<tabhs.length;i++){
+            var tabhName = tabhs[i].getAttribute("name");
+            if("all" == key){
+                tabhs[i].style.display="block";
+            }else if(key.indexOf(tabhName) == -1){
+                tabhs[i].style.display="none";
+            }else {
+                tabhs[i].style.display="block";
+            }
+        }
+    }
+    //移除所有字节点
+    function removeAll(el) {
+    		var childs = el.childNodes;
+    		for(var i = childs .length - 1; i >= 0; i--) {
+    			el.removeChild(childs[i]);
+    		}
+    	}
+
 </script>
 
 </body>
