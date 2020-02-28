@@ -1,0 +1,313 @@
+<%version 1%>
+<%description
+    <b>Data: </b>Project Status<br>
+    <b>Notes: </b>This report displays project status.<br>
+%>
+<%param 
+    name="reporttitle" 
+    type="String" 
+    prompt="Report Title" 
+    value="Inline Project Status" 
+    description="Descriptive title for your report."
+%>
+<%param
+    name="reportheader" 
+    type="MultiString" 
+    prompt="Report Header" 
+    value="" 
+    description="Text appearing at the top of the report page."
+%>
+<%param
+    name="reportfooter" 
+    type="MultiString" 
+    prompt="Report Footer" 
+    value="" 
+    description="Text appearing at the bottom of the report page."
+%>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>&reporttitle</title>
+    <%screenStyleSheet%>
+    <%printerStyleSheet%>
+	<script type="text/javascript">
+		var REPORT_ISSUES = "";
+		
+		function getImgTag(health){
+			return "<img src='<%hosturl%>MKS_ALM_2009/" + health.toLowerCase() + ".gif' alt='" + health + "'/>";
+		}
+	</script>
+</head>
+<%dateformat MM/dd/yy HH:mm:ss%>
+<%datetimeformat MM/dd/yyyy h:mm:ss a%>
+<body style="padding:2% 5% 2% 5%; ">
+<%begindetail%>
+<p class="title"><%<%builtin Type%>%> <a class="title" href="<%hosturl%>im/WebClient?IssueID=<%<%builtin ID%>%>" target="_blank"><%<%builtin ID%>%></a>: <%<%builtin Summary%>%></p>
+<table class="detailrows fullWidth">
+	<tr>
+		<td style="width: 50%;">
+			<table class="detailrows" style="width: 100%;">
+				<tr class="even_row">
+					<th nowrap style="width: 30%;"><%builtin State%>:</th>
+					<td style="width: 70%;"><%<%builtin State%>%></td>
+
+				</tr>
+				<tr class="odd_row">
+					<th nowrap style="width: 30%;">ASIL:</th>
+					<td style="width: 70%;"><%ASIL%></td>
+
+					
+				</tr>
+				<tr class="even_row">
+					<th nowrap style="width: 30%;">Project Start Date:</th>
+					<td style="width: 70%;"><%Project Start Date%></td>
+
+				</tr>
+				<tr class="odd_row">
+					<th nowrap style="width: 30%;">Project End Date:</th>
+					<td style="width: 70%;"><%Project End Date%></td>
+
+					
+				</tr>
+				<tr class="even_row">
+					<th nowrap style="width: 30%;">Project Manager:</th>
+					<td style="width: 70%;"><%<%builtin Assigned User%>%></td>
+
+				</tr>
+				<tr class="odd_row">
+					<th nowrap style="width: 15%;">TeamMembers:</th>
+					<td style="width: 70%;"><%TeamMembers%></td>
+
+				</tr>
+			</table>
+			
+		</td>
+		<td style="vertical-align: top; width: 50%;">
+			<table class="detailrows" style="width: 100%;">
+				<tr class="even_row">
+					<th nowrap style="text-align:right; width: 30%;">Project Start:</th>
+					<td style="width: 70%;"><%Project Start Actual%></td>
+					
+				</tr>
+				<tr class="odd_row">
+					
+					<th nowrap style="text-align:right; width: 30%;">Project Acceptance:</th>
+					<td style="width: 70%;"><%Project Acceptance Actual%></td>
+					
+				</tr>
+				<tr class="even_row">
+					
+					<th nowrap style="text-align:right; width: 30%;">Project Plan:</th>
+					<td style="width: 70%;"><%Project Plan Actual%></td>
+					
+				</tr>
+				<tr class="odd_row">
+					
+					<th nowrap style="text-align:right; width: 30%;">Functional Specification Freeze:</th>
+					<td style="width: 70%;"><%Functional Specification Freeze Actual%></td>
+					
+				</tr>
+				<tr class="even_row">
+					
+					<th nowrap style="text-align:right; width: 30%;">Code Freeze:</th>
+					<td style="width: 70%;"><%Code Freeze Actual%></td>
+				</tr>
+				<tr class="odd_row">
+					
+					<th nowrap style="text-align:right; width: 30%; ">Development Complete:</th>
+					<td style="width: 70%; "><%Development Complete Actual%></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr><td>&nbsp;</td></tr>
+	<tr><td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center"><b>Process Metrics</b></td></tr>
+	<tr>
+		<td style="width: 100%;" colspan="2">
+			<table class="detailcols" style="width: 100%;">
+				<tr class="even_row" style="width: 100%;">
+					<th style="text-align:center; width: 40%" ></th>
+					<th style="text-align:center; width: 15%" >Pending</th>
+					<th style="text-align:center; width: 15%" >Open</th>
+					<th style="text-align:center; width: 15%" >Closed</th>
+					<th style="text-align:center; width: 15%" >Total</th>
+				</tr>
+				<tr class="odd_row" style="width: 100%;">
+					<th style="text-align:right; width: 40%">Stakeholder Requirement Documents:</th>
+					<td style="text-align:center; width: 15%" ><%Pending Stakeholder Requirement Document Count%></td>
+					<td style="text-align:center; width: 15%"><%Open Stakeholder Requirement Document Count%></td>
+					<td style="text-align:center; width: 15%"><%Close Stakeholder Requirement Document Count%></td>
+					<td style="text-align:center; width: 15%">
+						<%Total Stakeholder Requirement Document Count%>
+					</td>
+				</tr>
+				<tr class="even_row">
+					<th style="text-align:right">System Requirement Specification Documents:</th>
+					<td style="text-align:center"><%Pending System Requirement Specification Document Count%></td>
+					<td style="text-align:center"><%Open System Requirement Specification Document Count%></td>
+					<td style="text-align:center"><%Closed System Requirement Specification Document Count%></td>
+					<td style="text-align:center">
+						<%Total System Requirement Specification Document Count%>
+					</td>
+				</tr>
+				<tr class="odd_row">
+					<th style="text-align:right">System Architectural Design Specification Documents:</th>
+					<td style="text-align:center"><%Pending System Architectural Design Specification Document Count%></td>
+					<td style="text-align:center"><%Open System Architectural Design Specification Document Count%></td>
+					<td style="text-align:center"><%Closed System Architectural Design Specification Document Count%></td>
+					<td style="text-align:center">
+						<%Total System Architectural Design Specification Document Count%>
+					</td>
+				</tr>
+				<tr class="even_row">
+					<th style="text-align:right">Software Requirement Specification Documents:</th>
+					<td style="text-align:center"><%Pending Software Requirement Specification Document Count%></td>
+					<td style="text-align:center"><%Open Software Requirement Specification Document Count%></td>
+					<td style="text-align:center"><%Closed Software Requirement Specification Document Count%></td>
+					<td style="text-align:center">
+						<%Total Software Requirement Specification Document Count%>
+					</td>
+				</tr>
+				<tr class="odd_row">
+					<th style="text-align:right">Software Architectural Design Specification Documents:</th>
+					<td style="text-align:center"><%Pending Software Architectural Design Specification Document Count%></td>
+					<td style="text-align:center"><%Open Software Architectural Design Specification Document Count%></td>
+					<td style="text-align:center"><%Closed Software Architectural Design Specification Document Count%></td>
+					<td style="text-align:center">
+						<%Total Software Architectural Design Specification Document Count%>
+					</td>
+				</tr>
+				<tr class="even_row">
+					<th style="text-align:right">Software Detail Design Specification Documents:</th>
+					<td style="text-align:center"><%Pending Software Detail Design Specification Document Count%></td>
+					<td style="text-align:center"><%Open Software Detail Design Specification Document Count%></td>
+					<td style="text-align:center"><%Closed Software Detail Design Specification Document Count%></td>
+					<td style="text-align:center">
+						<%Total Software Detail Design Specification Document Count%>
+					</td>
+				</tr>
+				<tr class="odd_row">
+					<th style="text-align:right">Hardware Requirement Specification Documents:</th>
+					<td style="text-align:center"><%Pending Hardware Requirement Specification Document Count%></td>
+					<td style="text-align:center"><%Open Hardware Requirement Specification Document Count%></td>
+					<td style="text-align:center"><%Closed Hardware Requirement Specification Document Count%></td>
+					<td style="text-align:center"><%Total Hardware Requirement Specification Document Count%>
+					</td>
+				</tr>
+				<tr class="even_row">
+					<th style="text-align:right">Models:</th>
+					<td style="text-align:center"><%Pending Models Count E%></td>
+					<td style="text-align:center"><%Open Models Count E%></td>
+					<td style="text-align:center"><%Closed Models Count E%></td>
+					<td style="text-align:center"><%Total Models Count E%></td>
+				</tr>
+				<tr class="odd_row">
+					<th style="text-align:right">Test Objectives:</th>
+					<td style="text-align:center"><%Pending Test Objective Count%></td>
+					<td style="text-align:center"><%Open Test Objective Count%></td>
+					<td style="text-align:center"><%Closed Test Objective Count%></td>
+					<td style="text-align:center"><%Total Test Objective Count%></td>
+				</tr>
+				<tr class="even_row">
+					<th style="text-align:right">Test Plans:</th>
+					<td style="text-align:center"><%Pending Test Plan Count E%></td>
+					<td style="text-align:center"><%Open Test Plan Count E%></td>
+					<td style="text-align:center"><%Closed Test Plan Count E%></td>
+					<td style="text-align:center"><%Total Test Plan Count E%></td>
+				</tr>
+				<tr class="odd_row">
+					<th style="text-align:right">Test Suites:</th>
+					<td style="text-align:center"><%Pending Test Suite Count%></td>
+					<td style="text-align:center"><%Open Test Suite Count%></td>
+					<td style="text-align:center"><%Closed Test Suite Count%></td>
+					<td style="text-align:center"><%Total Test Suite Count%>
+					
+					</td>
+				</tr>
+				<tr class="even_row">
+					<th style="text-align:right">Test Sessions:</th>
+					<td style="text-align:center"><%Pending Test Session Count%></td>
+					<td style="text-align:center"><%Open Test Session Count%></td>
+					<td style="text-align:center"><%Closed Test Session Count%></td>
+					<td style="text-align:center"><%Total Test Session Count%>
+					
+					</td>
+				</tr>
+				<tr class="odd_row">
+					<th style="text-align:right">Defects:</th>
+					<td style="text-align:center"><%Pending Defect Count%></td>
+					<td style="text-align:center"><%Open Defect Count%></td>
+					<td style="text-align:center"><%Closed Defect Count%></td>
+					<td style="text-align:center"><%Total Defect Count%></td>
+				</tr>
+				<tr class="even_row">
+					<th style="text-align:right">Tasks:</th>
+					<td style="text-align:center"><%Pending Tasks Count E%></td>
+					<td style="text-align:center"><%Open Tasks Count E%></td>
+					<td style="text-align:center"><%Closed Tasks Count E%></td>
+					<td style="text-align:center"><%Total Tasks Count E%></td>
+				</tr>
+				<tr class="odd_row">
+					<th style="text-align:right">Change Requests:</th>
+					<td style="text-align:center"><%Pending Change Request Count E%></td>
+					<td style="text-align:center"><%Open Change Request Count E%></td>
+					<td style="text-align:center"><%Closed Change Request Count E%></td>
+					<td style="text-align:center"><%Total Change Request Count E%></td>
+				</tr>
+				<tr class="even_row">
+					<th style="text-align:right">Change Orders:</th>
+					<td style="text-align:center"><%Pending Change Order Count E%></td>
+					<td style="text-align:center"><%Open Change Order Count E%></td>
+					<td style="text-align:center"><%Closed Change Order Count E%></td>
+					<td style="text-align:center"><%Total Change Order Count E%></td>
+				</tr>
+				<tr class="odd_row">
+					<th style="text-align:right">Releases:</th>
+					<td style="text-align:center"><%Pending Releases Count E%></td>
+					<td style="text-align:center"><%Open Releases Count E%></td>
+					<td style="text-align:center"><%Closed Releases Count E%></td>
+					<td style="text-align:center"><%Total Releases Count E%></td>
+				</tr>
+				<tr class="even_row">
+					<th style="text-align:right">Non-conformance Issues:</th>
+					<td style="text-align:center"><%Pending Non-conformance Issues Count E%></td>
+					<td style="text-align:center"><%Open Non-conformance Issues Count E%></td>
+					<td style="text-align:center"><%Closed Non-conformance Issues Count E%></td>
+					<td style="text-align:center"><%Total Non-conformance Issues Count E%></td>
+				</tr>
+				<tr class="odd_row">
+					<th style="text-align:right">Supplier Monitor Tasks:</th>
+					<td style="text-align:center"><%Pending Supplier Monitor Tasks Count E%></td>
+					<td style="text-align:center"><%Open Supplier Monitor Tasks Count E%></td>
+					<td style="text-align:center"><%Closed Supplier Monitor Tasks Count E%></td>
+					<td style="text-align:center"><%Total Supplier Monitor Tasks Count E%></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr><td>&nbsp;</td></tr>
+	<tr><td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center"><b>Quality Metrics</b></td></tr>
+	<tr>
+		<td>
+			<table class="detailrows">
+				<tr class="even_row"><th nowrap>Total Planned Count:</th><td width="100%"><%Total Planned Count Project%></td></tr>
+				<tr class="odd_row"><th nowrap>Total Run Count:</th><td width="100%"><%Total Run Count Project%></td></tr>
+				<tr class="even_row"><th nowrap>Total Pass Count:</th><td width="100%"><%Total Pass Count Project%></td></tr>
+				<tr class="odd_row"><th nowrap>Total Fail Count:</th><td width="100%"><%Total Fail Count Project%></td></tr>
+				<tr class="even_row"><th nowrap>Total Other Count:</th><td width="100%"><%Total Other Count Project%></td></tr>
+				<tr class="odd_row"><th nowrap>Total Blocked Count:</th><td width="100%"><%Total Blocked Count Project%></td></tr>
+				<tr class="even_row"><th nowrap>Total Suspect Results Count:</th><td width="100%"><%Total Suspect Results Count Project%></td></tr>
+			</table>
+		</td>
+		<td valign="top">
+			<table class="detailrows">
+			<tr><th nowrap>Total Run Percentage:</th><td><%Total Run Percentage Project%></td></tr>
+			<tr><th nowrap>Total Pass Percentage of Run:</th><td><%Total Pass Percentage of Run Project%></tr>
+			<tr><th nowrap>Total Pass Percentage of Planned:</th><td><%Total Pass Percentage of Planned Project%></td></tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<%enddetail%>
+</body>
+</html>
