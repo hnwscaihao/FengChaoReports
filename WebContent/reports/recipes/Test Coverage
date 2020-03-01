@@ -25,14 +25,158 @@
     description="Text appearing at the bottom of the report page."
 %>
 <html>
+
 <head>
+<script>
+(function() {
+   
+    selectMultip = {
+        register: function(id) {
+            //大致思路是：为下拉选创建一个隐藏的子选项，每次单选之后将单选的值追加到隐藏的子选项中，并将子选项选中显示即可
+            //全局查找所有标记multip的select
+            document.querySelectorAll("[multip]").forEach(function(e) {
+                render(e);
+            })
+        },
+        reload: function(id, data, setData) {
+            var htm = "";
+            for(var i = 0; i < data.length; i++) {
+                htm += '<option value="' + data[i].value + '">' + data[i].text + '</option>'
+            }
+            var e = document.getElementById(id);
+            e.innerHTML = htm;
+            render(e);
+            this.setVal(id, setData);
+        },
+        setVal: function(id, str) {
+            var type = Object.prototype.toString.call(str);
+            switch(type) {
+                case "[object String]":
+                    document.getElementById(id).val = str;
+                    break;
+                case "[object Array]":
+                    document.getElementById(id).val = str.toString();
+                    break;
+                default:
+                    break;
+            }
+        },
+        getVal: function(id) {
+            return document.getElementById(id).val;
+        },
+
+    }
+
+    function render(e) {
+        e.param = {
+            arr: [],
+            valarr: [],
+            opts: []
+        };
+        var choosevalue = "",
+            op;
+
+        for(var i = 0; i < e.length; i++) {
+            op = e.item(i);
+            e.param.opts.push(op);
+            if(op.hasAttribute("choose")) {
+                if(choosevalue == "") {
+                    choosevalue = op.value
+                } else {
+                    choosevalue += "," + op.value;
+                }
+
+            }
+        }
+
+        //创建一个隐藏的option标签用来存储多选的值，其中的值为一个数组
+        var option = document.createElement("option");
+        option.hidden = true;
+        e.appendChild(option);
+        e.removeEventListener("input", selchange);
+        e.addEventListener("input", selchange);
+
+        //重新定义标签基础属性的get和set方法，实现取值和赋值的功能
+        Object.defineProperty(e, "val", {
+            get: function() {
+                return this.querySelector("[hidden]").value;
+            },
+            set: function(value) {
+                e.param.valarr = [];
+                var valrealarr = value == "" ? [] : value.split(",");
+                e.param.arr = [];
+                e.param.opts.filter(function(o) {
+                    o.style = "";
+                });
+                if(valrealarr.toString()) {
+                    for(var i = 0; i < valrealarr.length; i++) {
+                        e.param.opts.filter(function(o) {
+                            if(o.value == valrealarr[i]) {
+                                o.style = "color: blue;";
+                                e.param.arr.push(o.text);
+                                e.param.valarr.push(o.value)
+                            }
+                        });
+                    }
+                    this.options[e.length - 1].text = e.param.arr.toString();
+                    this.options[e.length - 1].value = e.param.valarr.toString();
+                    this.options[e.length - 1].selected = true;
+                } else {
+                    this.options[0].selected = true;
+                }
+
+            },
+            configurable: true
+        })
+        //添加属性choose 此属性添加到option中用来指定默认值
+        e.val = choosevalue;
+        //添加属性tip 此属性添加到select标签上
+        if(e.hasAttribute("tip") && !e.tiped) {
+            e.tiped = true;
+            e.insertAdjacentHTML('afterend', '<i style="color: red;font-size: 12px">*可多选</i>');
+        }
+    }
+
+    function selchange() {
+        var text = this.options[this.selectedIndex].text;
+        var value = this.options[this.selectedIndex].value;
+        this.options[this.selectedIndex].style = "color: blue;";
+        var ind = this.param.arr.indexOf(text);
+        if(ind > -1) {
+            this.param.arr.splice(ind, 1);
+            this.param.valarr.splice(ind, 1);
+            this.param.opts.filter(function(o) {
+                if(o.value == value) {
+                    o.style = "";
+                }
+            });
+        } else {
+            this.param.arr.push(text);
+            this.param.valarr.push(value);
+        }
+        this.options[this.length - 1].text = this.param.arr.toString();
+        this.options[this.length - 1].value = this.param.valarr.toString();
+        if(this.param.arr.length > 0) {
+            this.options[this.length - 1].selected = true;
+        } else {
+            this.options[0].selected = true;
+        }
+    }
+})();
+</script>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>&reporttitle</title>
     <%screenStyleSheet%>
     <%printerStyleSheet%>
 	<script type="text/javascript">
 		var REPORT_ISSUES = "";
-		var DocmentIDs =  [];
+		var docData = [];//Documentid
+		var CategoryData = [];//Category
+		var ReleaseData = [];//Release
+		var AllRelease =  [];
+		var AllCategory =  [];
+		var categorys = []; 
+		var Releases = []; 
 	</script>
 	<style>
 		
@@ -63,19 +207,26 @@
 <p class="header">&reportheader</p>
 <p class="date"><%currentdate%></p>
 <p><a id="RERUNLINK"><img src="http://http://192.168.229.133/:7001/MKS_ALM_2009/refresh.gif"></a>
-	<span class="spanRight">
-		<strong> Document:</strong>
-		<select class="selectWid" id="DocumentID" name="DocumentID">
-			<option value="all"> - Please Select - </option>
-		</select>
-	</span>
-	<span class="spanRight">
-		<strong>Project: </strong>
-		<select class="selectNarr" id="ProjectID" name="ProjectID">
-			<option value="all"> - Please Select - </option>
+<span class="spanRight">
+		<strong>Release: </strong>
+		<select multip=""  class="selectRelease" id="Release" name="Release" style="width:210px;height: 30px;" >
+			
 
 		</select>
 	</span>
+	<span class="spanRight">
+		<strong>Category: </strong>
+		<select class="selectCategory" id="Category" name="Category" multip="" name="Release" style="width:210px;height: 30px;">
+			
+
+		</select>
+	</span>
+	<span class="spanRight">
+		<strong> Document:</strong>
+		<select class="selectWid" id="DocumentID" name="DocumentID" multip="" name="Release" style="width:210px;height: 30px;" >
+			<option value="all"> - Please Select - </option>
+		</select>
+	</span>	
 </p> 
 <%begindetail%>
 <script type="text/javascript">
@@ -83,11 +234,10 @@
 	if(REPORT_ISSUES == "") REPORT_ISSUES = <%<%builtin ID%>%>;
 	else REPORT_ISSUES = REPORT_ISSUES+","+<%<%builtin ID%>%>;
 
-	var row = {};
-    var pro = "<%<%builtin Project%>%>";
-		row.pro = pro;
-    	row.doc = <%<%builtin ID%>%>;
-    DocmentIDs.push(row);
+    var selectDoc = {};
+    selectDoc.value = "<%<%builtin ID%>%>";
+    selectDoc.text = "Document Stakeholder"+"<%<%builtin ID%>%>";
+    docData.push(selectDoc);   
 </script>
 
 <style>
@@ -114,12 +264,13 @@
 
 
 
-<h2 class="tabh" name ="<%<%builtin ID%>%>">Test Coverage for <%<%builtin Type%>%>&nbsp;:&nbsp;<%<%builtin ID%>%></h2>
+<h2 class="tabh" name ="<%<%builtin ID%>%>" id = "h2<%<%builtin ID%>%>">Test Coverage for <%<%builtin Type%>%>&nbsp;:&nbsp;<%<%builtin ID%>%></h2>
 
-<table class="detailrows" name ="<%<%builtin ID%>%>">
+<table class="detailrows" name ="<%<%builtin ID%>%>" id = "<%<%builtin ID%>%>" >
 	<tr>
 		<th>ID</th>
 		<th>Category</th>
+		<th hidden>Releases</th>
 		<th>Description</th>
 		<th>Tests</th>
 		<th>% Passed</th>
@@ -135,11 +286,27 @@
 		</script>
 			<td valign="top"><a href="http://192.168.229.133:7001/im/WebClient?IssueID=<%Relationship ID%>"><%Relationship ID%></a></td>
 			<td valign="top"><%Relationship Category%></td>
+			<td  hidden class ="noData"><%Relationship Sample Phase%></td>
 			<td valign="top"><%Relationship Text%></td>
 			<script type="text/javascript">
+			//保存数据
+			
+			Releases.push("<%Relationship Sample Phase%>");
+			var row = {};
+			row.docIds = "<%<%builtin ID%>%>";	
+			row.Releases = "<%Relationship Sample Phase%>";
+            AllRelease.push(row);
+           	
 			if ("<%Relationship Category%>" == "Heading" || "<%Relationship Category%>" == "Comment") {
 				document.write('<td valign="top">&nbsp;</td><td valign="top">&nbsp;</td>');
 			} else {
+				//保存Category数据
+				categorys.push("<%Relationship Category%>");
+				var row1 = {}; //保存docmentId与的数据
+				row1.docIds = "<%<%builtin ID%>%>";	
+				row1.categorys = "<%Relationship Category%>";
+				AllCategory.push(row1);
+				 
 				if("<%Relationship Validated By Trace Count%>" <= 1 | "<%Relationship Validated By Trace Count%>" == "" ){
 				document.write('<td valign="top">0</td>');
 				document.write('<td valign="top"><div class="graph"><strong class="bar" style="width:0px;">0</strong></div></td>');
@@ -163,103 +330,277 @@
 <center class="footer">&reportfooter</center>
 
 <script type="text/javascript">
-        var array = [];
-        	for(var i=0;i<DocmentIDs.length;i++){
-        		if (array.indexOf(DocmentIDs[i].pro) === -1) {
-        			array.push(DocmentIDs[i].pro);
-        		}
-        	}
-        var selectPro = document.getElementById('ProjectID');
-    	var selectDoc = document.getElementById('DocumentID');
+        var sjcl = document.getElementsByClassName("noData");
+		console.log(sjcl)
+		for(var i = 0;i<sjcl.length;i++){
+			if(sjcl[i].innerHTML == "" || sjcl[i].innerHTML == "&nbsp;"){
+				sjcl[i].innerHTML = "noData";
+			}
+		}
 
-    	var ary = REPORT_ISSUES.split(",");
-    	for(var i = 0;i<ary.length;i++){
-    		selectDoc.add(new Option(ary[i],ary[i]));
-    	}
-    	selectDoc.onchange = function(){
+		//初始化多选Documentselect
+        selectMultip.register();
+		//动态渲染Documentselect
+		docData.unshift({"value":"all","text":"- Please Select -"});		
+		selectMultip.reload("DocumentID", docData);
+		
+		//获取所有docmentid 赋值
+        var selectDoc = document.getElementById('DocumentID');
+    	
+		
+			//获取所有的category 赋值
+		var Category = document.getElementById('Category');
+		var Release = document.getElementById('Release');
+		//下拉选赋值
+		CategorysSelect(qc(categorys));
+		ReleasesSelect(qc(Releases));
+		
+		//Document下拉选绑定事件
+		selectDoc.onchange = function(){
     		// 通过对象获取value和text
             var key = this.value;
-            if("all" == key){
-                var docids ="";
-                if(selectPro.value == "all"){
-                       docids = "all";
-                 }else {
-                       for(var i=0;i<DocmentIDs.length;i++){
-                              if (selectPro.value == DocmentIDs[i].pro) {
-                                   docids +=  DocmentIDs[i].doc + ",";
-                               }
-                       }
-                  }
-                  tiger(docids);
-
+			
+            if(key.indexOf("all") > -1){
+				selectMultip.reload("DocumentID", docData);//动态渲染
+                var docids ="all";
+				//显示所有table和标题
+                tablecz("all");
+				//显示所有tr
+				trcz("all");
+				//下拉选赋值
+				CategorysSelect(qc(categorys));
+				ReleasesSelect(qc(Releases));
+			
             } else {
-                tiger(key);
+				//console.log(categorys);
+				//console.log(AllCategory);
+				//获取docment匹配的数据
+         
+				//下拉选赋值
+				CategorysSelect(qc(ldcategorys(key)));
+				ReleasesSelect(qc(ldReleases(key)));
+				//显示满足条件的table和所有tr
+				tablecz(key);
+				trcz("all");
+				
             }
-
+			
+			
+            
     	};
-
-
-    	for(var i = 0;i<array.length;i++){
-            selectPro.add(new Option(array[i],array[i]));
-         }
-    	selectPro.onchange = function(){
+		
+		
+		//category下拉选绑定事件
+		Category.onchange = function(){
+			Release.value = "all";
     		// 通过对象获取value和text
-    		//console.log(this.value);
-    		var docids ="";
-    		if(this.value == "all"){
-    		    docids = "all";
-    		    removeAll(selectDoc);
-    		    selectDoc.add(new Option("- Please Select -","all"));
-    		    for(var i = 0;i<ary.length;i++){
-                    selectDoc.add(new Option(ary[i],ary[i]));
-                }
-    		}else {
-    		     removeAll(selectDoc);
-    		     selectDoc.add(new Option("- Please Select -","all"));
-    		    for(var i=0;i<DocmentIDs.length;i++){
-                    if (this.value == DocmentIDs[i].pro) {
-                        docids +=  DocmentIDs[i].doc + ",";
-                        selectDoc.add(new Option(ary[i],ary[i]));
-                     }
-                 }
-                 //docids = docids.substring(0,docids.length-1);
-    		}
+            var category = this.value;
+			var docid = selectDoc.value;
+			if(docid == "all"){
+				if(category.indexOf("all") > -1 ){
+					CategorysSelect(qc(categorys));
+					ReleasesSelect(qc(Releases));
+					//显示所有table
+					tablecz("all");
+					//显示所有tr
+					trcz("all");
+				}else {
+					ReleasesSelect(qc(Releases));
+					//显示所有table
+					tablecz("all");
+					yctr(category);
+					trcz("Part");//如果tr没有下拉选的值 不显示table
+				}
+			} else {
+				var docid = document.getElementById("DocumentID").value;
+				if(category.indexOf("all") > -1 ){
+					CategorysSelect(qc(ldcategorys(docid)));
+					ReleasesSelect(qc(ldReleases(docid)));
+					tablecz(docid);
+					trcz("all");
+				}else {
+					//显示所有table
+					ReleasesSelect(qc(ldReleases(docid)));
+					tablecz(docid);
+					yctr(category);
+				}
+			} 
 
-            tiger(docids);
     	};
+		
+		//Release下拉选绑定事件
+		Release.onchange = function(){
+			Category.value = "all";
+    		// 通过对象获取value和text
+            var Release = this.value;
+			var docid = selectDoc.value;
+			if(docid == "all"){
+				if(Release.indexOf("all") > -1){
+					CategorysSelect(qc(categorys));
+					ReleasesSelect(qc(Releases));
+					//显示所有table
+					tablecz("all");
+					//显示所有tr
+					trcz("all");
+				}else {
+					CategorysSelect(qc(categorys));
+					//显示所有table
+					tablecz("all");
+					Releasetr(Release);
+					trcz("Part");//如果tr没有下拉选的值 不显示table
+				}
+			} else {
+				var docid = document.getElementById("DocumentID").value;
+				if(Release.indexOf("all") > -1){
+					ReleasesSelect(qc(ldReleases(docid)));
+					CategorysSelect(qc(ldcategorys(docid)));
+					tablecz(docid);
+					trcz("all");
+				}else {
+					//显示所有table
+					CategorysSelect(qc(ldcategorys(docid)));
+					tablecz(docid);
+					Releasetr(Release);
+				}
+			} 
+
+    	};
+	
+		
 
     	if (REPORT_ISSUES == "") {
             document.all.RERUNLINK.href = "http://http://192.168.229.133:7001/im/runreport?selection=&currentReportName";
         } else {
             document.all.RERUNLINK.href = "http://http://192.168.229.133:7001/im/runreport?selection=&currentReportName&issues=" + REPORT_ISSUES;
         }
+		
+    //与docment联动的Categorys下拉选赋值
+	function ldcategorys(docid){
+		var newCategorys = [];
+		for(var i = 0;i<AllCategory.length;i++){
+			if(docid == AllCategory[i].docIds){
+				newCategorys.push(AllCategory[i].categorys);
+			}
+		}
+		return newCategorys;
+	} 
+	//与docment联动的Releases下拉选赋值
+	function ldReleases(docid){
+		var newReleases = [];
+		for(var i = 0;i<AllRelease.length;i++){
+			if(docid == AllRelease[i].docIds){
+				newReleases.push(AllRelease[i].Releases);
+			}
+		}
+		return newReleases;
+	}
 
+	//Categorys下拉选赋值
+	function CategorysSelect( Categorys){
+		CategoryData = [];
+		for(var i = 0;i<Categorys.length;i++){
+			CategoryData.push({"value":Categorys[i],"text":Categorys[i]});
+    	}
+		CategoryData.unshift({"value":"all","text":"- Please Select -"});		
+		selectMultip.reload("Category", CategoryData);
+	}
+	//Releases下拉选赋值
+	function ReleasesSelect( Releases){
+		ReleaseData = [];
+		for(var i = 0;i<Releases.length;i++){
+			var ls = Releases[i];
+			if(Releases[i] == " " || Releases[i] == "&nbsp;"){
+				ls = "noData";
+			}
+    		ReleaseData.push({"value":ls,"text":ls});
+    	}
+		ReleaseData.unshift({"value":"all","text":"- Please Select -"});		
+		selectMultip.reload("Release", ReleaseData);	
+	}
+	
+	
+    //掩藏满足Release条件的tr
+	function Releasetr(Release){
+		var tables =  document.getElementsByClassName("detailrows");
+		for(var j = 0;j<tables.length;j++){
+				var tr = tables[j].rows;
+				for(var i =0;i<tr.length;i++){
+					if(i>0){
+						if(Release.indexOf(tr[i].cells[2].innerHTML) > -1 ){
+							tr[i].hidden = false;
+						}else{						
+							tr[i].hidden = true;
+						}		
+					}			
+				}
+		}
+	}
 
-function tiger(key) {
+    //掩藏满足Category条件的tr
+	function yctr(Category){
+		var tables =  document.getElementsByClassName("detailrows");
+		for(var j = 0;j<tables.length;j++){
+				var tr = tables[j].rows;
+				for(var i =0;i<tr.length;i++){
+					if(i>0){
+						if(Category.indexOf(tr[i].cells[1].innerHTML) > -1 ){
+							tr[i].hidden = false;
+						}else{						
+							tr[i].hidden = true;
+						}		
+					}			
+				}
+		}
+	}
+	
+	//显示隐藏tr 参数为all显示全部tr Part如果tr中没有下拉选数据则不显示table
+	function trcz(key){
+		var tables =  document.getElementsByClassName("detailrows");
+		for(var i = 0;i<tables.length;i++){
+			if(key == "all"){
+				var tr = tables[i].rows;
+				//显示所有的tr
+				for(var j =0;j<tr.length;j++){
+					tr[j].hidden = false;			
+				}
+			}else if(key == "Part"){
+				var ls = 0;
+				var tr = tables[i].rows;
+				for(var j =0 ;j<tr.length;j++){
+					if(tr[j].hidden == false){
+						ls++;
+					}
+				}		
+				if(ls == 1){
+					var tabName = tables[i].getAttribute("name");
+					document.getElementById(tabName).hidden = true;
+					document.getElementById("h2"+tabName).hidden = true;
+				}
+			}
+		}
+	}
+	
+
+//显示隐藏table和标题  key为all 显示全部table 可以为id只显示选中table
+	function tablecz(key) {
+		//获取所有的table
         var tables =  document.getElementsByClassName("detailrows");
         for(var i =0;i<tables.length;i++){
             var tabName = tables[i].getAttribute("name");
-
-            if("all" == key){
-                tables[i].style.display="block";
-            }else if(key.indexOf(tabName) == -1){
-                tables[i].style.display="none";
-            }else {
-                tables[i].style.display="block";
-            }
-        }
-        var tabhs =  document.getElementsByClassName("tabh");
-        for(var i =0;i<tabhs.length;i++){
-            var tabhName = tabhs[i].getAttribute("name");
-            if("all" == key){
-                tabhs[i].style.display="block";
-            }else if(key.indexOf(tabhName) == -1){
-                tabhs[i].style.display="none";
-            }else {
-                tabhs[i].style.display="block";
-            }
+			if(key == "all"){
+				tables[i].hidden = false;
+				document.getElementById("h2"+tabName).hidden = false;
+			} else if(key.indexOf(tabName) > -1){
+                tables[i].hidden = false;
+				document.getElementById("h2"+tabName).hidden = false;
+            } else {
+				tables[i].hidden = true;
+				document.getElementById("h2"+tabName).hidden = true;
+			}
+           
         }
     }
+	
     //移除所有字节点
     function removeAll(el) {
     		var childs = el.childNodes;
@@ -267,6 +608,16 @@ function tiger(key) {
     			el.removeChild(childs[i]);
     		}
     	}
+	//数组去重
+	function qc(arr){
+		var a = [];
+		for(var i = 0;i<arr.length;i++){
+			if(a.indexOf(arr[i]) == -1){
+				a.push(arr[i]);
+			}
+		}
+		return a;
+	}
 
 </script>
 
