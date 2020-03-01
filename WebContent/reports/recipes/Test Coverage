@@ -228,6 +228,10 @@
 		</select>
 	</span>	
 </p> 
+<p style = "position: absolute; top: 120px; right: 10px;">
+        <label>All Test : <span id="AllTest">00</span>%</label>
+		<label>All Coverage : <span id="AllCoverage">00</span>%</label>
+</p>
 <%begindetail%>
 <script type="text/javascript">
 
@@ -331,12 +335,15 @@
 
 <script type="text/javascript">
         var sjcl = document.getElementsByClassName("noData");
-		console.log(sjcl)
+		//字段空转换为nodata
 		for(var i = 0;i<sjcl.length;i++){
 			if(sjcl[i].innerHTML == "" || sjcl[i].innerHTML == "&nbsp;"){
 				sjcl[i].innerHTML = "noData";
 			}
 		}
+		//测试率
+		searchAllTest();
+		
 
 		//初始化多选Documentselect
         selectMultip.register();
@@ -370,6 +377,8 @@
 				//下拉选赋值
 				CategorysSelect(qc(categorys));
 				ReleasesSelect(qc(Releases));
+				//测试率
+		        searchAllTest();
 			
             } else {
 				//console.log(categorys);
@@ -382,7 +391,8 @@
 				//显示满足条件的table和所有tr
 				tablecz(key);
 				trcz("all");
-				
+			    //测试率
+		        searchAllTest();
             }
 			
 			
@@ -404,12 +414,16 @@
 					tablecz("all");
 					//显示所有tr
 					trcz("all");
+					 //测试率
+					searchAllTest();
 				}else {
 					ReleasesSelect(qc(Releases));
 					//显示所有table
 					tablecz("all");
 					yctr(category);
 					trcz("Part");//如果tr没有下拉选的值 不显示table
+					 //测试率
+					searchAllTest();
 				}
 			} else {
 				var docid = document.getElementById("DocumentID").value;
@@ -418,11 +432,15 @@
 					ReleasesSelect(qc(ldReleases(docid)));
 					tablecz(docid);
 					trcz("all");
+					 //测试率
+					searchAllTest();
 				}else {
 					//显示所有table
 					ReleasesSelect(qc(ldReleases(docid)));
 					tablecz(docid);
 					yctr(category);
+					 //测试率
+					searchAllTest();
 				}
 			} 
 
@@ -442,12 +460,16 @@
 					tablecz("all");
 					//显示所有tr
 					trcz("all");
+					 //测试率
+					searchAllTest();
 				}else {
 					CategorysSelect(qc(categorys));
 					//显示所有table
 					tablecz("all");
 					Releasetr(Release);
 					trcz("Part");//如果tr没有下拉选的值 不显示table
+					 //测试率
+					searchAllTest();
 				}
 			} else {
 				var docid = document.getElementById("DocumentID").value;
@@ -456,11 +478,15 @@
 					CategorysSelect(qc(ldcategorys(docid)));
 					tablecz(docid);
 					trcz("all");
+					 //测试率
+					searchAllTest();
 				}else {
 					//显示所有table
 					CategorysSelect(qc(ldcategorys(docid)));
 					tablecz(docid);
 					Releasetr(Release);
+					 //测试率
+					searchAllTest();
 				}
 			} 
 
@@ -473,6 +499,35 @@
         } else {
             document.all.RERUNLINK.href = "http://http://192.168.229.133:7001/im/runreport?selection=&currentReportName&issues=" + REPORT_ISSUES;
         }
+		
+	 //查询测试率
+	function searchAllTest(){
+		var tables =  document.getElementsByClassName("detailrows");
+		var  allCount = 0;
+		var  Testcount = 0;
+		var  Coveragecount = 0;
+		for(var j = 0;j<tables.length;j++){
+			var tr = tables[j].rows;
+			if(tables[j].hidden == false){
+				for(var i =0;i<tr.length;i++){
+					if(i>0 && tr[i].hidden == false){
+						allCount++;
+						if(tr[i].cells[4].innerHTML != "" && tr[i].cells[4].innerHTML > 0){
+							Testcount++;
+						}	
+						if(tr[i].cells[5].innerHTML != "" && tr[i].cells[5].innerHTML > 0){
+							Coveragecount++;
+						}	
+					}
+				}			
+			}			
+		}
+		console.log("Testcount : "+Testcount)
+		console.log("Coveragecount : "+Coveragecount)
+		console.log("allCount : "+allCount)
+		document.getElementById("AllTest").innerHTML = Testcount/allCount;
+		document.getElementById("AllCoverage").innerHTML = Coveragecount/allCount;
+	}
 		
     //与docment联动的Categorys下拉选赋值
 	function ldcategorys(docid){
