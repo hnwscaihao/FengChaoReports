@@ -356,8 +356,6 @@
 		
 		//获取所有docmentid 赋值
         var selectDoc = document.getElementById('DocumentID');
-    	
-		
 			//获取所有的category 赋值
 		var Category = document.getElementById('Category');
 		var Release = document.getElementById('Release');
@@ -405,94 +403,115 @@
 		
 		//category下拉选绑定事件
 		Category.onchange = function(){
-			Release.value = "all";
+			//Release.value = "all";
     		// 通过对象获取value和text
             var category = this.value;
-			var docid = selectDoc.value;
+			var docid = document.getElementById('DocumentID').value;
+			var releaseVal = document.getElementById('Category').value;
 			if(docid == "all"){
+				//显示所有table
+				tablecz("all");
 				if(category.indexOf("all") > -1 ){
-					CategorysSelect(qc(categorys));
-					ReleasesSelect(qc(Releases));
-					//显示所有table
-					tablecz("all");
-					//显示所有tr
-					trcz("all");
-					 //测试率
-					searchAllTest();
+					CategorysSelect(qc(categorys));//重置category select
+					//ReleasesSelect(qc(Releases));
+					
+					if(releaseVal.indexOf("all") > -1 ){
+						//显示所有tr
+						trcz("all");
+					}else {
+						Releasetr(releaseVal);
+						trcz("Part");//如果tr没有下拉选的值 不显示table
+					}	
 				}else {
-					ReleasesSelect(qc(Releases));
-					//显示所有table
-					tablecz("all");
-					yctr(category);
-					trcz("Part");//如果tr没有下拉选的值 不显示table
-					 //测试率
-					searchAllTest();
-				}
+					//ReleasesSelect(qc(Releases));
+					if(releaseVal.indexOf("all") > -1 ){
+						yctr(category);
+						trcz("Part");//如果tr没有下拉选的值 不显示table
+					}else {
+						ReleasetrAndCategory(category,releaseVal)
+						trcz("Part");//如果tr没有下拉选的值 不显示table
+					}
+				}	
 			} else {
-				var docid = document.getElementById("DocumentID").value;
+				tablecz(docid);//显示docment关联table
 				if(category.indexOf("all") > -1 ){
 					CategorysSelect(qc(ldcategorys(docid)));
-					ReleasesSelect(qc(ldReleases(docid)));
-					tablecz(docid);
-					trcz("all");
-					 //测试率
-					searchAllTest();
-				}else {
-					//显示所有table
-					ReleasesSelect(qc(ldReleases(docid)));
-					tablecz(docid);
-					yctr(category);
-					 //测试率
-					searchAllTest();
+					//ReleasesSelect(qc(ldReleases(docid)));
+					 
+					if(releaseVal.indexOf("all") > -1 ){
+						trcz("all");
+					}else {
+						Releasetr(releaseVal);
+						trcz("Part");//如果tr没有下拉选的值 不显示table
+					}
+				}else {					
+					if(releaseVal.indexOf("all") > -1 ){
+						yctr(category);
+						trcz("Part");
+					}else {
+						ReleasetrAndCategory(category,releaseVal);
+						trcz("Part");
+					}
 				}
 			} 
+			 //测试率 通过率
+			searchAllTest();
 
     	};
 		
 		//Release下拉选绑定事件
 		Release.onchange = function(){
-			Category.value = "all";
+			//Category.value = "all";
     		// 通过对象获取value和text
             var Release = this.value;
-			var docid = selectDoc.value;
+			var docid = document.getElementById('DocumentID').value;
+			var categoryVal = document.getElementById('Category').value;
 			if(docid == "all"){
+				//显示所有table
+				tablecz("all");
 				if(Release.indexOf("all") > -1){
-					CategorysSelect(qc(categorys));
 					ReleasesSelect(qc(Releases));
-					//显示所有table
-					tablecz("all");
-					//显示所有tr
-					trcz("all");
-					 //测试率
-					searchAllTest();
+					
+					if(categoryVal.indexOf("all") > -1 ){
+						trcz("all");
+					}else {
+						yctr(categoryVal);
+						trcz("Part");
+					}
 				}else {
-					CategorysSelect(qc(categorys));
-					//显示所有table
-					tablecz("all");
-					Releasetr(Release);
-					trcz("Part");//如果tr没有下拉选的值 不显示table
-					 //测试率
-					searchAllTest();
+					if(categoryVal.indexOf("all") > -1 ){
+						Releasetr(Release);
+						trcz("Part");
+					}else {
+						ReleasetrAndCategory(categoryVal,Release);
+						trcz("Part");
+					}
 				}
 			} else {
-				var docid = document.getElementById("DocumentID").value;
+				tablecz(docid);
+			    
 				if(Release.indexOf("all") > -1){
 					ReleasesSelect(qc(ldReleases(docid)));
-					CategorysSelect(qc(ldcategorys(docid)));
-					tablecz(docid);
-					trcz("all");
-					 //测试率
-					searchAllTest();
+					
+					if(categoryVal.indexOf("all") > -1 ){
+						trcz("all");
+					}else {
+						yctr(categoryVal);
+						trcz("Part");
+					}
 				}else {
-					//显示所有table
-					CategorysSelect(qc(ldcategorys(docid)));
-					tablecz(docid);
-					Releasetr(Release);
-					 //测试率
-					searchAllTest();
+					if(categoryVal.indexOf("all") > -1 ){
+						Releasetr(Release);
+						trcz("Part");
+					}else {
+						ReleasetrAndCategory(categoryVal,Release);
+						trcz("Part");
+					}
 				}
 			} 
-
+			 
+			//测试率
+			searchAllTest();	
     	};
 	
 		
@@ -536,7 +555,7 @@
 	function ldcategorys(docid){
 		var newCategorys = [];
 		for(var i = 0;i<AllCategory.length;i++){
-			if(docid == AllCategory[i].docIds){
+			if(docid.indexOf(AllCategory[i].docIds) > -1 ){
 				newCategorys.push(AllCategory[i].categorys);
 			}
 		}
@@ -546,7 +565,7 @@
 	function ldReleases(docid){
 		var newReleases = [];
 		for(var i = 0;i<AllRelease.length;i++){
-			if(docid == AllRelease[i].docIds){
+			if(docid.indexOf(AllRelease[i].docIds) > -1){
 				newReleases.push(AllRelease[i].Releases);
 			}
 		}
@@ -574,6 +593,24 @@
     	}
 		ReleaseData.unshift({"value":"all","text":"- Please Select -"});		
 		selectMultip.reload("Release", ReleaseData);	
+	}
+	
+	//满足Release和Category条件的tr
+	function ReleasetrAndCategory(Category,Release){
+		var tables =  document.getElementsByClassName("detailrows");
+		 
+		for(var j = 0;j<tables.length;j++){
+				var tr = tables[j].rows;
+				for(var i =0;i<tr.length;i++){
+					if(i>0){
+						if(Category.indexOf(tr[i].cells[1].innerHTML) > -1 ||  Release.indexOf(tr[i].cells[2].innerHTML) > -1 ){
+							tr[i].hidden = false;
+						}else{						
+							tr[i].hidden = true;
+						}		
+					}			
+				}
+		}
 	}
 	
 	
