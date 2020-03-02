@@ -228,9 +228,12 @@
 		</select>
 	</span>	
 </p> 
-<p style = "position: absolute; top: 120px; right: 10px;">
-        <label>All Test : <span id="AllTest">00</span>%</label>
-		<label>All Coverage : <span id="AllCoverage">00</span>%</label>
+<div style = "position: absolute; top: 120px; right: 10px;">
+        <h4>All Test : <span id="AllTest">00</span>%</h4>
+		<h4>All Coverage : <span id="AllCoverage">00</span>%</h4>
+</div>
+<p style = "height: 21px;">
+
 </p>
 <%begindetail%>
 <script type="text/javascript">
