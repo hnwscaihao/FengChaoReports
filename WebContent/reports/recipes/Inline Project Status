@@ -307,7 +307,24 @@
 			</table>
 		</td>
 	</tr>
+	<tr><td>&nbsp;</td></tr>
+	<tr><td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center"><b>Risk eport</b></td></tr>
+	<tr>
+		<td>
+			<table class="detailrows">
+				<tr class="even_row"><th nowrap>Risk Open Count:</th><td width="100%"><%RiskOpenCount%></td></tr>
+				<tr class="odd_row"><th nowrap>Risk In Development Count:</th><td width="100%"><%RiskInDevelopmentCount%></td></tr>
+			</table>
+		</td>
+		<td valign="top">
+			<table class="detailrows">
+				<tr class="even_row"><th nowrap>Risk Cancelled Count:</th><td width="100%"><%RiskCancelledCount%></td></tr>
+				<tr class="odd_row"><th nowrap>Risk Completed Count:</th><td width="100%"><%RiskCompletedCount%></td></tr>
+			</table>
+		</td>
+	</tr>
 </table>
+
 <%enddetail%>
 </body>
 </html>
