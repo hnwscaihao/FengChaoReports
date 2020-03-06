@@ -42,25 +42,59 @@
 		var ProjectDate = [];
 		var RiskDate = [{"Open":0},{"In Analysis":0},{"Rejected":0},{"Analyzed":0},{"In Monitoring":0},{"Postponed":0},{"Cloesd":0}];
 		
-		var DefectDate = [];
 		var DefectTypeData = {
-			"Function" :[{"Requirement":0},{"System Architecture":0},{"System Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
+			"Function" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
 			{"Software Integration":0},{"System Integration":0}],
-			"Logical" :[{"Requirement":0},{"System Architecture":0},{"System Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
+			"Logical" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
 			{"Software Integration":0},{"System Integration":0}],
-			"Norms" :[{"Requirement":0},{"System Architecture":0},{"System Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
+			"Norms" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
 			{"Software Integration":0},{"System Integration":0}],
-			"Interface" :[{"Requirement":0},{"System Architecture":0},{"System Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
+			"Interface" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
 			{"Software Integration":0},{"System Integration":0}],
-			"Performance" :[{"Requirement":0},{"System Architecture":0},{"System Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
+			"Performance" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
 			{"Software Integration":0},{"System Integration":0}],
-			"Grammer" :[{"Requirement":0},{"System Architecture":0},{"System Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
+			"Grammer" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
 			{"Software Integration":0},{"System Integration":0}],
-			"Design Defect" :[{"Requirement":0},{"System Architecture":0},{"System Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
+			"Design Defect" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture ":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
 			{"Software Integration":0},{"System Integration":0}],
 		}
-		var ChangeRequestDate = [];
-		var ChangeOrderDate = [];
+		
+		var TaskPhasData = {
+			"Software Unit Test":[{"Open":0},{"Pending":0},{"Closed":0}],
+			"Software Integration Test":[{"Open":0},{"Pending":0},{"Closed":0}],
+			"Software Qulification Test":[{"Open":0},{"Pending":0},{"Closed":0}],
+			"System Integration Test":[{"Open":0},{"Pending":0},{"Closed":0}],
+			"System Qulification Test":[{"Open":0},{"Pending":0},{"Closed":0}]
+		};
+		var DefectStateDate = {
+			"Open":[{"false":0},{"true":0}],
+			"In Testing":[{"false":0},{"true":0}],
+			"In Progress":[{"false":0},{"true":0}],
+			"In Analysis":[{"false":0},{"true":0}],
+			"Analyzed":[{"false":0},{"true":0}]
+		};
+		var DefectResponsibilityTeamDate = {
+			"Open":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+			"In Analysis":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+			"Analyzed":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+			"In Progress":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+			"InTesting":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+			"Verified":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+			"Closed":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+			"Rejected":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+			"Postponed":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}]
+		};
+		var ChangeRequestDate = {
+			"REQ Change":[{"Customer":0},{"Supplier":0},{"Internal":0}],
+			"Design Change":[{"Customer":0},{"Supplier":0},{"Internal":0}],
+			"Plan Change":[{"Customer":0},{"Supplier":0},{"Internal":0}]
+		};
+		var ChangeRequestStateDate = {
+			"State" : [{"Open":0},{"In Progress":0},{"Approveed":0},{"Fixed":0},{"Closed":0},{"Rejected":0},{"Cancelled":0},{"Postponed":0}]
+		};
+		var ChangeOrderDate = {
+			"State" : [{"Open":0},{"In Development":0},{"Verify":0},{"Closed":0}]
+		};
 	</script>
 </head>
 <%dateformat MM/dd/yy HH:mm:ss%>
@@ -89,12 +123,13 @@
 	}
 	//Defect数据
 	if("<%<%builtin Type%>%>" == "Defect"){
+		//type 和 Source
 		for(var key in DefectTypeData){ 
 			if("<%Defect Type%>" == key){
 				var arr = DefectTypeData[key];
 				for(var i = 0;i<arr.length;i++){
 					var obj = arr[i];
-					//console.log(obj);
+					//console.log("<%Defect Type%>" +":" + "<%Defect Source%>");
 					if("<%Defect Source%>" == Object.keys(obj)[0]){
 						var count = parseInt(obj["<%Defect Source%>"]);
 						//console.log(count);
@@ -105,25 +140,110 @@
 				}
 			}
 		}
-
-		DefectDate.push({"DefectType" : "<%Defect Type%>"});
-		DefectDate.push({"DefectSource" : "<%Defect Source%>"});
-		DefectDate.push({"Origin" : "<%Origin%>"});
-		DefectDate.push({"State" : "<%State%>"});
-		DefectDate.push({"TaskPhase" : "<%Task Phase%>"});
-		DefectDate.push({"defectState" : "<%defectState%>"});
-		DefectDate.push({"Responsibility Team" : "<%Responsibility Team%>"});
+		//Origin and Task Phase
+		for(var key in TaskPhasData){ 
+			if("<%Origin%>" == key){
+				var arr = TaskPhasData[key];
+				for(var i = 0;i<arr.length;i++){
+					var obj = arr[i];
+					//console.log("<%Origin%>" +":" + "<%Task Phase%>");
+					if("<%Task Phase%>" == Object.keys(obj)[0]){
+						var count = parseInt(obj["<%Task Phase%>"]);
+						//console.log(count);
+						obj["<%Task Phase%>"] = count+1;
+						
+					}
+					//console.log(obj);
+				}
+			}
+		}
+		//State and defectState
+		for(var key in DefectStateDate){ 
+			if("<%State%>" == key){
+				var arr = DefectStateDate[key];
+				for(var i = 0;i<arr.length;i++){
+					var obj = arr[i];
+					//console.log("<%State%>" +":" + "<%defectState%>");
+					if("<%defectState%>" == Object.keys(obj)[0]){
+						var count = parseInt(obj["<%defectState%>"]);
+						//console.log(count);
+						obj["<%defectState%>"] = count+1;
+						
+					}
+					//console.log(obj);
+				}
+			}
+		}
+		//State and Responsibility Team
+		for(var key in DefectResponsibilityTeamDate){ 
+			if("<%State%>" == key){
+				var arr = DefectResponsibilityTeamDate[key];
+				for(var i = 0;i<arr.length;i++){
+					var obj = arr[i];
+					//console.log("<%State%>" +":" + "<%Responsibility Team%>");
+					if("<%Responsibility Team%>" == Object.keys(obj)[0]){
+						var count = parseInt(obj["<%Responsibility Team%>"]);
+						//console.log(count);
+						obj["<%Responsibility Team%>"] = count+1;
+						
+					}
+					//console.log(obj);
+				}
+			}
+		} 
 	}
 	//Change Request数据 
     if("<%<%builtin Type%>%>" == "Change Request"){
-		ChangeRequestDate.push({"State" : "<%State%>"});
-		ChangeRequestDate.push({"ChangeCategory" : "<%Change Category%>"});
-		ChangeRequestDate.push({"ChangeInitiator" : "<%Change Initiator%>"});
+		//Change Request State
+		for(var key in ChangeRequestStateDate){ 
+			var arr = ChangeRequestStateDate[key];
+			for(var i = 0;i<arr.length;i++){
+				var obj = arr[i];
+				if("<%State%>" == Object.keys(obj)[0]){
+					var count = parseInt(obj["<%State%>"]);
+					//console.log(count);
+					obj["<%State%>"] = count+1;
+						
+				}
+				//console.log(obj);
+			}
+		}
+		
+		//Change Category and Change Initiator
+		for(var key in ChangeRequestDate){ 
+			if("<%Change Category%>" == key){
+				var arr = ChangeRequestDate[key];
+				for(var i = 0;i<arr.length;i++){
+					var obj = arr[i];
+					if("<%Change Initiator%>" == Object.keys(obj)[0]){
+						var count = parseInt(obj["<%Change Initiator%>"]);
+						//console.log(count);
+						obj["<%Change Initiator%>"] = count+1;
+						
+					}
+					//console.log(obj);
+				}
+			}
+		}
 	} 
 	
 	//Change Order数据   
     if("<%<%builtin Type%>%>" == "Change Order"){
-		ChangeOrderDate.push({"State" : "<%State%>"});
+		//Change Order State
+		for(var key in ChangeOrderDate){ 
+			var arr = ChangeOrderDate[key];
+				for(var i = 0;i<arr.length;i++){
+					var obj = arr[i];
+					if("<%State%>" == Object.keys(obj)[0]){
+						var count = parseInt(obj["<%State%>"]);
+						//console.log(count);
+						obj["<%State%>"] = count+1;
+						
+					}
+					//console.log(obj);
+				}
+		}
+
 	} 
 
 </script>
@@ -192,21 +312,291 @@
 			</table>
 		</td>
 	</tr>
-	<!-- Defect end -->
+<!-- Defect end -->
+	
+<!-- Defect Origin and Task Phase start -->
+	<tr><td>&nbsp;</td></tr>
+	<tr>
+		<td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">
+			<b>Defect Origin and Task Phase</b>
+		</td> 
+	</tr>
+	<tr>
+		<td style="width: 100%;" colspan="2">
+			<table class="detailcols" style="width: 100%;">
+				<tr class="even_row" style="width: 100%;">
+					<th style="text-align:center; width: 30%" ></th>
+					<th style="text-align:center; " >Open</th>
+					<th style="text-align:center; " >Pending</th>
+					<th style="text-align:center; " >Closed</th>
+				</tr>
+				<tbody id = "defectOriginAndTaskPhase">
+					
+				</tbody>
+			</table>
+		</td>
+	</tr>
+<!-- Defect Origin and Task Phase end -->
 
+<!-- Defect State and defectState start -->
+	<tr><td>&nbsp;</td></tr>
+	<tr>
+		<td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">
+			<b>Defect State and defectState</b>
+		</td> 
+	</tr>
+	<tr>
+		<td style="width: 100%;" colspan="2">
+			<table class="detailcols" style="width: 100%;">
+				<tr class="even_row" style="width: 100%;">
+					<th style="text-align:center; width: 30%" ></th>
+					<th style="text-align:center; " >Not Delay</th>
+					<th style="text-align:center; " >Delay</th>
+				</tr>
+				<tbody id = "defectStateAndDefectState">
+					
+				</tbody>
+			</table>
+		</td>
+	</tr>
+<!-- Defect State and defectState end -->
+
+<!-- Defect State and Responsibility Team start -->
+	<tr><td>&nbsp;</td></tr>
+	<tr>
+		<td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">
+			<b>Defect State and Responsibility Team</b>
+		</td> 
+	</tr>
+	<tr>
+		<td style="width: 100%;" colspan="2">
+			<table class="detailcols" style="width: 100%;">
+				<tr class="even_row" style="width: 100%;">
+					<th style="text-align:center; width: 30%" ></th>
+					<th style="text-align:center; " >PM</th>
+					<th style="text-align:center; " >STS</th>
+					<th style="text-align:center; " >ASW</th>
+					<th style="text-align:center; " >BSW</th>
+					<th style="text-align:center; " >HW</th>
+					<th style="text-align:center; " >TEST</th>
+					<th style="text-align:center; " >QA</th>
+				</tr>
+				<tbody id = "defectStateAndResponsibilityTeam">
+					
+				</tbody>
+			</table>
+		</td>
+	</tr>
+<!-- Defect State and Responsibility Team end -->
+
+<!-- Change Request Change Category and Change Initiator start -->
+	<tr><td>&nbsp;</td></tr>
+	<tr>
+		<td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">
+			<b>Change Category and Change Initiator</b>
+		</td> 
+	</tr>
+	<tr>
+		<td style="width: 100%;" colspan="2">
+			<table class="detailcols" style="width: 100%;">
+				<tr class="even_row" style="width: 100%;">
+					<th style="text-align:center; width: 30%" ></th>
+					<th style="text-align:center; " >Customer</th>
+					<th style="text-align:center; " >Supplier</th>
+					<th style="text-align:center; " >Internal</th>
+				</tr>
+				<tbody id = "ChangeCategoryAndChangeInitiator">
+					
+				</tbody>
+			</table>
+		</td>
+	</tr>
+<!-- Change Request Change Category and Change Initiator end -->
+
+<!-- Change Request State start -->
+	<tr><td>&nbsp;</td></tr>
+	<tr>
+		<td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">
+			<b>Change Request State</b>
+		</td> 
+	</tr>
+	<tr>
+		<td style="width: 100%;" colspan="2">
+			<table class="detailcols" style="width: 100%;">
+				<tr class="even_row" style="width: 100%;">
+					<th style="text-align:center; width: 30%" ></th>
+					<th style="text-align:center; " >Open</th>
+					<th style="text-align:center; " >In Progress</th>
+					<th style="text-align:center; " >Approveed</th>
+					<th style="text-align:center; " >Fixed</th>
+					<th style="text-align:center; " >Closed</th>
+					<th style="text-align:center; " >Rejected</th>
+					<th style="text-align:center; " >Cancelled</th>
+					<th style="text-align:center; " >Postponed</th>
+				</tr>
+				<tbody id = "ChangeRequestState">
+					
+				</tbody>
+			</table>
+		</td>
+	</tr>
+<!-- Change Request State end -->
+
+<!-- Change Order State start -->
+	<tr><td>&nbsp;</td></tr>
+	<tr>
+		<td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">
+			<b>Change Request State</b>
+		</td> 
+	</tr>
+	<tr>
+		<td style="width: 100%;" colspan="2">
+			<table class="detailcols" style="width: 100%;">
+				<tr class="even_row" style="width: 100%;">
+					<th style="text-align:center; width: 30%" ></th>
+					<th style="text-align:center; " >Open</th>
+					<th style="text-align:center; " >In Development</th>
+					<th style="text-align:center; " >Verify</th>
+					<th style="text-align:center; " >Closed</th>
+				</tr>
+				<tbody id = "ChangeOrderState">
+					
+				</tbody>
+			</table>
+		</td>
+	</tr>
+<!-- Change Order State end -->
 	
 </table>
 </body>
 <script>
-	console.log(ProjectDate);
-	console.log(RiskDate);
-	console.log(DefectDate);
-	console.log(ChangeOrderDate);
-	console.log(ChangeRequestDate);
+
+	console.log(TaskPhasData);;
 	console.log(DefectTypeData);
+	console.log(DefectStateDate);
+	console.log(DefectResponsibilityTeamDate);
+	console.log(ChangeRequestDate);
+	console.log(ChangeRequestStateDate);
+	console.log(ChangeOrderDate);
+	
     getRiskDate();
 	getDefectDate();
-
+	getTaskPhasData();
+	getDefectStateDate();
+	getDefectResponsibilityTeamDate();
+	getChangeRequestDate();
+	getChangeRequestStateDate();
+	getChangeOrderDate();
+	
+	//给html赋值
+	function getChangeOrderDate(){
+		var html = '';
+		for(var key in ChangeOrderDate){
+			var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+key+ ':</th>';
+			var html2 = "";
+			var arr = ChangeOrderDate[key];
+			for(var i =0;i<arr.length;i++){
+				var obj = arr[i];
+				//console.log(Object.keys(obj)[0]);
+				//onsole.log(Object.values(obj)[0]);
+			
+				html2 += '<td style="text-align:center; "> '+Object.values(obj)[0]+'</td>';
+			}			
+			html += html1+html2+'</tr>';
+		}
+		document.getElementById("ChangeOrderState").innerHTML = html;
+	}
+	
+	function getChangeRequestStateDate(){
+		var html = '';
+		for(var key in ChangeRequestStateDate){
+			var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+key+ ':</th>';
+			var html2 = "";
+			var arr = ChangeRequestStateDate[key];
+			for(var i =0;i<arr.length;i++){
+				var obj = arr[i];
+				//console.log(Object.keys(obj)[0]);
+				//onsole.log(Object.values(obj)[0]);
+			
+				html2 += '<td style="text-align:center; "> '+Object.values(obj)[0]+'</td>';
+			}			
+			html += html1+html2+'</tr>';
+		}
+		document.getElementById("ChangeRequestState").innerHTML = html;
+	}
+	
+	function getChangeRequestDate(){
+		var html = '';
+		for(var key in ChangeRequestDate){
+			var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+key+ ':</th>';
+			var html2 = "";
+			var arr = ChangeRequestDate[key];
+			for(var i =0;i<arr.length;i++){
+				var obj = arr[i];
+				//console.log(Object.keys(obj)[0]);
+				//onsole.log(Object.values(obj)[0]);
+			
+				html2 += '<td style="text-align:center; "> '+Object.values(obj)[0]+'</td>';
+			}			
+			html += html1+html2+'</tr>';
+		}
+		document.getElementById("ChangeCategoryAndChangeInitiator").innerHTML = html;
+	}
+	
+	function getDefectResponsibilityTeamDate(){
+		var html = '';
+		for(var key in DefectResponsibilityTeamDate){
+			var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+key+ ':</th>';
+			var html2 = "";
+			var arr = DefectResponsibilityTeamDate[key];
+			for(var i =0;i<arr.length;i++){
+				var obj = arr[i];
+				//console.log(Object.keys(obj)[0]);
+				//onsole.log(Object.values(obj)[0]);
+			
+				html2 += '<td style="text-align:center; "> '+Object.values(obj)[0]+'</td>';
+			}			
+			html += html1+html2+'</tr>';
+		}
+		document.getElementById("defectStateAndResponsibilityTeam").innerHTML = html;
+	}
+	
+	function getDefectStateDate(){
+		var html = '';
+		for(var key in DefectStateDate){
+			var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+key+ ':</th>';
+			var html2 = "";
+			var arr = DefectStateDate[key];
+			for(var i =0;i<arr.length;i++){
+				var obj = arr[i];
+				//console.log(Object.keys(obj)[0]);
+				//onsole.log(Object.values(obj)[0]);
+			
+				html2 += '<td style="text-align:center; "> '+Object.values(obj)[0]+'</td>';
+			}			
+			html += html1+html2+'</tr>';
+		}
+		document.getElementById("defectStateAndDefectState").innerHTML = html;
+	}
+	
+	function getTaskPhasData(){
+		var html = '';
+		for(var key in TaskPhasData){
+			var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+key+ ':</th>';
+			var html2 = "";
+			var arr = TaskPhasData[key];
+			for(var i =0;i<arr.length;i++){
+				var obj = arr[i];
+				//console.log(Object.keys(obj)[0]);
+				//onsole.log(Object.values(obj)[0]);
+			
+				html2 += '<td style="text-align:center; "> '+Object.values(obj)[0]+'</td>';
+			}			
+			html += html1+html2+'</tr>';
+		}
+		document.getElementById("defectOriginAndTaskPhase").innerHTML = html;
+	}
+	
 	function getDefectDate(){
 		//var DefectSource = ["Requirement","System Architecture","Software Architecture","Software Detailed Design","Code","Test","Software Integration","System Integration"];
 		var html = '';
@@ -216,8 +606,8 @@
 			var arr = DefectTypeData[key];
 			for(var i =0;i<arr.length;i++){
 				var obj = arr[i];
-				console.log(Object.keys(obj)[0]);
-				console.log(Object.values(obj)[0]);
+				//console.log(Object.keys(obj)[0]);
+				//onsole.log(Object.values(obj)[0]);
 			
 				html2 += '<td style="text-align:center; "> '+Object.values(obj)[0]+'</td>';
 			}			
