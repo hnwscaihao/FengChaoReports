@@ -1,0 +1,1415 @@
+<%version 1%>
+<%description
+<b>Data: </b>QA Report<br>
+<b>Notes: </b>This report displays QA Report.<br>
+%>
+<%param
+name="reporttitle"
+type="String"
+prompt="Report Title"
+value="QA Report"
+description="Descriptive title for your report."
+%>
+<%param
+name="reportheader"
+type="MultiString"
+prompt="Report Header"
+value=""
+description="Text appearing at the top of the report page."
+%>
+<%param
+name="reportfooter"
+type="MultiString"
+prompt="Report Footer"
+value=""
+description="Text appearing at the bottom of the report page."
+%>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>&reporttitle</title>
+    <%screenStyleSheet%>
+    <%printerStyleSheet%>
+
+
+    <script type="text/javascript">
+
+        //Type为QA Task的数据，定义为json格式数组，初始化
+        var QATaskData = {
+            "Count":[{"Open":0},{"In Progress":0},{"Completed":0},{"Cancelled":0}]
+        }
+
+        //Type为...Docuemnt的数据
+        var DocTypeData = {
+            "Open":[{"System Requirement Specification Document":0},
+                {"Hardware Requirement Specification Document":0},
+                {"Stakeholder Requirement Document":0},
+                {"Software Architectural Design Specification Document":0},
+                {"Software Requirement Specification Document":0},
+                {"System Architectural Design Specification Document":0},
+                {"Software Detail Design Specification Document":0},
+                {"Hardware Design Document":0}],
+            "InReview":[{"System Requirement Specification Document":0},
+                {"Hardware Requirement Specification Document":0},
+                {"Stakeholder Requirement Document":0},
+                {"Software Architectural Design Specification Document":0},
+                {"Software Requirement Specification Document":0},
+                {"System Architectural Design Specification Document":0},
+                {"Software Detail Design Specification Document":0},
+                {"Hardware Design Document":0}],
+            "Audit":[{"System Requirement Specification Document":0},
+                {"Hardware Requirement Specification Document":0},
+                {"Stakeholder Requirement Document":0},
+                {"Software Architectural Design Specification Document":0},
+                {"Software Requirement Specification Document":0},
+                {"System Architectural Design Specification Document":0},
+                {"Software Detail Design Specification Document":0},
+                {"Hardware Design Document":0}],
+            "In Approve":[{"System Requirement Specification Document":0},
+                {"Hardware Requirement Specification Document":0},
+                {"Stakeholder Requirement Document":0},
+                {"Software Architectural Design Specification Document":0},
+                {"Software Requirement Specification Document":0},
+                {"System Architectural Design Specification Document":0},
+                {"Software Detail Design Specification Document":0},
+                {"Hardware Design Document":0}],
+            "Published":[{"System Requirement Specification Document":0},
+                {"Hardware Requirement Specification Document":0},
+                {"Stakeholder Requirement Document":0},
+                {"Software Architectural Design Specification Document":0},
+                {"Software Requirement Specification Document":0},
+                {"System Architectural Design Specification Document":0},
+                {"Software Detail Design Specification Document":0},
+                {"Hardware Design Document":0}],
+            "Retired":[{"System Requirement Specification Document":0},
+                {"Hardware Requirement Specification Document":0},
+                {"Stakeholder Requirement Document":0},
+                {"Software Architectural Design Specification Document":0},
+                {"Software Requirement Specification Document":0},
+                {"System Architectural Design Specification Document":0},
+                {"Software Detail Design Specification Document":0},
+                {"Hardware Design Document":0}],
+            "Inactive":[{"System Requirement Specification Document":0},
+                {"Hardware Requirement Specification Document":0},
+                {"Stakeholder Requirement Document":0},
+                {"Software Architectural Design Specification Document":0},
+                {"Software Requirement Specification Document":0},
+                {"System Architectural Design Specification Document":0},
+                {"Software Detail Design Specification Document":0},
+                {"Hardware Design Document":0}],
+        }
+
+        //Defect statistics by Defect Source
+        var DefectBySourceData = {
+            "Requirement":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},
+                {"Performance":0},{"Grammer":0},{"Design Defect":0},{"Total":0}],
+            "System Architecture":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},
+                {"Performance":0},{"Grammer":0},{"Design Defect":0},{"Total":0}],
+            "Software Architecture":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},
+                {"Performance":0},{"Grammer":0},{"Design Defect":0},{"Total":0}],
+            "Software Detailed Design":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},
+                {"Performance":0},{"Grammer":0},{"Design Defect":0},{"Total":0}],
+            "Code":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},
+                {"Performance":0},{"Grammer":0},{"Design Defect":0},{"Total":0}],
+            "Test":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},
+                {"Performance":0},{"Grammer":0},{"Design Defect":0},{"Total":0}],
+            "Software Integration":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},
+                {"Performance":0},{"Grammer":0},{"Design Defect":0},{"Total":0}],
+            "System Integration":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},
+                {"Performance":0},{"Grammer":0},{"Design Defect":0},{"Total":0}],
+            "Total":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},
+                {"Performance":0},{"Grammer":0},{"Design Defect":0},{"Total":0}],
+        }
+        //Defect statistics by Test Level
+        var defectTestLevelData = {
+            "Software Unit Test":[{"Pending":0},{"Open":0},{"Closed":0},{"Total":0}],
+            "Software Integration Test":[{"Pending":0},{"Open":0},{"Closed":0},{"Total":0}],
+            "Software Qualification Test":[{"Pending":0},{"Open":0},{"Closed":0},{"Total":0}],
+            "System Integration Test":[{"Pending":0},{"Open":0},{"Closed":0},{"Total":0}],
+            "System Qualification Test":[{"Pending":0},{"Open":0},{"Closed":0},{"Total":0}],
+            "Total":[{"Pending":0},{"Open":0},{"Closed":0},{"Total":0}],
+        }
+
+        //Delayed Defect statistics 细节待确认...
+/*        var delayedDefectData = {
+            "Problem Definition":[{"Not delay":0},{"Delay":0},{"Total":0}],
+            "Validation and Closed":[{"Not delay":0},{"Delay":0},{"Total":0}],
+            "Execute Corrective Action":[{"Not delay":0},{"Delay":0},{"Total":0}],
+            "Problem Confirmation":[{"Not delay":0},{"Delay":0},{"Total":0}],
+            "Develop Inverstigation":[{"Not delay":0},{"Delay":0},{"Total":0}],
+            "Total":[{"Not delay":0},{"Delay":0},{"Total":0}],
+        }*/
+
+        //Defect state by Responsibility Team Table
+        var defectResponsibilityTeamData = {
+            "PM":[{"Open":0},{"In Analysis":0},{"Rejected":0},{"Analyzed":0},{"In Progress":0},
+                {"In Testing":0},{"Verified	":0},{"Closed":0},{"Postponed":0},{"Total":0}],
+            "STS":[{"Open":0},{"In Analysis":0},{"Rejected":0},{"Analyzed":0},{"In Progress":0},
+                {"In Testing":0},{"Verified	":0},{"Closed":0},{"Postponed":0},{"Total":0}],
+            "ASW":[{"Open":0},{"In Analysis":0},{"Rejected":0},{"Analyzed":0},{"In Progress":0},
+                {"In Testing":0},{"Verified	":0},{"Closed":0},{"Postponed":0},{"Total":0}],
+            "BSW":[{"Open":0},{"In Analysis":0},{"Rejected":0},{"Analyzed":0},{"In Progress":0},
+                {"In Testing":0},{"Verified	":0},{"Closed":0},{"Postponed":0},{"Total":0}],
+            "HW":[{"Open":0},{"In Analysis":0},{"Rejected":0},{"Analyzed":0},{"In Progress":0},
+                {"In Testing":0},{"Verified	":0},{"Closed":0},{"Postponed":0},{"Total":0}],
+            "TEST":[{"Open":0},{"In Analysis":0},{"Rejected":0},{"Analyzed":0},{"In Progress":0},
+                {"In Testing":0},{"Verified	":0},{"Closed":0},{"Postponed":0},{"Total":0}],
+            "QA":[{"Open":0},{"In Analysis":0},{"Rejected":0},{"Analyzed":0},{"In Progress":0},
+                {"In Testing":0},{"Verified	":0},{"Closed":0},{"Postponed":0},{"Total":0}],
+            "Total":[{"Open":0},{"In Analysis":0},{"Rejected":0},{"Analyzed":0},{"In Progress":0},
+                {"In Testing":0},{"Verified	":0},{"Closed":0},{"Postponed":0},{"Total":0}],
+        }
+        <!--Test Statistics -->
+       //Test Plan Statistics
+        var TestPlanData = {
+            "Count":[{"Cancelled":0},{"Submit":0},{"Completed":0},{"In Testing":0},{"In Approve":0},{"Delay":0}]
+        }
+
+        //Test Objective statistics
+        var TestObjectiveData = {
+            "Count":[{"Cancelled":0},{"Submit":0},{"Completed":0},{"In Testing":0},{"In Approve":0},{"Proposed":0}]
+        };
+
+        //Test Session statistics
+        var TestSessionData = {
+            "Count":[{"Submit":0},{"In Testing":0},{"Cancelled":0},{"Completed":0}]
+        };
+
+        //Change(Change Request and Change Order) statistics
+        var ChangeRequestStateData = [{"Open":0},{"CCB":0},{"Cancelled":0},{"Postponed":0},
+            {"Approved":0},{"Fixed":0},{"Closed":0},{"Total":0}];
+
+        var ChangeRequestCategoryData = {
+            "REQ change":[{"Customer":0},{"Supplier":0},{"Internal":0},{"Total":0}],
+            "Design change":[{"Customer":0},{"Supplier":0},{"Internal":0},{"Total":0}],
+            "Plan change":[{"Customer":0},{"Supplier":0},{"Internal":0},{"Total":0}],
+            "Total":[{"Customer":0},{"Supplier":0},{"Internal":0},{"Total":0}],
+        };
+
+        //Change Order by State
+        var ChangeOrderStateData = [{"Open":0},{"In Development":0},{"Verify":0},{"Closed":0},{"Total":0}];
+
+        <!-- Task Statistics  start-->
+        //Task statistics by state and Responsibility Team
+
+        var TaskbyStateData = {
+            "Task":[{"Open":0},{"In Development":0},{"Completed":0},{"Cancelled":0}]
+        }
+        var TaskbyRespTeamData = {
+            "Task":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}]
+        };
+
+        <!--Task Statistics end -->
+
+
+       <!-- Supplier Monitor Task Statistics  start-->
+        var SupplMonTaskStateData = {
+            "Supplier Monitor Task":[{"Open":0},{"In Progress":0},{"Cancelled":0},
+                {"In Review":0},{"Audit":0},{"Delivered":0},{"Accepted":0}]
+        }
+
+        var SupplMonTaskRespTeamData = {
+            "Supplier Monitor Task":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}]
+        }
+        <!-- Supplier Monitor Task Statistics  end-->
+
+
+		//Release Statistics
+        var ReleaseData = {
+            "Release":[{"Open":0},{"In Progress":0},{"Cancelled":0},{"Audit":0},{"In Approve":0},{"Delivered":0},{"Accepted":0}]
+        };
+
+        //Risk Statistics
+        var RiskData = {
+            "Risk":[{"Open":0},{"In Development":0},{"Cancelled":0},{"Completed":0}]
+        };
+
+		<!-- Non-Conformance Issue Statistics start -->
+        var NonConfIssProcAreaData = [{"ACQ.4 Supplier monitoring":0},{"SPL.2 Product release":0}
+            ,{"SYS.1 Requirement elicitation":0},{"SYS.2 System requirement analysis":0}
+            ,{"SYS.3 System architectural design":0},{"SYS.4 System integration and integration test":0}
+            ,{"SYS.5 System qualification test":0},{"SWE.1 Software requirement analysis":0}
+            ,{"SWE.2 Software architectural design":0},{"SWE.3 Software detailed design and unit construction":0}
+            ,{"SWE.4 Software unit verification":0},{"SWE.5 Software integration and integration test":0}
+            ,{"SWE.6 Software qualification test":0},{"SUP.1 Quality assurance":0}
+            ,{"SUP.2 Verification":0},{"SUP.4 Joint Review":0},{"SUP.8 Configuration management":0}
+            ,{"SUP.9 Problem resolution management":0},{"SUP.10 Change request management":0}
+            ,{"MAN.3 Project management":0},{"MAN.5 Risk management":0}
+            ,{"MAN.6 measurement":0},{"REU.2 Reuse program management":0}
+            ,{"HWE.1 Hardware requirement analysis":0},{"Total":0}];
+
+        var NonConfIssRespTeamData = {
+            "Non-Conformance Issue":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}]
+        };
+
+        <!--Non-Conformance Issue Statistics end-->
+
+		//LL and BP Statistics
+        var LLandBPStateData = {
+            "LL and BP":[{"Open":0},{"In Analysis":0},{"Postponed":0},{"Rejected":0},{"Accepted":0},{"Published":0},{"Retired":0}]
+        }
+
+
+    </script>
+
+</head>
+<%dateformat MM/dd/yy HH:mm:ss%>
+<%datetimeformat MM/dd/yyyy h:mm:ss a%>
+<body style="padding:2% 5% 2% 5%; ">
+<%begindetail%>
+
+
+
+<script type="text/javascript">
+
+    //获取QA Task数据
+    if("<%<%builtin Type%>%>" == "QA Task"){
+        var arr = QATaskData["Count"];
+        for(var i=0;i<arr.length;i++){
+            var obj = arr[i];
+            if ("<%State%>" == Object.keys(obj)[0]){
+                var count = parseInt(obj["<%State%>"]);
+                obj["<%State%>"] = count + 1;
+            }
+        }
+    }
+
+    //获取...Document数据
+    if("<%<%builtin Type%>%>".indexOf("Document") > -1 ){
+        for(var key in DocTypeData){
+            if("<%State%>" == key){
+                var arr = DocTypeData[key];
+                for(var i = 0;i<arr.length;i++){
+                    var obj = arr[i];
+                    if("<%Type%>" == Object.keys(obj)[0]){
+                        var count = parseInt(obj["<%Type%>"]);
+                        obj["<%Type%>"] = count+1;
+                    }
+                }
+            }
+        }
+    }
+
+    if("<%<%builtin Type%>%>" == "Defect"){
+        for(var key in DefectBySourceData){
+            if("<%Defect Source%>" == key){
+                var arr = DefectBySourceData[key];
+                for(var i = 0;i<arr.length;i++){
+                    var obj = arr[i];
+                    if("<%Defect Type%>" == Object.keys(obj)[0]){
+                        var count = parseInt(obj["<%Defect Type%>"]);
+                        obj["<%Defect Type%>"] = count+1;
+                    }
+                }
+            }
+        }
+    }
+
+
+    //Defect statistics by Test Level
+    if("<%<%builtin Type%>%>" == "Defect"){
+        for(var key in defectTestLevelData){
+            if ("<%Origin%>" == key){
+                var arr = defectTestLevelData[key];
+                for(var i = 0;i<arr.length;i++){
+                    var obj = arr[i];
+                    if("<%Task Phase%>" == Object.keys(obj)[0]){
+                        var count = parseInt(obj["<%Task Phase%>"]);
+                        obj["<%Task Phase%>"] = count + 1;
+                    }
+                }
+            }
+        }
+    }
+
+    //Delayed Defect statistics
+/*    if("<%<%builtin Type%>%>" == "Defect"){
+        for(var key in delayedDefectData){
+            if ("<%%>" == key){
+                var arr = [key];
+                for(var i = 0;i<arr.length;i++){
+                    var obj = arr[i];
+                    if("<%%>" == Object.keys(obj)[0]){
+                        var count = parseInt(obj["<%%>"]);
+                        obj["<%%>"] = count + 1;
+                    }
+                }
+            }
+        }
+    }*/
+
+    //Defect state by Responsibility Team Table
+    if("<%<%builtin Type%>%>" == "Defect"){
+        for(var key in defectResponsibilityTeamData){
+            if ("<%Responsibility Team%>" == key){
+                var arr = defectResponsibilityTeamData[key];
+                for(var i = 0;i<arr.length;i++){
+                    var obj = arr[i];
+                    if("<%State%>" == Object.keys(obj)[0]){
+                        var count = parseInt(obj["<%State%>"]);
+                        obj["<%State%>"] = count + 1;
+                    }
+                }
+            }
+        }
+    }
+
+    //Test Plan Statistics
+    if("<%<%builtin Type%>%>" == "Test Plan"){
+        var arr = TestPlanData["Count"];
+        for(var i=0;i<arr.length;i++){
+            var obj = arr[i];
+            if ("<%State%>" == Object.keys(obj)[0]){
+                var count = parseInt(obj["<%State%>"]);
+                obj["<%State%>"] = count + 1;
+            }
+        }
+    }
+
+    //Test Objective statistics
+    if("<%<%builtin Type%>%>" == "Test Objective"){
+        var arr = TestObjectiveData["Count"];
+        for(var i=0;i<arr.length;i++){
+            var obj = arr[i];
+            if ("<%State%>" == Object.keys(obj)[0]){
+                var count = parseInt(obj["<%State%>"]);
+                obj["<%State%>"] = count + 1;
+            }
+        }
+    }
+
+    //Test Session statistics
+    if("<%<%builtin Type%>%>" == "Test Session"){
+        var arr = TestSessionData["Count"];
+        for(var i = 0;i<arr.length;i++){
+            var obj = arr[i];
+            if("<%State%>" == Object.keys(obj)[0]){
+                var count = parseInt(obj["<%State%>"]);
+                obj["<%State%>"] = count + 1;
+            }
+        }
+    }
+
+    if("<%<%builtin Type%>%>" == "Change Request"){
+        for(var i=0;i<ChangeRequestStateData.length;i++){
+            var obj = ChangeRequestStateData[i];
+            var key = Object.keys(obj)[0];
+            var count = parseInt(obj[key]);
+            if("<%State%>" == key){
+                obj[key] = count+1;
+            }
+        }
+    }
+
+    //Change Request by Category
+    if("<%<%builtin Type%>%>" == "Change Request"){
+        for(var key in ChangeRequestCategoryData){
+            if ("<%Change Category%>" == key){
+                var arr = ChangeRequestCategoryData[key];
+                for(var i = 0;i<arr.length;i++){
+                    var obj = arr[i];
+                    if("<%Change Initiator%>" == Object.keys(obj)[0]){
+                        var count = parseInt(obj["<%Change Initiator%>"]);
+                        obj["<%Change Initiator%>"] = count + 1;
+                    }
+                }
+            }
+        }
+    }
+
+    if("<%<%builtin Type%>%>" == "Change Order"){
+        for(var i=0;i<ChangeOrderStateData.length;i++){
+            var obj = ChangeOrderStateData[i];
+            var key = Object.keys(obj)[0];
+            var count = parseInt(obj[key]);
+            if("<%State%>" == key){
+                obj[key] = count+1;
+            }
+        }
+    }
+
+    //Task statistics by State
+    if("<%<%builtin Type%>%>" == "Task"){
+        var arr = TaskbyStateData["Task"];
+        for(var i = 0;i<arr.length;i++){
+            var obj = arr[i];
+            if("<%State%>" == Object.keys(obj)[0]){
+                var count = parseInt(obj["<%State%>"]);
+                obj["<%State%>"] = count + 1;
+            }
+        }
+    }
+
+    //Task by Responsibility Team
+    if("<%<%builtin Type%>%>" == "Task"){
+        var arr = TaskbyRespTeamData["Task"];
+        for(var i = 0;i<arr.length;i++){
+            var obj = arr[i];
+            if("<%Responsibility Team%>" == Object.keys(obj)[0]){
+                var count = parseInt(obj["<%Responsibility Team%>"]);
+                obj["<%Responsibility Team%>"] = count + 1;
+            }
+        }
+    }
+
+    //Supplier Monitor Task Statistics by state
+    if("<%<%builtin Type%>%>" == "Supplier Monitor Task"){
+        var arr = SupplMonTaskStateData["Supplier Monitor Task"];
+        for(var i = 0;i<arr.length;i++){
+            var obj = arr[i];
+            if("<%State%>" == Object.keys(obj)[0]){
+                var count = parseInt(obj["<%State%>"]);
+                obj["<%State%>"] = count + 1;
+            }
+        }
+    }
+
+    //Supplier Monitor Task Statistics by Responsibility Team
+    if("<%<%builtin Type%>%>" == "Supplier Monitor Task"){
+        var arr = SupplMonTaskRespTeamData["Supplier Monitor Task"];
+        for(var i = 0;i<arr.length;i++){
+            var obj = arr[i];
+            if("<%Responsibility Team%>" == Object.keys(obj)[0]){
+                var count = parseInt(obj["<%Responsibility Team%>"]);
+                obj["<%Responsibility Team%>"] = count + 1;
+            }
+        }
+    }
+
+	//Release Statistics
+    if("<%<%builtin Type%>%>" == "Release"){
+        var arr = ReleaseData["Release"];
+        for(var i = 0;i<arr.length;i++){
+            var obj = arr[i];
+            if("<%State%>" == Object.keys(obj)[0]){
+                var count = parseInt(obj["<%State%>"]);
+                obj["<%State%>"] = count + 1;
+            }
+        }
+    }
+
+    //Risk Statistics
+    if("<%<%builtin Type%>%>" == "Risk"){
+        var arr = RiskData["Risk"];
+        for(var i = 0;i<arr.length;i++){
+            var obj = arr[i];
+            if("<%State%>" == Object.keys(obj)[0]){
+                var count = parseInt(obj["<%State%>"]);
+                obj["<%State%>"] = count + 1;
+            }
+        }
+    }
+
+	if("<%<%builtin Type%>%>" == "Non-Conformance Issue"){
+        for(var i=0;i<NonConfIssProcAreaData.length;i++){
+            var obj = NonConfIssProcAreaData[i];
+            var key = Object.keys(obj)[0];
+            var count = parseInt(obj[key]);
+            if("<%Process Area%>" == key){
+                obj[key] = count+1;
+            }
+        }
+    }
+
+    if("<%<%builtin Type%>%>" == "Non-Conformance Issue"){
+        var arr = NonConfIssRespTeamData["Non-Conformance Issue"];
+        for(var i = 0;i<arr.length;i++){
+            var obj = arr[i];
+            if("<%Responsibility Team%>" == Object.keys(obj)[0]){
+                var count = parseInt(obj["<%Responsibility Team%>"]);
+                obj["<%Responsibility Team%>"] = count + 1;
+            }
+        }
+    }
+
+	if("<%<%builtin Type%>%>" == "LL and BP"){
+        var arr = LLandBPStateData["LL and BP"];
+        for(var i = 0;i<arr.length;i++){
+            var obj = arr[i];
+            if("<%State%>" == Object.keys(obj)[0]){
+                var count = parseInt(obj["<%State%>"]);
+                obj["<%State%>"] = count + 1;
+            }
+        }
+    }
+
+
+</script>
+
+
+
+<%enddetail%>
+
+<!--画表格-->
+<table class="detailrows fullWidth">
+    <tr>
+        <td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">
+            <b>QA Task statistics</b></td>
+    </tr>
+    <tr>
+    <tr>
+        <td>
+            <table class="detailcols" style="width: 100%;">
+                <tr class="even_row" style="width: 100%;">
+                    <th style="text-align:center; ">State</th>
+                    <th style="text-align:center; ">Open</th>
+                    <th style="text-align:center; ">In Progress</th>
+                    <th style="text-align:center; ">Completed</th>
+                    <th style="text-align:center; ">Cancelled</th>
+                </tr>
+                <tbody id="QATaskDataClo">
+
+                </tbody>
+            </table>
+        </td>
+    </tr>
+
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+        <td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">
+            <b>Document statistics</b>
+        </td>
+    </tr>
+    <tr>
+        <td style="width: 100%;" colspan="2">
+            <table class="detailcols" style="width: 100%;">
+                <tr class="even_row" style="width: 100%;">
+                    <th style="text-align:center; width: 10%" ></th>
+                    <th style="text-align:center;" >System Requirement Specification Document</th>
+                    <th style="text-align:center;" >Hardware Requirement Specification Document</th>
+                    <th style="text-align:center;" >Stakeholder Requirement Document</th>
+                    <th style="text-align:center;" >Software Architectural Design Specification Document</th>
+                    <th style="text-align:center;"  >Software Requirement Specification Document</th>
+                    <th style="text-align:center;" >System Architectural Design Specification Document</th>
+                    <th style="text-align:center;" >Software Detail Design Specification Document</th>
+                    <th style="text-align:center; " >Hardware Design Document</th>
+                </tr>
+                <tbody id="docTyAndSta">
+
+                </tbody>
+            </table>
+        </td>
+    </tr>
+
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+        <td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">
+            <b>Defect statistics by Defect Source</b>
+        </td>
+    </tr>
+    <tr>
+        <td style="width: 100%;" colspan="2">
+            <table class="detailcols" style="width: 100%;">
+                <tr class="even_row" style="width: 100%;">
+                    <th style="text-align:center; " ></th>
+                    <th style="text-align:center; " >Function</th>
+                    <th style="text-align:center; " >Logical</th>
+                    <th style="text-align:center; " >Norms</th>
+                    <th style="text-align:center; " >Interface</th>
+                    <th style="text-align:center; " >Performance</th>
+                    <th style="text-align:center; " >Grammer</th>
+                    <th style="text-align:center; " >Design Defect</th>
+                    <th style="text-align:center; " >Total</th>
+                </tr>
+                <tbody id="DefectBySource">
+
+                </tbody>
+            </table>
+        </td>
+    </tr>
+
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+        <td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">
+            <b>Defect statistics by Test Level</b>
+        </td>
+    </tr>
+    <tr>
+        <td style="width: 100%;" colspan="2">
+            <table class="detailcols" style="width: 100%;">
+                <tr class="even_row" style="width: 100%;">
+                    <th style="text-align:center; width: 20%" ></th>
+                    <th style="text-align:center; " >Pending</th>
+                    <th style="text-align:center; " >Open</th>
+                    <th style="text-align:center; " >Closed</th>
+                    <th style="text-align:center; " >Total</th>
+                </tr>
+                <tbody id="defectTestLevel">
+
+                </tbody>
+            </table>
+        </td>
+    </tr>
+
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+        <td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">
+            <b>Defect state by Responsibility Team Table</b>
+        </td>
+    </tr>
+    <tr>
+        <td style="width: 100%;" colspan="2">
+            <table class="detailcols" style="width: 100%;">
+                <tr class="even_row" style="width: 100%;">
+                    <th style="text-align:center; "></th>
+                    <th style="text-align:center; ">Open</th>
+                    <th style="text-align:center; ">In Analysis</th>
+                    <th style="text-align:center; ">Rejected</th>
+                    <th style="text-align:center; ">Analyzed</th>
+                    <th style="text-align:center; ">In Progress</th>
+                    <th style="text-align:center; ">In Testing</th>
+                    <th style="text-align:center; ">Verified</th>
+                    <th style="text-align:center; ">Closed</th>
+                    <th style="text-align:center; ">Postponed</th>
+                    <th style="text-align:center; ">Total</th>
+                </tr>
+                <tbody id="defectResponsibilityTeam">
+
+                </tbody>
+            </table>
+        </td>
+    </tr>
+
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+        <td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">
+            <b>Test Plan Statistics</b></td>
+    </tr>
+    <tr>
+    <tr>
+        <td>
+            <table class="detailrows">
+                <tr class="even_row" style="width: 100%;">
+                    <th style="text-align:center; ">Computations</th>
+                    <th style="text-align:center; ">Cancelled</th>
+                    <th style="text-align:center; ">Submit</th>
+                    <th style="text-align:center; ">Completed</th>
+                    <th style="text-align:center; ">In Testing</th>
+                    <th style="text-align:center; ">In Approve</th>
+                    <th style="text-align:center; ">Delay</th>
+                </tr>
+                <tbody id="TestPlanData">
+
+                </tbody>
+
+            </table>
+        </td>
+    </tr>
+
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+        <td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">
+            <b>Test Objective statistics</b></td>
+    </tr>
+    <tr>
+        <td>
+            <table class="detailrows">
+                <tr class="even_row" style="width: 100%;">
+                    <th style="text-align:center; ">Computations</th>
+                    <th style="text-align:center; ">Cancelled</th>
+                    <th style="text-align:center; ">Submit</th>
+                    <th style="text-align:center; ">Completed</th>
+                    <th style="text-align:center; ">In Testing</th>
+                    <th style="text-align:center; ">In Approve</th>
+                    <th style="text-align:center; ">Proposed</th>
+                </tr>
+                <tbody id="TestObjData">
+
+                </tbody>
+            </table>
+        </td>
+    </tr>
+
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+        <td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">
+            <b>Test Session statistics</b></td>
+    </tr>
+    <tr>
+        <td>
+            <table class="detailrows">
+                <tr class="even_row" style="width: 100%;">
+                    <th style="text-align:center; ">Computations</th>
+                    <th style="text-align:center; ">Submit</th>
+                    <th style="text-align:center; ">In Testing</th>
+                    <th style="text-align:center; ">Cancelled</th>
+                    <th style="text-align:center; ">Completed</th>
+                </tr>
+                <tbody id="TestSessionData">
+
+                </tbody>
+
+            </table>
+        </td>
+    </tr>
+
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+        <td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">
+            <b>Change(Change Request and Change Order) statistics</b></td>
+    </tr>
+    <tr>
+        <td >
+            <table class="detailrows" >
+                <tr class="even_row"><th nowrap>State</th><th>Change Request</th></tr>
+                <tr class="odd_row"><th nowrap>Open</th><td  id = "OpenChangeRequest">0</td></tr>
+                <tr class="even_row"><th nowrap>CCB</th><td  id = "CCBChangeRequest">0</td></tr>
+                <tr class="odd_row"><th nowrap>Cancelled</th><td  id = "CancelledChangeRequest">0</td></tr>
+                <tr class="even_row"><th nowrap>Postponed</th><td id = "PostponedChangeRequest">0</td></tr>
+                <tr class="odd_row"><th nowrap>Approved</th><td  id = "ApprovedChangeRequest">0</td></tr>
+                <tr class="even_row"><th nowrap>Fixed</th><td  id = "FixedChangeRequest">0</td></tr>
+                <tr class="odd_row"><th nowrap>Closed</th><td  id = "ClosedChangeRequest">0</td></tr>
+                <tr class="even_row"><th nowrap>Total</th><td id = "TotalChangeRequest">0</td></tr>
+
+            </table>
+        </td>
+        <td valign="top" >
+            <table class="detailcols" >
+                <tr class="even_row" >
+                    <th style="text-align:center; ">Change Category</th>
+                    <th style="text-align:center; ">Customer</th>
+                    <th style="text-align:center; ">Supplier</th>
+                    <th style="text-align:center; ">Internal</th>
+                    <th style="text-align:center; ">Total</th>
+                </tr>
+                <tbody id="ChangeReqCateDa">
+
+                </tbody>
+            </table>
+        </td>
+    </tr>
+	<tr>
+		<td style="width: 40%">
+            <table class="detailrows">
+                <tr class="even_row"><th nowrap>State</th><th>Change Order</th></tr>
+                <tr class="odd_row"><th nowrap>Open</th><td  id = "OpenChangeOrder">0</td></tr>
+                <tr class="even_row"><th nowrap>In Development</th><td  id = "InDevelopmentChangeOrder">0</td></tr>
+                <tr class="odd_row"><th nowrap>Verify</th><td  id = "VerifyChangeOrder">0</td></tr>
+                <tr class="even_row"><th nowrap>Closed</th><td  id = "ClosedChangeOrder">0</td></tr>
+                <tr class="odd_row"><th nowrap>Total</th><td  id = "TotalChangeOrder">0</td></tr>
+            </table>
+        </td>
+
+	</tr>
+
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+        <td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">
+            <b>Task statistics by state and Responsibility Team</b></td>
+    </tr>
+    <tr>
+        <td>
+            <table class="detailrows">
+                <tr class="even_row" style="width: 100%;">
+                    <th style="text-align:center; ">State</th>
+                    <th style="text-align:center; ">Open</th>
+                    <th style="text-align:center; ">In Development</th>
+                    <th style="text-align:center; ">Completed</th>
+                    <th style="text-align:center; ">Cancelled</th>
+                </tr>
+                <tbody id="TaskStateDa">
+
+                </tbody>
+
+            </table>
+        </td>
+        <td valign="top">
+            <table class="detailrows">
+                <tr class="even_row" style="width: 100%;">
+                    <th style="text-align:center; ">Responsibility Team</th>
+                    <th style="text-align:center; ">PM</th>
+                    <th style="text-align:center; ">STS</th>
+                    <th style="text-align:center; ">ASW</th>
+                    <th style="text-align:center; ">BSW</th>
+                    <th style="text-align:center; ">HW</th>
+                    <th style="text-align:center; ">TEST</th>
+                    <th style="text-align:center; ">QA</th>
+                </tr>
+                <tbody id="TaskResponsibilityTeamDa">
+
+                </tbody>
+
+            </table>
+        </td>
+    </tr>
+
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+        <td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">
+            <b>Supplier Monitor Task Statistics by state and Responsibility Team</b></td>
+    </tr>
+    <tr>
+        <td>
+            <table class="detailrows">
+                <tr class="even_row" style="width: 100%;">
+                    <th style="text-align:center; ">State</th>
+                    <th style="text-align:center; ">Open</th>
+                    <th style="text-align:center; ">In Progress	</th>
+                    <th style="text-align:center; ">Cancelled</th>
+                    <th style="text-align:center; ">In Review</th>
+                    <th style="text-align:center; ">Audit</th>
+                    <th style="text-align:center; ">Delivered</th>
+                    <th style="text-align:center; ">Accepted</th>
+                </tr>
+                <tbody id="SuppMonTaskStaDa">
+
+                </tbody>
+
+            </table>
+        </td>
+        <td valign="top">
+            <table class="detailrows">
+                <tr class="even_row" style="width: 100%;">
+                    <th style="text-align:center; ">Responsibility Team</th>
+                    <th style="text-align:center; ">PM</th>
+                    <th style="text-align:center; ">STS</th>
+                    <th style="text-align:center; ">ASW</th>
+                    <th style="text-align:center; ">BSW</th>
+                    <th style="text-align:center; ">HW</th>
+                    <th style="text-align:center; ">TEST</th>
+                    <th style="text-align:center; ">QA</th>
+                </tr>
+                <tbody id="SuppMonTaskRespTeDa">
+
+                </tbody>
+
+            </table>
+        </td>
+    </tr>
+
+	<!--Release Statistics -->
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+        <td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">
+            <b>Release Statistics</b></td>
+    </tr>
+    <tr>
+        <td>
+            <table class="detailrows">
+                <tr class="even_row" style="width: 100%;">
+                    <th style="text-align:center; ">State</th>
+                    <th style="text-align:center; ">Open</th>
+                    <th style="text-align:center; ">In Progress</th>
+                    <th style="text-align:center; ">Cancelled</th>
+                    <th style="text-align:center; ">Audit</th>
+                    <th style="text-align:center; ">In Approve</th>
+                    <th style="text-align:center; ">Delivered</th>
+                    <th style="text-align:center; ">Accepted</th>
+                </tr>
+                <tbody id="ReleaseDaCol">
+
+                </tbody>
+
+            </table>
+        </td>
+    </tr>
+
+    <!--Risk Statistics -->
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+        <td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">
+            <b>Risk Statistics</b></td>
+    </tr>
+    <tr>
+        <td>
+            <table class="detailrows">
+                <tr class="even_row" style="width: 100%;">
+                    <th style="text-align:center; ">State</th>
+                    <th style="text-align:center; ">Open</th>
+                    <th style="text-align:center; ">In Development</th>
+                    <th style="text-align:center; ">Cancelled</th>
+                    <th style="text-align:center; ">Completed</th>
+                </tr>
+                <tbody id="RiskDaCol">
+
+                </tbody>
+            </table>
+        </td>
+    </tr>
+
+	<tr><td>&nbsp;</td></tr>
+    <tr>
+        <td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">
+            <b>Non-Conformance Issue Statistics by Process Area and Responsibility Team</b></td>
+    </tr>
+    <tr>
+        <td style="width: 30%">
+            <table class="detailrows" >
+                <tr class="even_row"><th nowrap>Process Area</th><th>Count</th></tr>
+                <tr class="odd_row"><th nowrap>ACQ.4 Supplier monitoring</th><td  id = "ACQ4">0</td></tr>
+                <tr class="even_row"><th nowrap>SPL.2 Product release</th><td  id = "SPL2">0</td></tr>
+                <tr class="odd_row"><th nowrap>SYS.1 Requirement elicitation</th><td  id = "SYS1">0</td></tr>
+                <tr class="even_row"><th nowrap>SYS.2 System requirement analysis</th><td  id = "SYS2">0</td></tr>
+                <tr class="odd_row"><th nowrap>SYS.3 System architectural design</th><td  id = "SYS3">0</td></tr>
+                <tr class="even_row"><th nowrap>SYS.4 System integration and integration test</th><td  id = "SYS4">0</td></tr>
+                <tr class="odd_row"><th nowrap>SYS.5 System qualification test</th><td  id = "SYS5">0</td></tr>
+                <tr class="even_row"><th nowrap>SWE.1 Software requirement analysis</th><td  id = "SWE1">0</td></tr>
+                <tr class="odd_row"><th nowrap>SWE.2 Software architectural design</th><td  id = "SWE2">0</td></tr>
+                <tr class="even_row"><th nowrap>SWE.3 Software detailed design and unit construction</th><td  id = "SWE3">0</td></tr>
+                <tr class="odd_row"><th nowrap>SWE.4 Software unit verification</th><td  id = "SWE4">0</td></tr>
+                <tr class="even_row"><th nowrap>SWE.5 Software integration and integration test</th><td  id = "SWE5">0</td></tr>
+                <tr class="odd_row"><th nowrap>SWE.6 Software qualification test</th><td  id = "SWE6">0</td></tr>
+                <tr class="even_row"><th nowrap>SUP.1 Quality assurance</th><td  id = "SUP1">0</td></tr>
+                <tr class="odd_row"><th nowrap>SUP.2 Verification</th><td  id = "SUP2">0</td></tr>
+                <tr class="even_row"><th nowrap>SUP.4 Joint Review</th><td  id = "SUP4">0</td></tr>
+                <tr class="odd_row"><th nowrap>SUP.8 Configuration management</th><td  id = "SUP8">0</td></tr>
+                <tr class="even_row"><th nowrap>SUP.9 Problem resolution management</th><td  id = "SUP9">0</td></tr>
+                <tr class="odd_row"><th nowrap>SUP.10 Change request management</th><td  id = "SUP10">0</td></tr>
+                <tr class="even_row"><th nowrap>MAN.3 Project management</th><td  id = "MAN3">0</td></tr>
+                <tr class="odd_row"><th nowrap>MAN.5 Risk management</th><td  id = "MAN5">0</td></tr>
+                <tr class="even_row"><th nowrap>MAN.6 measurement</th><td  id = "MAN6">0</td></tr>
+                <tr class="odd_row"><th nowrap>REU.2 Reuse program management</th><td  id = "REU2">0</td></tr>
+                <tr class="even_row"><th nowrap>HWE.1 Hardware requirement analysis</th><td  id = "HWE1">0</td></tr>
+                <tr class="odd_row"><th nowrap>Total</th><td  id = "TotalClo">0</td></tr>
+            </table>
+        </td>
+        <td valign="top">
+            <table class="detailrows">
+                <tr class="even_row" style="width: 100%;">
+                    <th style="text-align:center; ">Responsibility Team</th>
+                    <th style="text-align:center; ">PM</th>
+                    <th style="text-align:center; ">STS</th>
+                    <th style="text-align:center; ">ASW</th>
+                    <th style="text-align:center; ">BSW</th>
+                    <th style="text-align:center; ">HW</th>
+                    <th style="text-align:center; ">TEST</th>
+                    <th style="text-align:center; ">QA</th>
+                </tr>
+                <tbody id="NonConfIssRespTeamClo">
+
+                </tbody>
+
+            </table>
+        </td>
+    </tr>
+
+	<tr><td>&nbsp;</td></tr>
+    <tr>
+        <td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">
+            <b>LL and BP Statistics</b></td>
+    </tr>
+    <tr>
+        <td>
+            <table class="detailrows">
+                <tr class="even_row" style="width: 100%;">
+                    <th style="text-align:center; ">State</th>
+                    <th style="text-align:center; ">Open</th>
+                    <th style="text-align:center; ">In Analysis</th>
+                    <th style="text-align:center; ">Postponed</th>
+                    <th style="text-align:center; ">Rejected</th>
+                    <th style="text-align:center; ">Accepted</th>
+                    <th style="text-align:center; ">Published</th>
+                    <th style="text-align:center; ">Retired</th>
+                </tr>
+                <tbody id="LLandBPClo">
+
+                </tbody>
+
+            </table>
+        </td>
+    </tr>
+
+</table>
+</body>
+<script>
+    //执行方法,写数据
+    getQATaskData();
+    getDocData();
+    getDefectTestLevelData();
+    getDefectResponsibilityTeamData();
+    getTestPlanData();
+    getDefectBySource();
+    getTestObjData();
+    getTestSessionData();
+    getChangeRequestStateData();
+    getChangeRequestCategoryData();
+    getChangeOrderStateData();
+    getTaskbyStateData();
+    getTaskbyRespTeamData();
+    getSupplMonTaskStateData();
+    getSupplMonTaskRespTeamData();
+	writeReleaseData();
+    wrieRiskData();
+	writeNonConfIssProcAreaData();
+    writeNonConfIssRespTeamData();
+	writeLLandBPStateData();
+
+
+    //把QA Task的数据写入对应table
+    function getQATaskData(){
+        var html = '';
+        for(var key in QATaskData){
+            var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+key+ ':</th>';
+            var html2 = "";
+            var arr = QATaskData[key];
+            for(var i =0;i<arr.length;i++){
+                var obj = arr[i];
+                html2 += '<td style="text-align:center; "> '+Object.values(obj)[0]+'</td>';
+            }
+            html += html1+html2+'</tr>';
+        }
+        document.getElementById("QATaskDataClo").innerHTML = html;
+    };
+
+    //把...Docuemnt的数据写入table
+    function getDocData(){
+        var html = '';
+        for(var key in DocTypeData){
+            var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+key+ ':</th>';
+            var html2 = "";
+            var arr = DocTypeData[key];
+            for(var i =0;i<arr.length;i++){
+                var obj = arr[i];
+                console.log(Object.keys(obj)[0]);
+                console.log(Object.values(obj)[0]);
+
+                html2 += '<td style="text-align:center; "> '+Object.values(obj)[0]+'</td>';
+            }
+            html += html1+html2+'</tr>';
+        }
+        document.getElementById("docTyAndSta").innerHTML = html;
+
+    }
+
+    function getDefectBySource(){
+        var html = '';
+        for(var key in DefectBySourceData){
+            var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+key+ ':</th>';
+            var html2 = "";
+            var arr = DefectBySourceData[key];
+            for(var i =0;i<arr.length;i++){
+                var obj = arr[i];
+                html2 += '<td style="text-align:center; "> '+Object.values(obj)[0]+'</td>';
+            }
+            html += html1+html2+'</tr>';
+        }
+        document.getElementById("DefectBySource").innerHTML = html;
+    }
+
+    function getDefectTestLevelData(){
+        var html = '';
+        for (var key in defectTestLevelData){
+            var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+ key +'</th>';
+            var html2 = '';
+            var arr = defectTestLevelData[key];
+            for(var i =0;i<arr.length;i++){
+                var obj = arr[i];
+                html2 += '<td style="text-align:center; "> '+Object.values(obj)[0]+'</td>';
+            }
+            html += html1+html2+'</tr>';
+        }
+        document.getElementById('defectTestLevel').innerHTML = html;
+    }
+
+    function getDefectResponsibilityTeamData(){
+        var html = '';
+        for (var key in defectResponsibilityTeamData){
+            var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+ key +'</th>';
+            var html2 = '';
+            var arr = defectResponsibilityTeamData[key];
+            for(var i =0;i<arr.length;i++){
+                var obj = arr[i];
+                html2 += '<td style="text-align:center; "> '+Object.values(obj)[0]+'</td>';
+            }
+            html += html1+html2+'</tr>';
+        }
+        document.getElementById('defectResponsibilityTeam').innerHTML = html;
+    }
+
+    function getTestPlanData(){
+        var html = '';
+        for (var key in TestPlanData){
+            var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+ key +'</th>';
+            var html2 = '';
+            var arr = TestPlanData[key];
+            for(var i =0;i<arr.length;i++){
+                var obj = arr[i];
+                html2 += '<td style="text-align:center; "> '+Object.values(obj)[0]+'</td>';
+            }
+            html += html1+html2+'</tr>';
+        }
+        document.getElementById('TestPlanData').innerHTML = html;
+    };
+
+    function getTestObjData(){
+        var html = '';
+        for (var key in TestObjectiveData){
+            var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+ key +'</th>';
+            var html2 = '';
+            var arr = TestObjectiveData[key];
+            for(var i =0;i<arr.length;i++){
+                var obj = arr[i];
+                html2 += '<td style="text-align:center; "> '+Object.values(obj)[0]+'</td>';
+            }
+            html += html1+html2+'</tr>';
+        }
+        document.getElementById('TestObjData').innerHTML = html;
+    };
+
+    //Test Session statistics
+    function getTestSessionData(){
+        var html = '';
+        for (var key in TestSessionData){
+            var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+ key +'</th>';
+            var html2 = '';
+            var arr = TestSessionData[key];
+            for(var i =0;i<arr.length;i++){
+                var obj = arr[i];
+                html2 += '<td style="text-align:center; "> '+Object.values(obj)[0]+'</td>';
+            }
+            html += html1+html2+'</tr>';
+        }
+        document.getElementById('TestSessionData').innerHTML = html;
+    }
+
+    function getChangeRequestStateData(){
+        for(var i=0;i<ChangeRequestStateData.length;i++){
+            var obj = ChangeRequestStateData[i];
+            var key = Object.keys(obj)[0];
+            var count = parseInt(obj[key]);
+            if("Open" == key){
+                document.getElementById("OpenChangeRequest").innerHTML = count;
+            }else if("CCB" == key){
+                document.getElementById("CCBChangeRequest").innerHTML = count;
+            }else if("Cancelled" == key){
+                document.getElementById("CancelledChangeRequest").innerHTML = count;
+            } else if("Postponed" == key){
+                document.getElementById("PostponedChangeRequest").innerHTML = count;
+            }else if("Approved" == key){
+                document.getElementById("ApprovedChangeRequest").innerHTML = count;
+            }else if("Fixed" == key){
+                document.getElementById("FixedChangeRequest").innerHTML = count;
+            }else if("Closed" == key){
+                document.getElementById("ClosedChangeRequest").innerHTML = count;
+            }else if("Total" == key){
+                document.getElementById("TotalChangeRequest").innerHTML = count;
+            }
+        }
+    };
+
+    function getChangeRequestCategoryData(){
+        var html = '';
+        for(var key in ChangeRequestCategoryData){
+            var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+key+ ':</th>';
+            var html2 = "";
+            var arr = ChangeRequestCategoryData[key];
+            for(var i =0;i<arr.length;i++){
+                var obj = arr[i];
+                html2 += '<td style="text-align:center; "> '+Object.values(obj)[0]+'</td>';
+            }
+            html += html1+html2+'</tr>';
+        }
+        document.getElementById("ChangeReqCateDa").innerHTML = html;
+    }
+
+    function getChangeOrderStateData(){
+        for(var i=0;i<ChangeOrderStateData.length;i++){
+            var obj = ChangeOrderStateData[i];
+            var key = Object.keys(obj)[0];
+            var count = parseInt(obj[key]);
+            if("Open" == key){
+                document.getElementById("OpenChangeOrder").innerHTML = count;
+            }else if("In Development" == key){
+                document.getElementById("InDevelopmentChangeOrder").innerHTML = count;
+            }else if("Verify" == key){
+                document.getElementById("VerifyChangeOrder").innerHTML = count;
+            }else if("Closed" == key){
+                document.getElementById("ClosedChangeOrder").innerHTML = count;
+            }else if("Total" == key){
+                document.getElementById("TotalChangeOrder").innerHTML = count;
+            }
+        }
+    };
+
+    function getTaskbyStateData(){
+        var html = '';
+        for (var key in TaskbyStateData){
+            var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+ key +'</th>';
+            var html2 = '';
+            var arr = TaskbyStateData[key];
+            for(var i =0;i<arr.length;i++){
+                var obj = arr[i];
+                html2 += '<td style="text-align:center; "> '+Object.values(obj)[0]+'</td>';
+            }
+            html += html1+html2+'</tr>';
+        }
+        document.getElementById('TaskStateDa').innerHTML = html;
+    }
+
+    function getTaskbyRespTeamData(){
+        var html = '';
+        for (var key in TaskbyRespTeamData){
+            var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+ key +'</th>';
+            var html2 = '';
+            var arr = TaskbyRespTeamData[key];
+            for(var i =0;i<arr.length;i++){
+                var obj = arr[i];
+                html2 += '<td style="text-align:center; "> '+Object.values(obj)[0]+'</td>';
+            }
+            html += html1+html2+'</tr>';
+        }
+        document.getElementById('TaskResponsibilityTeamDa').innerHTML = html;
+    }
+
+    function getSupplMonTaskStateData(){
+        var html = '';
+        for (var key in SupplMonTaskStateData){
+            var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+ key +'</th>';
+            var html2 = '';
+            var arr = SupplMonTaskStateData[key];
+            for(var i =0;i<arr.length;i++){
+                var obj = arr[i];
+                html2 += '<td style="text-align:center; "> '+Object.values(obj)[0]+'</td>';
+            }
+            html += html1+html2+'</tr>';
+        }
+        document.getElementById('SuppMonTaskStaDa').innerHTML = html;
+    }
+
+    function getSupplMonTaskRespTeamData(){
+        var html = '';
+        for (var key in SupplMonTaskRespTeamData){
+            var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+ key +'</th>';
+            var html2 = '';
+            var arr = SupplMonTaskRespTeamData[key];
+            for(var i =0;i<arr.length;i++){
+                var obj = arr[i];
+                html2 += '<td style="text-align:center; "> '+Object.values(obj)[0]+'</td>';
+            }
+            html += html1+html2+'</tr>';
+        }
+        document.getElementById('SuppMonTaskRespTeDa').innerHTML = html;
+    }
+
+	function writeReleaseData(){
+        var html = '';
+        for (var key in ReleaseData){
+            var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+ key +'</th>';
+            var html2 = '';
+            var arr =ReleaseData[key];
+            for(var i =0;i<arr.length;i++){
+                var obj = arr[i];
+                html2 += '<td style="text-align:center; "> '+Object.values(obj)[0]+'</td>';
+            }
+            html += html1+html2+'</tr>';
+        }
+        document.getElementById('ReleaseDaCol').innerHTML = html;
+    }
+
+    function wrieRiskData(){
+        var html = '';
+        for (var key in RiskData){
+            var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+ key +'</th>';
+            var html2 = '';
+            var arr = RiskData[key];
+            for(var i =0;i<arr.length;i++){
+                var obj = arr[i];
+                html2 += '<td style="text-align:center; "> '+Object.values(obj)[0]+'</td>';
+            }
+            html += html1+html2+'</tr>';
+        }
+        document.getElementById('RiskDaCol').innerHTML = html;
+    }
+
+	function writeNonConfIssProcAreaData(){
+        for(var i=0;i<NonConfIssProcAreaData.length;i++){
+            var obj = NonConfIssProcAreaData[i];
+            var key = Object.keys(obj)[0];
+            var count = parseInt(obj[key]);
+            if("ACQ.4 Supplier monitoring" == key){
+                document.getElementById("ACQ4").innerHTML = count;
+            }else if("SPL.2 Product release" == key){
+                document.getElementById("SPL2").innerHTML = count;
+            }else if("SYS.1 Requirement elicitation" == key){
+                document.getElementById("SYS1").innerHTML = count;
+            }
+            else if("SYS.2 System requirement analysis" == key){
+                document.getElementById("SYS2").innerHTML = count;
+            }
+            else if("SYS.3 System architectural design" == key){
+                document.getElementById("SYS3").innerHTML = count;
+            }else if("SYS.4 System integration and integration test" == key){
+                document.getElementById("SYS4").innerHTML = count;
+            }else if("SYS.5 System qualification test" == key){
+                document.getElementById("SYS5").innerHTML = count;
+            }else if("SWE.1 Software requirement analysis" == key){
+                document.getElementById("SWE1").innerHTML = count;
+            }
+            else if("SWE.2 Software architectural design" == key){
+                document.getElementById("SWE2").innerHTML = count;
+            }
+            else if("SWE.3 Software detailed design and unit construction" == key){
+                document.getElementById("SWE3").innerHTML = count;
+            }else if("SWE.4 Software unit verification" == key){
+                document.getElementById("SWE4").innerHTML = count;
+            }else if("SWE.5 Software integration and integration test" == key){
+                document.getElementById("SWE5").innerHTML = count;
+            }else if("SWE.6 Software qualification test" == key){
+                document.getElementById("SWE6").innerHTML = count;
+            }
+            else if("SUP.1 Quality assurance" == key){
+                document.getElementById("SUP1").innerHTML = count;
+            }
+            else if("SUP.2 Verification" == key){
+                document.getElementById("SUP2").innerHTML = count;
+            }else if("SUP.4 Joint Review" == key){
+                document.getElementById("SUP4").innerHTML = count;
+            }else if("SUP.8 Configuration management" == key){
+                document.getElementById("SUP8").innerHTML = count;
+            }else if("SUP.9 Problem resolution management" == key){
+                document.getElementById("SUP9").innerHTML = count;
+            }
+            else if("SUP.10 Change request management" == key){
+                document.getElementById("SUP10").innerHTML = count;
+            }
+            else if("MAN.3 Project management" == key){
+                document.getElementById("MAN3").innerHTML = count;
+            }else if("MAN.5 Risk management" == key){
+                document.getElementById("MAN5").innerHTML = count;
+            }else if("MAN.6 measurement" == key){
+                document.getElementById("MAN6").innerHTML = count;
+            }else if("REU.2 Reuse program management" == key){
+                document.getElementById("REU2").innerHTML = count;
+            }
+            else if("HWE.1 Hardware requirement analysis" == key){
+                document.getElementById("HWE1").innerHTML = count;
+            }
+            else if("Total" == key){
+                document.getElementById("TotalClo").innerHTML = count;
+            }
+
+        }
+    };
+
+    function writeNonConfIssRespTeamData(){
+        var html = '';
+        for (var key in NonConfIssRespTeamData){
+            var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+ key +'</th>';
+            var html2 = '';
+            var arr = NonConfIssRespTeamData[key];
+            for(var i =0;i<arr.length;i++){
+                var obj = arr[i];
+                html2 += '<td style="text-align:center; "> '+Object.values(obj)[0]+'</td>';
+            }
+            html += html1+html2+'</tr>';
+        }
+        document.getElementById('NonConfIssRespTeamClo').innerHTML = html;
+    }
+
+	function writeLLandBPStateData(){
+        var html = '';
+        for (var key in LLandBPStateData){
+            var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+ key +'</th>';
+            var html2 = '';
+            var arr = LLandBPStateData[key];
+            for(var i =0;i<arr.length;i++){
+                var obj = arr[i];
+                html2 += '<td style="text-align:center; "> '+Object.values(obj)[0]+'</td>';
+            }
+            html += html1+html2+'</tr>';
+        }
+        document.getElementById('LLandBPClo').innerHTML = html;
+    }
+
+</script>
+</html>
