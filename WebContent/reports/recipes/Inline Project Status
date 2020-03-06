@@ -39,8 +39,12 @@
 			return "<img src='<%hosturl%>MKS_ALM_2009/" + health.toLowerCase() + ".gif' alt='" + health + "'/>";
 		}
 		
+			
 		var ProjectDate = [];
-		var RiskDate = [{"Open":0},{"In Analysis":0},{"Rejected":0},{"Analyzed":0},{"In Monitoring":0},{"Postponed":0},{"Cloesd":0}];
+		//var RiskDate = [{"Open":0},{"In Analysis":0},{"Rejected":0},{"Analyzed":0},{"In Monitoring":0},{"Postponed":0},{"Cloesd":0}];
+		var RiskDate = {
+			"Risk":[{"Open":0},{"In Analysis":0},{"Rejected":0},{"Analyzed":0},{"In Monitoring":0},{"Postponed":0},{"Cloesd":0}]
+		};
 		
 		var DefectTypeData = {
 			"Function" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
@@ -90,10 +94,10 @@
 			"Plan Change":[{"Customer":0},{"Supplier":0},{"Internal":0}]
 		};
 		var ChangeRequestStateDate = {
-			"State" : [{"Open":0},{"In Progress":0},{"Approveed":0},{"Fixed":0},{"Closed":0},{"Rejected":0},{"Cancelled":0},{"Postponed":0}]
+			"ChangeRequest" : [{"Open":0},{"In Progress":0},{"Approveed":0},{"Fixed":0},{"Closed":0},{"Rejected":0},{"Cancelled":0},{"Postponed":0}]
 		};
 		var ChangeOrderDate = {
-			"State" : [{"Open":0},{"In Development":0},{"Verify":0},{"Closed":0}]
+			"ChangeOrder" : [{"Open":0},{"In Development":0},{"Verify":0},{"Closed":0}]
 		};
 	</script>
 </head>
@@ -105,19 +109,142 @@
 <script>
 	//Project数据
 	if("<%<%builtin Type%>%>" == "Project"){
-		ProjectDate.push({"projectType" : "<%<%builtin Type%>%>"});
-		ProjectDate.push({"projectId" : "<%<%builtin ID%>%>"});
-		ProjectDate.push({"builtinSummary" : "<%<%builtin Summary%>%>"});
+		var project  ={
+					"projectType" : "<%<%builtin Type%>%>",
+					"projectId" : "<%<%builtin ID%>%>",
+					"ProjectSummary" : "<%<%builtin Summary%>%>",
+					"ProjectIdA" : "<%hosturl%>im/WebClient?IssueID=<%<%builtin ID%>%>",
+					
+					"State" : "<%<%builtin State%>%>",
+					"ASIL" : "<%ASIL%>",
+					"Project Start Date" : "<%Project Start Date%>",
+					"Project End Date" : "<%Project End Date%>",
+					"Project Manager" : "<%<%builtin Assigned User%>%>",
+					"TeamMembers" : "<%TeamMembers%>",
+					"Project Start" : "<%Project Start Actual%>",
+					"Project Acceptance" : "<%Project Acceptance Actual%>",
+					"Project Plan" : "<%Project Plan Actual%>",
+					"Functional Specification Freeze" : "<%Functional Specification Freeze Actual%>",
+					"Code Freeze" : "<%Code Freeze Actual%>",
+					"Development Complete" : "<%Development Complete Actual%>",
+					
+					"Pending Stakeholder Requirement Document Count":"<%Pending Stakeholder Requirement Document Count%>",
+					"Open Stakeholder Requirement Document Count":"<%Open Stakeholder Requirement Document Count%>",
+					"Close Stakeholder Requirement Document Count":"<%Close Stakeholder Requirement Document Count%>",
+					"Total Stakeholder Requirement Document Count":"<%Total Stakeholder Requirement Document Count%>",
+					"Pending System Requirement Specification Document Count":"<%Pending System Requirement Specification Document Count%>",
+					"Open System Requirement Specification Document Count":"<%Open System Requirement Specification Document Count%>",
+					"Closed System Requirement Specification Document Count":"<%Closed System Requirement Specification Document Count%>",
+					"Total System Requirement Specification Document Count":"<%Total System Requirement Specification Document Count%>",
+					"Pending System Architectural Design Specification Document Count":"<%Pending System Architectural Design Specification Document Count%>",
+					"Open System Architectural Design Specification Document Count":"<%Open System Architectural Design Specification Document Count%>",
+					"Closed System Architectural Design Specification Document Count":"<%Closed System Architectural Design Specification Document Count%>",
+					"Total System Architectural Design Specification Document Count":"<%Total System Architectural Design Specification Document Count%>",
+					"Pending Software Requirement Specification Document Count":"<%Pending Software Requirement Specification Document Count%>",
+					"Open Software Requirement Specification Document Count":"<%Open Software Requirement Specification Document Count%>",
+					"Closed Software Requirement Specification Document Count":"<%Closed Software Requirement Specification Document Count%>",
+					"Total Software Requirement Specification Document Count":"<%Total Software Requirement Specification Document Count%>",
+					"Pending Software Architectural Design Specification Document Count":"<%Pending Software Architectural Design Specification Document Count%>",
+					"Open Software Architectural Design Specification Document Count":"<%Open Software Architectural Design Specification Document Count%>",
+					"Closed Software Architectural Design Specification Document Count":"<%Closed Software Architectural Design Specification Document Count%>",
+					"Total Software Architectural Design Specification Document Count":"<%Total Software Architectural Design Specification Document Count%>",
+					"Pending Software Detail Design Specification Document Count":"<%Pending Software Detail Design Specification Document Count%>",
+					"Open Software Detail Design Specification Document Count":"<%Open Software Detail Design Specification Document Count%>",
+					"Closed Software Detail Design Specification Document Count":"<%Closed Software Detail Design Specification Document Count%>",
+					"Total Software Detail Design Specification Document Count":"<%Total Software Detail Design Specification Document Count%>",
+					"Pending Hardware Requirement Specification Document Count":"<%Pending Hardware Requirement Specification Document Count%>",
+					"Open Hardware Requirement Specification Document Count":"<%Open Hardware Requirement Specification Document Count%>",
+					"Closed Hardware Requirement Specification Document Count":"<%Closed Hardware Requirement Specification Document Count%>",
+					"Total Hardware Requirement Specification Document Count":"<%Total Hardware Requirement Specification Document Count%>",
+					"Pending Models Count E":"<%Pending Models Count E%>",
+					"Open Models Count E":"<%Open Models Count E%>",
+					"Closed Models Count E":"<%Closed Models Count E%>",
+					"Total Models Count E":"<%Total Models Count E%>",
+					"Pending Test Objective Count":"<%Pending Test Objective Count%>",
+					"Open Test Objective Count":"<%Open Test Objective Count%>",
+					"Closed Test Objective Count":"<%Closed Test Objective Count%>",
+					"Total Test Objective Count":"<%Total Test Objective Count%>",
+					"Pending Test Plan Count E":"<%Pending Test Plan Count E%>",
+					"Open Test Plan Count E":"<%Open Test Plan Count E%>",
+					"Closed Test Plan Count E":"<%Closed Test Plan Count E%>",
+					"Total Models Count E":"<%Total Models Count E%>",
+					"Pending Test Objective Count":"<%Pending Test Objective Count%>",
+					"Open Test Objective Count":"<%Open Test Objective Count%>",
+					"Closed Test Objective Count":"<%Closed Test Objective Count%>",
+					"Total Test Objective Count":"<%Total Test Objective Count%>",
+					"Pending Test Plan Count E":"<%Pending Test Plan Count E%>",
+					"Open Test Plan Count E":"<%Open Test Plan Count E%>",
+					"Closed Test Plan Count E":"<%Closed Test Plan Count E%>",
+					"Total Test Plan Count E":"<%Total Test Plan Count E%>",
+					"Pending Test Suite Count":"<%Pending Test Suite Count%>",
+					"Open Test Suite Count":"<%Open Test Suite Count%>",
+					"Closed Test Suite Count":"<%Closed Test Suite Count%>",
+					"Total Test Suite Count":"<%Total Test Suite Count%>",
+					"Pending Test Session Count":"<%Pending Test Session Count%>",
+					"Open Test Session Count":"<%Open Test Session Count%>",
+					"Closed Test Session Count":"<%Closed Test Session Count%>",
+					"Total Test Session Count":"<%Total Test Session Count%>",
+					"Pending Defect Count":"<%Pending Defect Count%>",
+					"Open Defect Count":"<%Open Defect Count%>",
+					"Closed Defect Count":"<%Closed Defect Count%>",
+					"Total Defect Count":"<%Total Defect Count%>",
+					"Pending Tasks Count E":"<%Pending Tasks Count E%>",
+					"Open Tasks Count E":"<%Open Tasks Count E%>",
+					"Closed Tasks Count E":"<%Closed Tasks Count E%>",
+					"Total Tasks Count E":"<%Total Tasks Count E%>",
+					"Pending Change Request Count E":"<%Pending Change Request Count E%>",
+					"Open Change Request Count E":"<%Open Change Request Count E%>",
+					"Closed Change Request Count E":"<%Closed Change Request Count E%>",
+					"Total Change Request Count E":"<%Total Change Request Count E%>",
+					"Pending Change Order Count E":"<%Pending Change Order Count E%>",
+					"Open Change Order Count E":"<%Open Change Order Count E%>",
+					"Closed Change Order Count E":"<%Closed Change Order Count E%>",
+					"Total Change Order Count E":"<%Total Change Order Count E%>",
+					"Pending Releases Count E":"<%Pending Releases Count E%>",
+					"Open Releases Count E":"<%Open Releases Count E%>",
+					"Closed Releases Count E":"<%Closed Releases Count E%>",
+					"Total Releases Count E":"<%Total Releases Count E%>",
+					"Pending Non-conformance Issues Count E":"<%Pending Non-conformance Issues Count E%>",
+					"Open Non-conformance Issues Count E":"<%Open Non-conformance Issues Count E%>",
+					"Closed Non-conformance Issues Count E":"<%Closed Non-conformance Issues Count E%>",
+					"Total Non-conformance Issues Count E":"<%Total Non-conformance Issues Count E%>",
+					"Pending Supplier Monitor Tasks Count E":"<%Pending Supplier Monitor Tasks Count E%>",
+					"Open Supplier Monitor Tasks Count E":"<%Open Supplier Monitor Tasks Count E%>",
+					"Closed Supplier Monitor Tasks Count E":"<%Closed Supplier Monitor Tasks Count E%>",
+					"Total Supplier Monitor Tasks Count E":"<%Total Supplier Monitor Tasks Count E%>",
+					
+					"Total Planned Count Project" : "<%Total Planned Count Project%>",
+					"Total Run Count Project" : "<%Total Run Count Project%>",
+					"Total Pass Count Project" : "<%Total Pass Count Project%>",
+					"Total Fail Count Project" : "<%Total Fail Count Project%>",
+					"Total Other Count Project" : "<%Total Other Count Project%>",
+					"Total Blocked Count Project" : "<%Total Blocked Count Project%>",
+					"Total Suspect Results Count Project" : "<%Total Suspect Results Count Project%>",
+					"Total Run Percentage Project" : "<%Total Run Percentage Project%>",
+					"Total Pass Percentage of Run Project" : "<%Total Pass Percentage of Run Project%>",
+					"Total Pass Percentage of Planned Project" : "<%Total Pass Percentage of Planned Project%>",
+					
+				};
+		ProjectDate.push(project);
+		//ProjectDate.push({"projectType" : "<%<%builtin Type%>%>"});
+		//ProjectDate.push({"projectId" : "<%<%builtin ID%>%>"});
+		//ProjectDate.push({"builtinSummary" : "<%<%builtin Summary%>%>"});
 	}
 	
     //risk数据
 	if("<%<%builtin Type%>%>" == "Risk"){
-		for(var i=0;i<RiskDate.length;i++){
-			var obj = RiskDate[i];
-			var key = Object.keys(obj)[0];
-			var count = parseInt(obj[key]);
-			if("<%State%>" == key){
-				obj[key] = count+1;
+		//risk State
+		for(var key in RiskDate){ 
+			var arr = RiskDate[key];
+			for(var i = 0;i<arr.length;i++){
+				var obj = arr[i];
+				if("<%State%>" == Object.keys(obj)[0]){
+					var count = parseInt(obj["<%State%>"]);
+					//console.log(count);
+					obj["<%State%>"] = count+1;
+						
+				}
+				//console.log(obj);
 			}
 		}
 	}
@@ -248,28 +375,33 @@
 
 </script>
 <%enddetail%>
-
+<div id = "projectDom" style = " margin-bottom:10px">
+	
+</div>
 <table class="detailrows fullWidth">
 <!-- Risk start -->
+	<tr><td ><h2>Risk : </h2></td></tr>
 	<tr>
 		<td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">
-			<b>Risk Metrics</b></td>
-		</tr>
+			<b>Risk Metrics</b>
+		</td> 
+	</tr>
 	<tr>
-		<td>
-			<table class="detailrows">
-				<tr class="even_row"><th nowrap>Open:</th><td width="100%" id = "RiskStateOpen">0</td></tr>
-				<tr class="odd_row"><th nowrap>In Analysis:</th><td width="100%" id = "RiskStateInAnalysis"> 0</td></tr>
-				<tr class="even_row"><th nowrap>Rejected:</th><td width="100%" id = "RiskStateRejected"> 0</td></tr>
-				<tr class="odd_row"><th nowrap>Analyzed:</th><td width="100%" id = "RiskStateAnalyzed">0 </td></tr>
-				
-			</table>
-		</td>
-		<td valign="top">
-			<table class="detailrows">
-				<tr class="even_row"><th nowrap>In Monitoring:</th><td width="100%" id = "RiskStateInMonitoring"> 0</td></tr>
-				<tr class="odd_row"><th nowrap>Postponed:</th><td width="100%" id = "RiskStatePostponed"> 0</td></tr>
-				<tr class="even_row"><th nowrap>Cloesd:</th><td width="100%" id = "RiskStateCloesd">0</td></tr>
+		<td style="width: 100%;" colspan="2">
+			<table class="detailcols" style="width: 100%;">
+				<tr class="even_row" style="width: 100%;">
+					<th style="text-align:center; width: 30%" ></th>
+					<th style="text-align:center; " >Open</th>
+					<th style="text-align:center; " >In Analysis</th>
+					<th style="text-align:center; " >Rejected</th>
+					<th style="text-align:center; " >Analyzed</th>
+					<th style="text-align:center; " >In Monitoring</th>
+					<th style="text-align:center; " >Postponed</th>
+					<th style="text-align:center; " >Cloesd</th>
+				</tr>
+				<tbody id = "RiskState">
+					
+				</tbody>
 			</table>
 		</td>
 	</tr>
@@ -277,6 +409,7 @@
 	
 <!-- Defect start -->
 	<tr><td>&nbsp;</td></tr>
+	<tr><td ><h2>Defect : </h2></td></tr>
 	<tr>
 		<td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">
 			<b>Defect Metrics</b>
@@ -389,8 +522,10 @@
 	</tr>
 <!-- Defect State and Responsibility Team end -->
 
+	
 <!-- Change Request Change Category and Change Initiator start -->
 	<tr><td>&nbsp;</td></tr>
+	<tr><td ><h2>Change Request : </h2></td></tr>
 	<tr>
 		<td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">
 			<b>Change Category and Change Initiator</b>
@@ -444,9 +579,10 @@
 
 <!-- Change Order State start -->
 	<tr><td>&nbsp;</td></tr>
+	<tr><td ><h2>Change Order : </h2></td></tr>
 	<tr>
 		<td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">
-			<b>Change Request State</b>
+			<b>ChangeOrder State</b>
 		</td> 
 	</tr>
 	<tr>
@@ -470,7 +606,7 @@
 </table>
 </body>
 <script>
-
+	console.log(ProjectDate);;
 	console.log(TaskPhasData);;
 	console.log(DefectTypeData);
 	console.log(DefectStateDate);
@@ -479,6 +615,7 @@
 	console.log(ChangeRequestStateDate);
 	console.log(ChangeOrderDate);
 	
+	getProjectDate()
     getRiskDate();
 	getDefectDate();
 	getTaskPhasData();
@@ -564,7 +701,19 @@
 	function getDefectStateDate(){
 		var html = '';
 		for(var key in DefectStateDate){
-			var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+key+ ':</th>';
+			var name = "";
+			if(key == "Open"){
+				name = "Problem Definition";
+			}else if(key == "In Testing"){
+				name = "Validation and Closed";
+			}else if(key == "In Progress"){
+				name = "Execute Corrective Action";
+			}else if(key == "In Analysis"){
+				name = "Problem Confirmation";
+			}else if(key == "Analyzed"){
+				name = "Develop Inverstigation";
+			}
+			var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+name+ ':</th>';
 			var html2 = "";
 			var arr = DefectStateDate[key];
 			for(var i =0;i<arr.length;i++){
@@ -616,27 +765,297 @@
 		document.getElementById("defectTypeAndSousce").innerHTML = html;
 	}
 
-	function getRiskDate(){
-		for(var i=0;i<RiskDate.length;i++){
-			var obj = RiskDate[i];
-			var key = Object.keys(obj)[0];
-			var count = parseInt(obj[key]);
-			if("Open" == key){
-				document.getElementById("RiskStateOpen").innerHTML = count;
-			}else if("In Analysis" == key){
-				document.getElementById("RiskStateInAnalysis").innerHTML = count;
-			}else if("Rejected" == key){
-				document.getElementById("RiskStateRejected").innerHTML = count;
-			}else if("Analyzed" == key){
-				document.getElementById("RiskStateAnalyzed").innerHTML = count;
-			}else if("In Monitoring" == key){
-				document.getElementById("RiskStateInMonitoring").innerHTML = count;
-			}else if("Postponed" == key){
-				document.getElementById("RiskStatePostponed").innerHTML = count;
-			}else if("Cloesd" == key){
-				document.getElementById("RiskStateCloesd").innerHTML = count;
-			}
+	function getRiskDate(){ 
+		var html = '';
+		for(var key in RiskDate){
+			var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+key+ ':</th>';
+			var html2 = "";
+			var arr = RiskDate[key];
+			for(var i =0;i<arr.length;i++){
+				var obj = arr[i];
+				//console.log(Object.keys(obj)[0]);
+				//onsole.log(Object.values(obj)[0]);
+			
+				html2 += '<td style="text-align:center; "> '+Object.values(obj)[0]+'</td>';
+			}			
+			html += html1+html2+'</tr>';
 		}
+		document.getElementById("RiskState").innerHTML = html;
 	};
+	
+	function getProjectDate(){
+		var html = '';
+		for(var i = 0;i<ProjectDate.length;i++){
+			var obj = ProjectDate[i];
+			//console.log("sj---------:"+obj["ProjectIdA"]);
+			html += '<p class="title">'+obj["projectType"]+' <a class="title" href="'+obj["ProjectIdA"]+'" target="_blank">'+obj["projectId"]+'</a>: '+obj["ProjectSummary"]+'</p>\n' +
+        '<table class="detailrows fullWidth">\n' +
+        '\t<tr>\n' +
+        '\t\t<td style="width: 50%;">\n' +
+        '\t\t\t<table class="detailrows" style="width: 100%;">\n' +
+        '\t\t\t\t<tr class="even_row">\n' +
+        '\t\t\t\t\t<th nowrap style="width: 30%;">State:</th>\n' +
+        '\t\t\t\t\t<td style="width: 70%;">'+obj["State"]+'</td>\n' +
+        '\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="odd_row">\n' +
+        '\t\t\t\t\t<th nowrap style="width: 30%;">ASIL:</th>\n' +
+        '\t\t\t\t\t<td style="width: 70%;">'+obj["ASIL"]+'</td>\n' +
+        '\n' +
+        '\t\t\t\t\t\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="even_row">\n' +
+        '\t\t\t\t\t<th nowrap style="width: 30%;">Project Start Date:</th>\n' +
+        '\t\t\t\t\t<td style="width: 70%;">'+obj["Project Start Date"]+'</td>\n' +
+        '\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="odd_row">\n' +
+        '\t\t\t\t\t<th nowrap style="width: 30%;">Project End Date:</th>\n' +
+        '\t\t\t\t\t<td style="width: 70%;">'+obj["Project End Date"]+'</td>\n' +
+        '\n' +
+        '\t\t\t\t\t\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="even_row">\n' +
+        '\t\t\t\t\t<th nowrap style="width: 30%;">Project Manager:</th>\n' +
+        '\t\t\t\t\t<td style="width: 70%;">'+obj["Project Manager"]+'</td>\n' +
+        '\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="odd_row">\n' +
+        '\t\t\t\t\t<th nowrap style="width: 15%;">TeamMembers:</th>\n' +
+        '\t\t\t\t\t<td style="width: 70%;">'+obj["TeamMembers"]+'</td>\n' +
+        '\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t</table>\n' +
+        '\t\t\t\n' +
+        '\t\t</td>\n' +
+        '\t\t<td style="vertical-align: top; width: 50%;">\n' +
+        '\t\t\t<table class="detailrows" style="width: 100%;">\n' +
+        '\t\t\t\t<tr class="even_row">\n' +
+        '\t\t\t\t\t<th nowrap style="text-align:right; width: 30%;">Project Start:</th>\n' +
+        '\t\t\t\t\t<td style="width: 70%;">'+obj["Project Start"]+'</td>\n' +
+        '\t\t\t\t\t\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="odd_row">\n' +
+        '\t\t\t\t\t\n' +
+        '\t\t\t\t\t<th nowrap style="text-align:right; width: 30%;">Project Acceptance:</th>\n' +
+        '\t\t\t\t\t<td style="width: 70%;">'+obj["Project Acceptance"]+'</td>\n' +
+        '\t\t\t\t\t\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="even_row">\n' +
+        '\t\t\t\t\t\n' +
+        '\t\t\t\t\t<th nowrap style="text-align:right; width: 30%;">Project Plan:</th>\n' +
+        '\t\t\t\t\t<td style="width: 70%;">'+obj["Project Plan"]+'</td>\n' +
+        '\t\t\t\t\t\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="odd_row">\n' +
+        '\t\t\t\t\t\n' +
+        '\t\t\t\t\t<th nowrap style="text-align:right; width: 30%;">Functional Specification Freeze:</th>\n' +
+        '\t\t\t\t\t<td style="width: 70%;">'+obj["Functional Specification Freeze"]+'</td>\n' +
+        '\t\t\t\t\t\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="even_row">\n' +
+        '\t\t\t\t\t\n' +
+        '\t\t\t\t\t<th nowrap style="text-align:right; width: 30%;">Code Freeze:</th>\n' +
+        '\t\t\t\t\t<td style="width: 70%;">'+obj["Code Freeze"]+'</td>\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="odd_row">\n' +
+        '\t\t\t\t\t\n' +
+        '\t\t\t\t\t<th nowrap style="text-align:right; width: 30%; ">Development Complete:</th>\n' +
+        '\t\t\t\t\t<td style="width: 70%; ">'+obj["Development Complete"]+'</td>\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t</table>\n' +
+        '\t\t</td>\n' +
+        '\t</tr>\n' +
+        '\t<tr><td>&nbsp;</td></tr>\n' +
+        '\t<tr><td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center"><b>Process Metrics</b></td></tr>\n' +
+        '\t<tr>\n' +
+        '\t\t<td style="width: 100%;" colspan="2">\n' +
+        '\t\t\t<table class="detailcols" style="width: 100%;">\n' +
+        '\t\t\t\t<tr class="even_row" style="width: 100%;">\n' +
+        '\t\t\t\t\t<th style="text-align:center; width: 40%" ></th>\n' +
+        '\t\t\t\t\t<th style="text-align:center; width: 15%" >Pending</th>\n' +
+        '\t\t\t\t\t<th style="text-align:center; width: 15%" >Open</th>\n' +
+        '\t\t\t\t\t<th style="text-align:center; width: 15%" >Closed</th>\n' +
+        '\t\t\t\t\t<th style="text-align:center; width: 15%" >Total</th>\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="odd_row" style="width: 100%;">\n' +
+        '\t\t\t\t\t<th style="text-align:right; width: 40%">Stakeholder Requirement Documents:</th>\n' +
+        '\t\t\t\t\t<td style="text-align:center; width: 15%" >'+obj["Pending Stakeholder Requirement Document Count"]+'</td>\n' +
+        '\t\t\t\t\t<td style="text-align:center; width: 15%">'+obj["Open Stakeholder Requirement Document Count"]+'</td>\n' +
+        '\t\t\t\t\t<td style="text-align:center; width: 15%">'+obj["Close Stakeholder Requirement Document Count"]+'</td>\n' +
+        '\t\t\t\t\t<td style="text-align:center; width: 15%">\n' +
+        '\t\t\t\t\t\t'+obj["Total Stakeholder Requirement Document Count"]+'\n' +
+        '\t\t\t\t\t</td>\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="even_row">\n' +
+        '\t\t\t\t\t<th style="text-align:right">System Requirement Specification Documents:</th>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending System Requirement Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Open System Requirement Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed System Requirement Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">\n' +
+        '\t\t\t\t\t\t'+obj["Total System Requirement Specification Document Count"]+' \n' +
+        '\t\t\t\t\t</td>\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="odd_row">\n' +
+        '\t\t\t\t\t<th style="text-align:right">System Architectural Design Specification Documents:</th>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending System Architectural Design Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Open System Architectural Design Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed System Architectural Design Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">\n' +
+        '\t\t\t\t\t\t'+obj["Total System Architectural Design Specification Document Count"]+' \n' +
+        '\t\t\t\t\t</td>\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="even_row">\n' +
+        '\t\t\t\t\t<th style="text-align:right">Software Requirement Specification Documents:</th>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Software Requirement Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Software Requirement Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Software Requirement Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">\n' +
+        '\t\t\t\t\t\t'+obj["Total Software Requirement Specification Document Count"]+' \n' +
+        '\t\t\t\t\t</td>\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="odd_row">\n' +
+        '\t\t\t\t\t<th style="text-align:right">Software Architectural Design Specification Documents:</th>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Software Architectural Design Specification Document Count"]+'</td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Software Architectural Design Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Software Architectural Design Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">\n' +
+        '\t\t\t\t\t\t'+obj["Total Software Architectural Design Specification Document Count"]+' \n' +
+        '\t\t\t\t\t</td>\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="even_row">\n' +
+        '\t\t\t\t\t<th style="text-align:right">Software Detail Design Specification Documents:</th>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Software Detail Design Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Software Detail Design Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Software Detail Design Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">\n' +
+        '\t\t\t\t\t\t'+obj["Total Software Detail Design Specification Document Count"]+' \n' +
+        '\t\t\t\t\t</td>\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="odd_row">\n' +
+        '\t\t\t\t\t<th style="text-align:right">Hardware Requirement Specification Documents:</th>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Hardware Requirement Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Hardware Requirement Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Hardware Requirement Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Total Hardware Requirement Specification Document Count"]+' \n' +
+        '\t\t\t\t\t</td>\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="even_row">\n' +
+        '\t\t\t\t\t<th style="text-align:right">Models:</th>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Models Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Models Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Models Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Total Models Count E"]+' </td>\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="odd_row">\n' +
+        '\t\t\t\t\t<th style="text-align:right">Test Objectives:</th>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Test Objective Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Test Objective Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Test Objective Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Total Test Objective Count"]+'</td>\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="even_row">\n' +
+        '\t\t\t\t\t<th style="text-align:right">Test Plans:</th>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Test Plan Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Test Plan Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Test Plan Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Total Test Plan Count E"]+' </td>\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="odd_row">\n' +
+        '\t\t\t\t\t<th style="text-align:right">Test Suites:</th>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Test Suite Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Test Suite Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Test Suite Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Total Test Suite Count"]+' \n' +
+        '\t\t\t\t\t\n' +
+        '\t\t\t\t\t</td>\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="even_row">\n' +
+        '\t\t\t\t\t<th style="text-align:right">Test Sessions:</th>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Test Session Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Test Session Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Test Session Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Total Test Session Count"]+' \n' +
+        '\t\t\t\t\t\n' +
+        '\t\t\t\t\t</td>\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="odd_row">\n' +
+        '\t\t\t\t\t<th style="text-align:right">Defects:</th>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Defect Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Defect Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Defect Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Total Defect Count"]+' </td>\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="even_row">\n' +
+        '\t\t\t\t\t<th style="text-align:right">Tasks:</th>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Tasks Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Tasks Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Tasks Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Total Tasks Count E"]+' </td>\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="odd_row">\n' +
+        '\t\t\t\t\t<th style="text-align:right">Change Requests:</th>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Change Request Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Change Request Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Change Request Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Total Change Request Count E"]+' </td>\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="even_row">\n' +
+        '\t\t\t\t\t<th style="text-align:right">Change Orders:</th>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Change Order Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Change Order Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Change Order Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Total Change Order Count E"]+'</td>\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="odd_row">\n' +
+        '\t\t\t\t\t<th style="text-align:right">Releases:</th>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Releases Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Releases Count E"]+'</td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Releases Count E"]+'</td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Total Releases Count E"]+' </td>\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="even_row">\n' +
+        '\t\t\t\t\t<th style="text-align:right">Non-conformance Issues:</th>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Non-conformance Issues Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Non-conformance Issues Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Non-conformance Issues Count E"]+'</td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Total Non-conformance Issues Count E"]+' </td>\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t\t<tr class="odd_row">\n' +
+        '\t\t\t\t\t<th style="text-align:right">Supplier Monitor Tasks:</th>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Supplier Monitor Tasks Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Supplier Monitor Tasks Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Supplier Monitor Tasks Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+obj["Total Supplier Monitor Tasks Count E"]+' </td>\n' +
+        '\t\t\t\t</tr>\n' +
+        '\t\t\t</table>\n' +
+        '\t\t</td>\n' +
+        '\t</tr>\n' +
+        '\t<tr><td>&nbsp;</td></tr>\n' +
+        '\t<tr><td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center"><b>Quality Metrics</b></td></tr>\n' +
+        '\t<tr>\n' +
+        '\t\t<td>\n' +
+        '\t\t\t<table class="detailrows">\n' +
+        '\t\t\t\t<tr class="even_row"><th nowrap>Total Planned Count:</th><td width="100%">'+obj["Total Planned Count Project"]+'</td></tr>\n' +
+        '\t\t\t\t<tr class="odd_row"><th nowrap>Total Run Count:</th><td width="100%">'+obj["Total Run Count Project"]+' </td></tr>\n' +
+        '\t\t\t\t<tr class="even_row"><th nowrap>Total Pass Count:</th><td width="100%">'+obj["Total Pass Count Project"]+' </td></tr>\n' +
+        '\t\t\t\t<tr class="odd_row"><th nowrap>Total Fail Count:</th><td width="100%">'+obj["Total Fail Count Project"]+' </td></tr>\n' +
+        '\t\t\t\t<tr class="even_row"><th nowrap>Total Other Count:</th><td width="100%">'+obj["Total Other Count Project"]+' </td></tr>\n' +
+        '\t\t\t\t<tr class="odd_row"><th nowrap>Total Blocked Count:</th><td width="100%">'+obj["Total Blocked Count Project"]+' </td></tr>\n' +
+        '\t\t\t\t<tr class="even_row"><th nowrap>Total Suspect Results Count:</th><td width="100%">'+obj["Total Suspect Results Count Project"]+' </td></tr>\n' +
+        '\t\t\t</table>\n' +
+        '\t\t</td>\n' +
+        '\t\t<td valign="top">\n' +
+        '\t\t\t<table class="detailrows">\n' +
+        '\t\t\t<tr><th nowrap>Total Run Percentage:</th><td>'+obj["Total Run Percentage Project"]+' </td></tr>\n' +
+        '\t\t\t<tr><th nowrap>Total Pass Percentage of Run:</th><td>'+obj["Total Pass Percentage of Run Project"]+' </tr>\n' +
+        '\t\t\t<tr><th nowrap>Total Pass Percentage of Planned:</th><td>'+obj["Total Pass Percentage of Planned Project"]+'</td></tr>\n' +
+        '\t\t\t</table>\n' +
+        '\t\t</td>\n' +
+        '\t</tr>\n' +
+        '</table>';
+		}
+		document.getElementById("projectDom").innerHTML = html;
+	}
 </script>
 </html>
