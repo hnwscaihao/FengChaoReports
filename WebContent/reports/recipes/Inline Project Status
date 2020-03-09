@@ -809,7 +809,7 @@
 		
 		'<table class="detailrows fullWidth">\n' +
         '<!-- Risk start -->\n' +
-        '\t<tr><td ><h2>Risk : </h2></td></tr>\n' +
+       
         '\t<tr>\n' +
         '\t\t<td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">\n' +
         '\t\t\t<b>Risk Metrics</b>\n' +
@@ -838,7 +838,7 @@
         '\t\n' +
         '<!-- Defect start -->\n' +
         '\t<tr><td>&nbsp;</td></tr>\n' +
-        '\t<tr><td ><h2>Defect : </h2></td></tr>\n' +
+       
         '\t<tr>\n' +
         '\t\t<td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">\n' +
         '\t\t\t<b>Defect Metrics</b>\n' +
@@ -944,7 +944,7 @@
         '\t\n' +
         '<!-- Change Request Change Category and Change Initiator start -->\n' +
         '\t<tr><td>&nbsp;</td></tr>\n' +
-        '\t<tr><td ><h2>Change Request : </h2></td></tr>\n' +
+       
         '\t<tr>\n' +
         '\t\t<td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">\n' +
         '\t\t\t<b>Change Category and Change Initiator</b>\n' +
@@ -998,7 +998,7 @@
         '\n' +
         '<!-- Change Order State start -->\n' +
         '\t<tr><td>&nbsp;</td></tr>\n' +
-        '\t<tr><td ><h2>Change Order : </h2></td></tr>\n' +
+       
         '\t<tr>\n' +
         '\t\t<td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">\n' +
         '\t\t\t<b>ChangeOrder State</b>\n' +
