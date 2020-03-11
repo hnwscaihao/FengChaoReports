@@ -11,14 +11,147 @@
 // Author : Hao Cai.
 // Create Date : 2018-12-09
 // </p>
+///START
+// @param String Subject
+//
+// @param String Title
+//
+// @param String Note Info
 
+var eb = bsf.lookupBean("siEnvironmentBean");//环境变量
+//log("----- eb = " +  eb);
+var server = bsf.lookupBean("imServerBean");//全部服务对象
+//log("----- server = " +  server);
+
+var stb = bsf.lookupBean("imScheduleTriggerArgumentsBean"); //触发对象
+allItemIds = stb.getIssues();
+
+var params = bsf.lookupBean("parametersBean");
+//log("----- delta = " +  delta.getID());
+//log("----- oldState =" + delta.getOldState());
+//log("----- newState =" + delta.getNewState());
+ 
+var RecipientMailbox = [];//收件人
+var assignUser = "";//收件用户名
+																					
+var createUser;
+//触发器参数
+var subject = params.getParameter("Subject");
+
+var title = params.getParameter("Title");
+
+var noteInfo = params.getParameter("Note Info");
+
+var fromAddr = "alm@gwm.cn";
+
+var toList = new java.util.ArrayList();//装邮箱的集合 emailAddress
+
+var receiveIds = new java.util.ArrayList();//装app推送接受人的集合 logid
+
+var hostPort = eb.getMailHostnameAndPort();
+
+var host = hostPort[0];
+
+var smtpPort = hostPort[1];
+
+var userFullName = "";
+
+var content = "";
+if (host == null || host.length() == 0){
+       abort("host is null!");
+}   
+
+// default to 25
+if ( smtpPort == null || smtpPort.length() == 0 ) {
+       smtpPort = "25";
+}
+
+var hostUrl = eb.getHostURL();
+var mksHost = eb.getHostname();
+var mksPort = eb.getHostPort();
+
+
+
+function printParams(){
+       log("----subject="+subject);
+       log("----title="+title);
+       log("----fromAddr="+fromAddr);
+       log("----host="+host);
+       log("----smtpPort="+smtpPort);
+       log("----hostUrl="+hostUrl);
+       log("----mksHost="+mksHost);
+       log("----mksPort="+mksPort);
+
+}
+
+
+//importPackage(Packages.javax.mail);
+
+importPackage(Packages.javax.activation);
+importPackage(Packages.javax.mail.internet);
+importPackage(Packages.org.apache.commons.mail);
+importPackage(java.lang);
+
+
+/**
+* Send email to the list of target users found in ``toList'';
+* indicate it is from the user in ``from''.  Send it thru the mail
+* server found in ``host''.
+* Two versions of the message are sent, an html and text version.
+*/
+
+
+//发送邮件
+function sendMailToUser(toList,text, html){ 	
+	 // 这里是SMTP发送服务器的名字：163的如下："smtp.163.com"  
+	log("Start");
+	var email = new HtmlEmail();
+	email.setHostName(host);
+	// 字符编码集的设置  
+	email.setCharset("UTF-8");
+	// 发送人的邮箱  
+	email.setFrom("lxg_java@163.com", "ALM");  
+	// 如果需要认证信息的话，设置认证：用户名-密码。分别为发件人在邮件服务器上的注册名称和密码  //服务器只能保存用户名，不能保存密码
+	email.setAuthentication("lxg_java@163.com", "xinyu2019");
+	//主题
+	var currSubject = "To : " + assignUser;
+	if(createUser && createUser != ""){
+		currSubject = currSubject + "," +  createUser;
+	} 
+	currSubject  = currSubject + " ! " + text ;
+	log("currSubject=-------"+currSubject)
+	// 设置收件人信息
+	for (var a = 0; a < toList.size(); a++){
+		log("---- Email To: " + toList.get(a));
+		//email.addTo(toList.get(a));	
+		
+    }
+	//收件人
+	email.addTo("liuxiaoguang@newfis.com");
+	// 设置抄送人信息
+	//setCc(email, mail);
+	// 设置密送人信息
+	//setBcc(email, mail);
+	// 要发送的邮件主题  
+	email.setSubject(currSubject);
+	
+	// 要发送的信息，由于使用了HtmlEmail，可以在邮件内容中使用HTML标签  
+	email.setHtmlMsg(html);
+	
+	// 发送  
+	email.send();
+	log("Success");
+}
+
+//用户(权限)
 function getUserName(user){
     var srt = "";
-	var str1 = sb.getUserBean(user).getFullName();
+	var str1 = server.getUserBean(user).getFullName();
 	str = str1 + "(" + user + ")";
     return str;
 }
 
+//延时未回复人员
 function isReply(delta){
 	var noticeComment = delta.getFieldValue("Comment");
     var noticeUser = [ ];
@@ -30,26 +163,79 @@ function isReply(delta){
 	for(var i =0;i<noticeUser3.length;i++){
 		var user = noticeUser3[i];			
 		if(noticeComment.indexOf(user.trim()) == -1){
-			notUser += getUserName(user.trim())+",";
+			notUser += getUserName(user.trim())+",";//延期人员
+			RecipientMailbox.push(user.trim());   //邮件人员
+			assignUser += getUserName(user.trim())+",";//名字
+			//丁丁
+			receiveIds.add(user.trim());
+			userFullName = server.getUserBean(user.trim()).getFullName();
+			 //log("RecipientMailbox : " + RecipientMailbox[i]);
 		}
 	}
 	//log("----------------" + notUser);
 	return notUser;
 } 
 
+//获取动态组
+function testPlanCheck(){
+	if(!allItemIds || allItemIds.length == 0){
+		return;
+	}
+	
+	//获取PM动态组 Project Manager DG
+	var PMDG = server.getDynamicGroupBean("Project Manager DG");
+	//log("Project Manager DG");
+	for(var i=0; i<allItemIds.length; i++){
+		var delta = server.getIssueDeltaBean(allItemIds[i]);
+		var project = delta.getProject();
+		//log("Project = " + project);
+		//获取PM动态组的人员 Project Manager DG
+		var users = PMDG.getUsers(project);
+		//log("PM Users : " + users.length);
+		for(var a = 0;a<users.length;a++){
+			RecipientMailbox.push(users[a].trim());
+			assignUser += getUserName(users[a].trim())+",";
+			receiveIds.add(users[a].trim());//丁丁
+			userFullName = server.getUserBean(users[a].trim()).getFullName();
+			//log("User1 = " + users[a]);
+		}
+		
+	}	
+}
+
+//根据用户查询邮箱
+function getUserByEmail(){
+	for(var i = 0 ; i < RecipientMailbox.length;i++){
+                    
+		var userBean = server.getUserBean(RecipientMailbox[i]);
+				
+        var toAddr = userBean.getEmailAddress();
+			
+		if(toAddr != null && toAddr != ""){
+			if(toAddr.indexOf(";")>-1){
+				toAddr = toAddr.replace(";","");
+			}
+		//	log("send email to address : " + toAddr);
+			toList.add(toAddr); 
+	    }
+    }
+}
+
+//打印
 function log(s){
     Packages.mks.util.Logger.message(s);
 }
 
+//判断是否延期
 function documentCommentCheck(){
 
-	log("...Schedual Send Item Length ---------------=" + allItemIds.length);
+	//log("...Schedual Send Item Length ---------------=" + allItemIds.length);
 	if(!allItemIds || allItemIds.length == 0){
 		return;
 	}
 	
 	for(var i=0; i<allItemIds.length; i++){
-		var delta = sb.getIssueBean(allItemIds[i]);
+		var delta = server.getIssueBean(allItemIds[i]); 
 		var DelayNoticeDateStr  = delta.getFieldValue("Delay Notice Date");
 		log("Delay Notice Date  =  " + DelayNoticeDateStr);
 	
@@ -63,26 +249,142 @@ function documentCommentCheck(){
 		log("currentDay : "+ currentDay );
 		
 		if( DelayNoticeDay < currentDay ){
-			log("----------------" + isReply(delta));
-			eb.abortScript("No reply personnel : " + isReply(delta),true);
+			testPlanCheck();//获取Project Manager DG组的领导
+			isReply(delta);//获取符合条件的用户
+			getUserByEmail();//获取所有用户的邮箱
+			//log("----------------" + isReply(delta));
+			//eb.abortScript("No reply personnel : " + isReply(delta),true);
+			//printParams(); //打印
+			var body = createHTMLBody(delta); 
+ 
+			//发送邮件
+			try{
+				
+				sendMailToUser(toList,"Defect Notice Exhibition Unanswered", body);
+			}catch(e){
+				log(e);
+			}
+			
+			try{
+				dingMessage(receiveIds,userFullName,delta);
+			}catch(e){
+				log("Connect DingDing error");
+			}
 			return;
 		}
 	}
-
-	
 	 
 }
 
-///START
+//钉钉jar
+importPackage(Packages.org.apache.commons.codec.digest);
+importPackage(Packages.org.apache.http);
+importPackage(Packages.org.apache.http.client);
+importPackage(Packages.org.apache.http.client.entity);
+importPackage(Packages.org.apache.http.client.methods);
+importPackage(Packages.org.apache.http.impl.client); 
+importPackage(Packages.org.apache.http.message); 
+importPackage(Packages.net.sf.json);
+importPackage(Packages.com.dingtalk.api);
+importPackage(Packages.com.dingtalk.api.request);
+importPackage(Packages.com.dingtalk.api.response);
+importPackage(Packages.com.taobao.api);
+importPackage(Packages.newfis.dingtalk);
+//通知到钉钉
+function dingMessage(receiveIds,userFullName,delta){
+//获取token信息
+log("刚开始进入");
+	try{
+		log("=================="+receiveIds.get(0));
+		var reciveId = receiveIds.get(0);
+		var message = userFullName + "：You have one ID[" + delta.getIssueIDString() + "] 、state[" + delta.getState() + "] Of [" + delta.getType() +"] Pending disposal.";
+		
+		log(message);
+		var dingTalkNotice = new DingTalkNotice();
+		dingTalkNotice.sendMessage(reciveId,"text",message);
+		log("ddSuccess");
+	}catch(e){
+		e.printStackTrace();
+		log("发送失败");
+	}
+}
 
-eb = bsf.lookupBean("siEnvironmentBean");//环境变量
-log("----- eb = " +  eb);
-sb = bsf.lookupBean("imServerBean");//全部服务对象
-log("----- sb = " +  sb);
-//delta = bsf.lookupBean("imIssueDeltaBean");//触发对象
-stb = bsf.lookupBean("imScheduleTriggerArgumentsBean");
-allItemIds = stb.getIssues();
-//log("----- delta = " +  delta.getID());
-//log("----- oldState =" + delta.getOldState());
-//log("----- newState =" + delta.getNewState());
+//邮件html格式
+function createHTMLBody(delta){
+
+	   var itemId = delta.getIssueIDString();
+	   //log("-----------------------"+delta.getFieldValue("DaysRecordInCurrentState"));
+       var type = delta.getType();
+		 //log("type-----------------------"+type);
+       var summary = delta.getSummary() == null ? "" : delta.getSummary();  
+		//log("summary-----------------------"+summary);
+       var state = delta.getState()  == null ? "" : delta.getState();    
+		//log("state-----------------------"+state);
+	   var project = delta.getFieldValue("Project") == null ? "" : delta.getFieldValue("Project"); 
+
+	   var createUser = delta.getCreatedUser();
+
+        var msg = "<html>";
+
+       msg += "<head>";
+
+       msg += "<title>Test Session Details for one test session</title>";
+
+       msg += "<meta http-equiv='Content-Type' content='text/html;charset=utf-8' />";
+
+       msg += "<style type='text/css'>";
+
+      msg += "body {background-color:#FFFFFF; font-family: Verdana,Arial,Helvetica,Tahoma,sans-serif; font-size: 11px; color:#666666;}";
+
+       msg += "</style>";
+
+       msg += "</head>";
+
+       msg += "<body>";
+
+       msg += "<div><font size=2>Hi " + assignUser +": </font></br></div><br/>";      
+
+       msg += "<div><font size=2 style='color: red;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + title + " : " + state +" ,please view! </font></div><br/>"
+
+       msg += "<table width='100%' cellspacing='0' cellpadding='3' >";
+
+       //ID
+
+       msg += "<tr><th align='left' width='30%'>ID</th><td align='left'><a href='"+ hostUrl + "/im/viewissue?selection=" + itemId + "'>" + itemId + "</a></td></tr>";
+
+       //Type Name
+
+       msg += "<tr><th align='left' width='30%'>Type Name</th><td align='left'>" + type + "</td></tr>";
+
+       //Summary
+
+       msg += "<tr><th align='left' width='30%'>Summary</th><td align='left'>" + summary + "</td></tr>";
+    
+
+       //State
+       msg += "<tr><th align='left' width='30%'>State</th><td align='left'>" + state + "</td></tr>";
+       //assignUser
+       msg += "<tr><th align='left' width='30%'>Assign User</th><td align='left'>" + assignUser + "</td></tr>";
+       //project
+       msg += "<tr><th align='left' width='30%'>Project</th><td align='left'>" + project + "</td></tr>";
+	   msg += "<tr><th align='left' width='30%'>Modify Date</th><td align='left'> not</td></tr>";
+       msg += "</table>";
+       //Note : This is a reminder email from PTC Integrity System, please don't reply !
+       msg += "<br/><br/><div><font size=2 color='red'><i>" + noteInfo + "</i></font></div>";
+       msg += "</body>";
+       msg += "</html>";
+	   
+      return msg;
+
+}
+
+
+//主判断方法
 documentCommentCheck();
+
+//UTF字符转换
+ function ReChange(pValue){
+      return unescape(pValue.replace(/&#x/g,'%u').replace(/\\u/g,'%u').replace(/;/g,''));
+}
+
+ 
