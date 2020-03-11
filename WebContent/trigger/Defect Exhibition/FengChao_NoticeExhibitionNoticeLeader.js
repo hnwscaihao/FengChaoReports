@@ -46,7 +46,7 @@ var fromAddr = "alm@gwm.cn";
 
 var toList = new java.util.ArrayList();//装邮箱的集合 emailAddress
 
-var receiveIds = new java.util.ArrayList();//装app推送接受人的集合 logid
+var receiveIds = [];//装app推送接受人的集合 logid
 
 var hostPort = eb.getMailHostnameAndPort();
 
@@ -167,8 +167,12 @@ function isReply(delta){
 			RecipientMailbox.push(user.trim());   //邮件人员
 			assignUser += getUserName(user.trim())+",";//名字
 			//丁丁
-			receiveIds.add(user.trim());
-			userFullName = server.getUserBean(user.trim()).getFullName();
+			//receiveIds.add(user.trim());
+			//userFullName = server.getUserBean(user.trim()).getFullName();
+			var obj = {};
+			obj.id = user.trim();
+			obj.name = server.getUserBean(user.trim()).getFullName();
+			receiveIds.push(obj);
 			 //log("RecipientMailbox : " + RecipientMailbox[i]);
 		}
 	}
@@ -195,8 +199,13 @@ function testPlanCheck(){
 		for(var a = 0;a<users.length;a++){
 			RecipientMailbox.push(users[a].trim());
 			assignUser += getUserName(users[a].trim())+",";
-			receiveIds.add(users[a].trim());//丁丁
-			userFullName = server.getUserBean(users[a].trim()).getFullName();
+			//丁丁
+			//receiveIds.add(users[a].trim());
+			//userFullName = server.getUserBean(users[a].trim()).getFullName();
+			var obj = {};
+			obj.id = users[a].trim();
+			obj.name = server.getUserBean(users[a].trim()).getFullName();
+			receiveIds.push(obj);
 			//log("User1 = " + users[a]);
 		}
 		
@@ -256,7 +265,8 @@ function documentCommentCheck(){
 			//eb.abortScript("No reply personnel : " + isReply(delta),true);
 			//printParams(); //打印
 			var body = createHTMLBody(delta); 
- 
+			
+		
 			//发送邮件
 			try{
 				
@@ -264,9 +274,9 @@ function documentCommentCheck(){
 			}catch(e){
 				log(e);
 			}
-			
+			//dingding
 			try{
-				dingMessage(receiveIds,userFullName,delta);
+				dingMessage(delta);
 			}catch(e){
 				log("Connect DingDing error");
 			}
@@ -291,18 +301,25 @@ importPackage(Packages.com.dingtalk.api.response);
 importPackage(Packages.com.taobao.api);
 importPackage(Packages.newfis.dingtalk);
 //通知到钉钉
-function dingMessage(receiveIds,userFullName,delta){
-//获取token信息
-log("刚开始进入");
-	try{
-		log("=================="+receiveIds.get(0));
-		var reciveId = receiveIds.get(0);
-		var message = userFullName + "：You have one ID[" + delta.getIssueIDString() + "] 、state[" + delta.getState() + "] Of [" + delta.getType() +"] Pending disposal.";
-		
-		log(message);
+function dingMessage(delta){
+//获取token信息 
+	try{ 
 		var dingTalkNotice = new DingTalkNotice();
-		dingTalkNotice.sendMessage(reciveId,"text",message);
-		log("ddSuccess");
+		var id = delta.getIssueIDString();
+		var state = delta.getState();
+		var type = delta.getType();
+		for(var i = 0;i<receiveIds.length;i++){
+			log("=================="+receiveIds[i].id);
+			log("=================="+receiveIds[i].name);
+			var reciveId = receiveIds[i].id;
+			var userFullName = receiveIds[i].name;
+			if(reciveId == 'admin'){  //测试判断  正式环境注释
+				var message = userFullName + "：You have one ID[" + id + "] 、state[" + state + "] Of [" + type +"] Pending disposal.";
+				log(message);
+				dingTalkNotice.sendMessage(reciveId,"text",message);
+				log("ddSuccess----------------");
+			}
+		}
 	}catch(e){
 		e.printStackTrace();
 		log("发送失败");
