@@ -113,9 +113,10 @@ description="Text appearing at the bottom of the report page."
 	</span>
 	<span class="spanRight">
 		<strong>StartDate-EndDate:</strong>
-		<input type="date" name="start_date" id="start_date"/>-
-		<input type="date" name="end_date" id="end_date"/>
+		<input type="date" name="start_date" id="start_date" style="width: 135px; height: 30px;"/>-
+		<input type="date" name="end_date" id="end_date" style="width: 135px; height: 30px;"/>
 		<button  id="sub" onclick=submit();>Search by time</button>
+		<button  id="sub" onclick=Eliminate();>Eliminate</button>
 	</span>	
 </div>
 <!--画表格-->
@@ -354,7 +355,7 @@ description="Text appearing at the bottom of the report page."
 				for(var j =0;j<tr.length;j++){
 					if(tr[j].getAttribute("id") == proid+AreaVal || tr[j].getAttribute("id") == proid+AreaVal+" statistics" || ary.	  indexOf(tr[j].getAttribute("id")) > -1){
 						ary.push(tr[j].getAttribute("id"));
-						console.log(ary);
+						//console.log(ary);
 						tr[j].hidden = false;
 					}else {
 						tr[j].hidden = true;
@@ -372,9 +373,9 @@ description="Text appearing at the bottom of the report page."
 				var proid = proelm.split("/")[1]; 
 				for(var i =0;i<tr.length;i++){ 
 				if(tr[i].getAttribute("id") == proid + AreaVal || tr[i].getAttribute("id") == proid + AreaVal+" statistics"){
-					console.log(proid + AreaVal);
-					console.log("id --"+tr[i].getAttribute("id"));
-					console.log(tr[i]);
+					//console.log(proid + AreaVal);
+					//console.log("id --"+tr[i].getAttribute("id"));
+					//console.log(tr[i]);
 					
 					tr[i].hidden = false;
 				}else {
@@ -392,10 +393,64 @@ description="Text appearing at the bottom of the report page."
 		var endte = document.getElementById("end_date").value;
 		console.log(satrtDate);
 		console.log(endte);
-		var proDate = [];
-		proDate.push(satrtDate);
-		proDate.push(endte);
-		countDate(proDate)//统计数据
+		if(satrtDate == "" && satrtDate == ""){
+			alert("Please select a time first!"); 
+		} else {
+			var proDate = [];
+			proDate.push(satrtDate);
+			proDate.push(endte);
+			countDate(proDate)//统计数据
+			console.log(proDate);
+			console.log(CountData);
+			getProjectDate();//加载DOM
+		
+			var tj1 = document.getElementById("Project");
+			var tj2 = document.getElementById("Area");
+			if(tj1.value !="all"){
+				//隐藏处选中的所有table 
+				xstable(tj1.value);
+			}
+		
+			if(tj2.value !="all"){
+				//隐藏除选中的所有tr
+				var tr1 = document.getElementsByClassName("trls"); 
+				var Area1 = tj2.value;
+				var proelm = tj1.value; 
+				if(proelm == "all"){
+					var ary = [];
+					for(var i =0;i<Projects.length;i++){
+						var proid = Projects[i].split("/")[1]; 
+						for(var j =0;j<tr1.length;j++){
+							if(tr1[j].getAttribute("id") == proid+Area1 || tr1[j].getAttribute("id") == proid+Area1+" statistics" || ary.	  indexOf(tr1[j].getAttribute("id")) > -1){
+								ary.push(tr1[j].getAttribute("id"));
+								//console.log(ary);
+								tr1[j].hidden = false;
+							}else {
+								tr1[j].hidden = true;
+							}
+						}
+					}
+				} else {
+					var proid = proelm.split("/")[1]; 
+					for(var i =0;i<tr1.length;i++){ 
+						if(tr1[i].getAttribute("id") == proid + Area1 || tr1[i].getAttribute("id") == proid + Area1+" statistics"){ 
+							tr1[i].hidden = false;
+						}else {
+							tr1[i].hidden = true;
+						}
+					} 
+				}
+			} 
+		}
+		
+	}
+	//清除时间搜索 
+	function Eliminate(){ 
+		document.getElementById("Project").value = "all";
+		document.getElementById("Area").value = "all";
+		document.getElementById("start_date").value = "";
+		document.getElementById("end_date").value = "";
+		countDate("")//统计数据
 		console.log(proDate);
 		console.log(CountData);
 		getProjectDate();//加载DOM
