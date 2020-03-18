@@ -33,19 +33,106 @@ description="Text appearing at the bottom of the report page."
 
 
     <script type="text/javascript">
+		//所有需要统计的字段
+		var data = {
+			"State":[],
+			"Responsibility Team":[],
+			"Type":[],
+			"Defect Source":[],
+			"Defect Type":[],
+			"Origin":[],
+			"Task Phase":[],
+			"defectState":[],
+			"Change Category":[],
+			"Change Initiator":[]
+		};
 
-		//记录project 数量
-		var Projects =[];
-		//记录project type 数量
-		var Area =["QA Task","Non-Conformance Issue","Document","Defect Source And Defect Type","Defect Origin And TaskPhase","Defect State And DefectState","Defect ResponsibilityTeam And State","ChangeRequestType","ChangeCategory And ChangeInitiator","ChangeOrderType","Test Plan","Test Objective","Test Session","Task","Supplier Monitor Task","Release","Risk","LL & BP"];
-        //总数据
-        var data = {};
- 
+		//project 数量
+		var Projects =[];	
+		//project type  
+		var Area =["QA Task","Non-Conformance Issue","Document","Defect Source And Defect Type","Defect Origin And TaskPhase","Defect State And DefectState","Defect ResponsibilityTeam And State","ChangeRequestType","ChangeCategory And ChangeInitiator","ChangeOrderType","Test Plan","Test Objective","Test Session","Task","Supplier Monitor Task","Release","Risk","LL & BP"];		
+	</script>
+</head>
+<%begindetail%>
+<script type="text/javascript"> 
+	if(Projects.indexOf("<%<%builtin Project%>%>") == -1){
+		Projects.push("<%<%builtin Project%>%>");
+	}
+
+	//时间判断 如果没有Actual Start Date和Actual End Date 就已Created Date为准
+	var proDate = "";
+	if("<%Actual Start Date%>" != "" && "<%Actual End Date%>" != ""){
+		proDate = "<%Actual Start Date%>-" + "<%Actual End Date%>"; 
+	}else { 
+		proDate = "<%Created Date%>"; 
+	}
+	var  StateDate = "<%State%>" == "&nbsp;"?"null":"<%State%>";
+	data["State"].push({[StateDate]:["<%<%builtin Project%>%>","<%<%builtin Type%>%>",proDate]}); 
+	
+	var  ResponsibilityTeamDate = "<%Responsibility Team%>" == "&nbsp;"?"null":"<%Responsibility Team%>"; 
+	data["Responsibility Team"].push({[ResponsibilityTeamDate]:["<%<%builtin Project%>%>","<%<%builtin Type%>%>",proDate]}); 
+    
+	var  TypeDate = "<%Type%>" == "&nbsp;"?"null":"<%Type%>";
+	data["Type"].push({[TypeDate]:["<%<%builtin Project%>%>","<%<%builtin Type%>%>",proDate]}); 
+	
+	var  DefectSourceDate = "<%Defect Source%>" == "&nbsp;"?"null":"<%Defect Source%>";
+	data["Defect Source"].push({[DefectSourceDate]:["<%<%builtin Project%>%>","<%<%builtin Type%>%>",proDate]}); 
+	
+	var  DefectTypeDate = "<%Defect Type%>" == "&nbsp;"?"null":"<%Defect Type%>";
+	data["Defect Type"].push({[DefectTypeDate]:["<%<%builtin Project%>%>","<%<%builtin Type%>%>",proDate]}); 
+	
+	var  OriginDate = "<%Origin%>" == "&nbsp;"?"null":"<%Origin%>";
+	data["Origin"].push({[OriginDate]:["<%<%builtin Project%>%>","<%<%builtin Type%>%>",proDate]}); 
+	
+	var  TaskPhaseDate = "<%Task Phase%>" == "&nbsp;"?"null":"<%Task Phase%>";
+	data["Task Phase"].push({[TaskPhaseDate]:["<%<%builtin Project%>%>","<%<%builtin Type%>%>",proDate]}); 
+	
+	var  defectStateDate = "<%defectState%>" == "&nbsp;"?"null":"<%defectState%>";
+	data["defectState"].push({[defectStateDate]:["<%<%builtin Project%>%>","<%<%builtin Type%>%>",proDate]}); 
+	
+	var  ChangeCategoryDate = "<%Change Category%>" == "&nbsp;"?"null":"<%Change Category%>";
+	data["Change Category"].push({[ChangeCategoryDate]:["<%<%builtin Project%>%>","<%<%builtin Type%>%>",proDate]}); 
+	
+	var  ChangeInitiatorDate = "<%Change Initiator%>" == "&nbsp;"?"null":"<%Change Initiator%>";
+	data["Change Initiator"].push({[ChangeInitiatorDate]:["<%<%builtin Project%>%>","<%<%builtin Type%>%>",proDate]}); 
+		
+</script>
+<%enddetail%>
+<div>
+	<span class="spanRight">
+		<strong>Project: </strong>
+		<select class="selectProject" id="Project" name="Project" style="width:210px;height: 30px;" >
+			<option value="all"> - Please Select - </option>
+		</select>
+	</span>
+	<span class="spanRight">
+		<strong>Area: </strong>
+		<select class="selectArea" id="Area" name="Area" name="Area" style="width:210px;height: 30px;">
+			<option value="all"> - Please Select - </option>
+		</select>
+	</span>
+	<span class="spanRight">
+		<strong>StartDate-EndDate:</strong>
+		<input type="date" name="start_date" id="start_date"/>-
+		<input type="date" name="end_date" id="end_date"/>
+		<button  id="sub" onclick=submit();>Search by time</button>
+	</span>	
+</div>
+<!--画表格-->
+<div id = "projectDom" style = " margin-bottom:10px">
+
+</div>
+
+</body>
+<script>
+    console.log(data);  
 		//统计数据
+		var CountData = {}; 
+	
 		//QATask state统计
 		var QATaskData = {
             "State":[{"Open":0},{"In Progress":0},{"Completed":0},{"Cancelled":0}]
-        }
+    }	
 		//Non-Conformance Issue   Responsibility Team统计
 		var ResponsibilityTeamData = {
             "Open":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
@@ -125,7 +212,8 @@ description="Text appearing at the bottom of the report page."
 			 "System Architecture":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},{"Performance":0},{"Gramer":0},{"Design Defect":0}],
 			 "Software Architecture":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},{"Performance":0},{"Gramer":0},{"Design Defect":0}],
 			 "Software Detailed Design":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},{"Performance":0},{"Gramer":0},{"Design Defect":0}],
-			 "Code、Test":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},{"Performance":0},{"Gramer":0},{"Design Defect":0}],
+			 "Code":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},{"Performance":0},{"Gramer":0},{"Design Defect":0}],
+			 "Test":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},{"Performance":0},{"Gramer":0},{"Design Defect":0}],
 			 "Software Integration":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},{"Performance":0},{"Gramer":0},{"Design Defect":0}],
 			 "System Integration":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},{"Performance":0},{"Gramer":0},{"Design Defect":0}] 
 		}
@@ -139,11 +227,11 @@ description="Text appearing at the bottom of the report page."
 		}
 		//Defect StateAndDefectState 
 		var StateAndDefectState = {
-			"Problem Definition" : [{"false":0},{"true":0}],
-			"Validation and Closed" : [{"false":0},{"true":0}],
-			"Execute Corrective Action" : [{"false":0},{"true":0}],
-			"Problem Confirmation" : [{"false":0},{"true":0}],
-			"Develop Inverstigation" : [{"false":0},{"true":0}] 
+			"Open" : [{"false":0},{"true":0}],
+			"In Testing" : [{"false":0},{"true":0}],
+			"In Progress" : [{"false":0},{"true":0}],
+			"In Analysis" : [{"false":0},{"true":0}],
+			"Analyzed" : [{"false":0},{"true":0}] 
 		}
 		//Defect ResponsibilityTeamAndState  
 		var ResponsibilityTeamAndState = {
@@ -213,315 +301,18 @@ description="Text appearing at the bottom of the report page."
 		var LLAndBPData = {
 			"LL & BP" : [{"Open":0},{"In Analysis":0},{"Postponed":0},{"Rejected":0},{"Accepted":0},{"Published":0},{"Retired":0}] 
 		} 
-	</script>
-</head>
-<%begindetail%>
-<script type="text/javascript">
-//console.log("<%<%builtin Project%>%>");
-//console.log("<%<%builtin Type%>%>");
-	//记录project的数据
-	if(Projects.indexOf("<%<%builtin Project%>%>") == -1){
-		//每个project都要清除全局统计数据
-		var QATaskData = {
-            "State":[{"Open":0},{"In Progress":0},{"Completed":0},{"Cancelled":0}]
-        }
-		var ResponsibilityTeamData = {
-            "Open":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
-            "In Progress":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
-            "Verify":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
-            "Closed":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
-        }
-		var DocumentDate ={
-            "Open":[{"System Requirement Specification Document":0},
-                {"System Architectural Design Specification Document":0},
-                {"Software Requirement Specification Document":0},
-                {"Software Architectural Design Specification Document":0},
-                {"Software Detail Design Specification Document":0},
-                {"Hardware Requirement Specification Document":0},
-                {"Hardware Design Document":0},
-                {"General Document":0},
-                {"Test Suite":0}],
-            "InReview":[{"System Requirement Specification Document":0},
-                {"System Architectural Design Specification Document":0},
-                {"Software Requirement Specification Document":0},
-                {"Software Architectural Design Specification Document":0},
-                {"Software Detail Design Specification Document":0},
-                {"Hardware Requirement Specification Document":0},
-                {"Hardware Design Document":0},
-                {"General Document":0},
-                {"Test Suite":0}],
-            "Audit":[{"System Requirement Specification Document":0},
-                {"System Architectural Design Specification Document":0},
-                {"Software Requirement Specification Document":0},
-                {"Software Architectural Design Specification Document":0},
-                {"Software Detail Design Specification Document":0},
-                {"Hardware Requirement Specification Document":0},
-                {"Hardware Design Document":0},
-                {"General Document":0},
-                {"Test Suite":0}],
-            "In Approve":[{"System Requirement Specification Document":0},
-                {"System Architectural Design Specification Document":0},
-                {"Software Requirement Specification Document":0},
-                {"Software Architectural Design Specification Document":0},
-                {"Software Detail Design Specification Document":0},
-                {"Hardware Requirement Specification Document":0},
-                {"Hardware Design Document":0},
-                {"General Document":0},
-                {"Test Suite":0}],
-            "Published":[{"System Requirement Specification Document":0},
-                {"System Architectural Design Specification Document":0},
-                {"Software Requirement Specification Document":0},
-                {"Software Architectural Design Specification Document":0},
-                {"Software Detail Design Specification Document":0},
-                {"Hardware Requirement Specification Document":0},
-                {"Hardware Design Document":0},
-                {"General Document":0},
-                {"Test Suite":0}],
-            "Retired":[{"System Requirement Specification Document":0},
-                {"System Architectural Design Specification Document":0},
-                {"Software Requirement Specification Document":0},
-                {"Software Architectural Design Specification Document":0},
-                {"Software Detail Design Specification Document":0},
-                {"Hardware Requirement Specification Document":0},
-                {"Hardware Design Document":0},
-                {"General Document":0},
-                {"Test Suite":0}],
-            "Inactive":[{"System Requirement Specification Document":0},
-                {"System Architectural Design Specification Document":0},
-                {"Software Requirement Specification Document":0},
-                {"Software Architectural Design Specification Document":0},
-                {"Software Detail Design Specification Document":0},
-                {"Hardware Requirement Specification Document":0},
-                {"Hardware Design Document":0},
-                {"General Document":0},
-                {"Test Suite":0}]
-        }
-		var SourceAndType = {
-			 "Requirement":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},{"Performance":0},{"Gramer":0},{"Design Defect":0}],
-			 "System Architecture":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},{"Performance":0},{"Gramer":0},{"Design Defect":0}],
-			 "Software Architecture":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},{"Performance":0},{"Gramer":0},{"Design Defect":0}],
-			 "Software Detailed Design":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},{"Performance":0},{"Gramer":0},{"Design Defect":0}],
-			 "Code、Test":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},{"Performance":0},{"Gramer":0},{"Design Defect":0}],
-			 "Software Integration":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},{"Performance":0},{"Gramer":0},{"Design Defect":0}],
-			 "System Integration":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},{"Performance":0},{"Gramer":0},{"Design Defect":0}] 
-		}
-		var OriginAndTaskPhase = {
-			"Software Unit Test" : [{"Open":0},{"Pending":0},{"Closed":0}],
-			"Software Integration Test" : [{"Open":0},{"Pending":0},{"Closed":0}],
-			"Software Qulification Test" : [{"Open":0},{"Pending":0},{"Closed":0}],
-			"System Integration Test" : [{"Open":0},{"Pending":0},{"Closed":0}],
-			"System Qulification Test" : [{"Open":0},{"Pending":0},{"Closed":0}] 
-		}
-		var StateAndDefectState = {
-			"Problem Definition" : [{"false":0},{"true":0}],
-			"Validation and Closed" : [{"false":0},{"true":0}],
-			"Execute Corrective Action" : [{"false":0},{"true":0}],
-			"Problem Confirmation" : [{"false":0},{"true":0}],
-			"Develop Inverstigation" : [{"false":0},{"true":0}] 
-		}
-		var ResponsibilityTeamAndState = {
-			"PM" : [{"Open":0},{"In Analysis":0},{"Analyzed":0},{"In Progress":0},{"InTesting":0},{"Verified":0},{"Closed":0},{"Rejected":0},{"Postponed":0}],
-			"STS" : [{"Open":0},{"In Analysis":0},{"Analyzed":0},{"In Progress":0},{"InTesting":0},{"Verified":0},{"Closed":0},{"Rejected":0},{"Postponed":0}],
-			"ASW" : [{"Open":0},{"In Analysis":0},{"Analyzed":0},{"In Progress":0},{"InTesting":0},{"Verified":0},{"Closed":0},{"Rejected":0},{"Postponed":0}],
-			"BSW" : [{"Open":0},{"In Analysis":0},{"Analyzed":0},{"In Progress":0},{"InTesting":0},{"Verified":0},{"Closed":0},{"Rejected":0},{"Postponed":0}],
-			"HW" : [{"Open":0},{"In Analysis":0},{"Analyzed":0},{"In Progress":0},{"InTesting":0},{"Verified":0},{"Closed":0},{"Rejected":0},{"Postponed":0}],
-			"TEST" : [{"Open":0},{"In Analysis":0},{"Analyzed":0},{"In Progress":0},{"InTesting":0},{"Verified":0},{"Closed":0},{"Rejected":0},{"Postponed":0}],
-			"QA" : [{"Open":0},{"In Analysis":0},{"Analyzed":0},{"In Progress":0},{"InTesting":0},{"Verified":0},{"Closed":0},{"Rejected":0},{"Postponed":0}],
-		}
-		var ChangeRequestType = {
-			"Change Request" : [{"Open":0},{"In Progress":0},{"Approveed":0},{"Fixed":0},{"Closed":0},{"Rejected":0},{"Cancelled":0},{"Postponed":0}] 
-		}
-		var ChangeCategoryAndChangeInitiator = {
-			"REQ Change" : [{"Customer":0},{"Supplier":0},{"Internal":0}],
-			"Design Change" : [{"Customer":0},{"Supplier":0},{"Internal":0}],
-			"Plan Change" : [{"Customer":0},{"Supplier":0},{"Internal":0}]
-		}
-		var ChangeOrderType = {
-			"Change Order" : [{"Open":0},{"In Development":0},{"Verify":0},{"Closed":0}] 
-		}
-		var TestPlanType = {
-			"Test Plan" : [{"Submit":0},{"In Testing":0},{"In Approve":0},{"Completed":0},{"Delay":0},{"Cancelled":0}] 
-		}
-		var TestObjectiveType = {
-			"Test Objective" : [{"Submit":0},{"In Testing":0},{"In Approve":0},{"Completed":0},{"Delay":0},{"Cancelled":0}] 
-		}
-		var TestSessionType = {
-			"Test Session" : [{"Submit":0},{"In Testing":0},{"In Approve":0},{"Completed":0},{"Delay":0},{"Cancelled":0}] 
-		}
-		var TaskData = {
-			"PM" : [{"Open":0},{"In Development":0},{"Completed":0},{"Cancelled":0}],
-			"STS" : [{"Open":0},{"In Development":0},{"Completed":0},{"Cancelled":0}],
-			"ASW" : [{"Open":0},{"In Development":0},{"Completed":0},{"Cancelled":0}],
-			"BSW" : [{"Open":0},{"In Development":0},{"Completed":0},{"Cancelled":0}],
-			"HW" : [{"Open":0},{"In Development":0},{"Completed":0},{"Cancelled":0}], 
-			"TEST" : [{"Open":0},{"In Development":0},{"Completed":0},{"Cancelled":0}], 
-			"QA" : [{"Open":0},{"In Development":0},{"Completed":0},{"Cancelled":0}] 
-		}
-		var SupplierMonitorTaskData = {
-			"PM" : [{"Open":0},{"In Progress":0},{"In Review":0},{"Audit":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}],
-			"STS" : [{"Open":0},{"In Progress":0},{"In Review":0},{"Audit":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}],
-			"ASW" : [{"Open":0},{"In Progress":0},{"In Review":0},{"Audit":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}],
-			"BSW" : [{"Open":0},{"In Progress":0},{"In Review":0},{"Audit":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}],
-			"HW" : [{"Open":0},{"In Progress":0},{"In Review":0},{"Audit":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}], 
-			"TEST" : [{"Open":0},{"In Progress":0},{"In Review":0},{"Audit":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}],
-			"QA" : [{"Open":0},{"In Progress":0},{"In Review":0},{"Audit":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}] 
-		}
-		var ReleaseData = {
-			"Release" : [{"Open":0},{"In Progress":0},{"Audit":0},{"In Approve":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}] 
-		}
-		var RiskData = {
-			"Risk":[{"Open":0},{"In Analysis":0},{"Rejected":0},{"Analyzed":0},{"In Monitoring":0},{"Postponed":0},{"Cloesd":0}]
-		}
-        var LLAndBPData = {
-			"LL & BP" : [{"Open":0},{"In Analysis":0},{"Postponed":0},{"Rejected":0},{"Accepted":0},{"Published":0},{"Retired":0}] 
-		}
-		
-		Projects.push("<%<%builtin Project%>%>");
-		data["<%<%builtin Project%>%>"] = {}; 
-	}
 	
-	//记录project type的数据
-	//if(Area.indexOf("<%<%builtin Type%>%>") == -1){
-		//Area.push("<%<%builtin Type%>%>");
-	//}
-	
-	//时间 
-	//console.log("Actual Start Date : " + "<%Actual Start Date%>");
-	//console.log("Actual End Date : " + "<%Actual End Date%>");
-	//console.log("Created Date : " + "<%Created Date%>"); 
-	
-	//QA Task数据
-	getDate("QA Task",QATaskData,"<%State%>");
-	
-	//Non-Conformance Issue数据
-	getDate("Non-Conformance Issue",ResponsibilityTeamData,"<%Reponsibilty Team%>");
-	
-	//Document数据
-	getDate("All Document",DocumentDate,"<%Gategory%>");
-	
-	//Defect SourceAndType
-	getDate("Defect",SourceAndType,"<%Defect Source%>");
-	
-	//Defect OriginAndTaskPhase  
-	getDate("Defect",OriginAndTaskPhase,"<%Task Phase%>");
-	
-	//Defect StateAndDefectState 
-	getDate("Defect",StateAndDefectState,"<%defectState%>");
-	
-	//Defect ResponsibilityTeamAndState  
-	getDate("Defect",ResponsibilityTeamAndState,"<%State%>");
-	
-	//Change  ChangeRequestType   
-	getDate("Change Request",ChangeRequestType,"<%State%>");
-	
-	//Change ChangeCategoryAndChangeInitiator   
-	getDate("Change Request",ChangeCategoryAndChangeInitiator,"<%Change Initiator%>");
-	
-	//  ChangeOrderType
-	getDate("Change Order",ChangeOrderType,"<%State%>");
-	
-	//Test Statistics  Test Plan  
-	getDate("Test Plan",TestPlanType,"<%State%>");
-	
-	//Test Statistics  Test Objective
-	getDate("Test Objective",TestObjectiveType,"<%State%>");
-	
-	//Test Statistics    TestSession
-	getDate("Test Session",TestSessionType,"<%State%>");
-	
-	//Task   
-	getDate("Task",TaskData,"<%State%>");
-	
-	//Supplier Monitor Task  
-	getDate("Supplier Monitor Task",SupplierMonitorTaskData,"<%State%>");
-	
-	//Release  
-	getDate("Release",ReleaseData,"<%State%>");
-	
-	//Risk   
-	getDate("Risk",RiskData,"<%State%>");
-	
-	//LL & BP 
-	getDate("LL & BP",LLAndBPData,"<%State%>"); 
-	
-	//统计数据方法 
-	function getDate(type,typeData,state){
-		if("<%<%builtin Type%>%>" == type  && Projects[Projects.length-1] == "<%<%builtin Project%>%>"){ 
-		for(var key in typeData){ 
-			var arr = typeData[key];
-			for(var i = 0;i<arr.length;i++){
-				var obj = arr[i];
-				if(state == Object.keys(obj)[0]){
-					var count = parseInt(obj[state]);
-					//console.log(count);
-					obj[state] = count+1;
-						
-				}
-				//console.log(obj);
-			}
-		}
-		}
-	}
-	//报存统计数据
-	data["<%<%builtin Project%>%>"].QATaskData = QATaskData;
-	data["<%<%builtin Project%>%>"].ResponsibilityTeamData = ResponsibilityTeamData;
-	data["<%<%builtin Project%>%>"].DocumentDate = DocumentDate;
-	
-	data["<%<%builtin Project%>%>"].SourceAndType = SourceAndType;
-	data["<%<%builtin Project%>%>"].OriginAndTaskPhase = OriginAndTaskPhase;
-	data["<%<%builtin Project%>%>"].StateAndDefectState = StateAndDefectState;
-	data["<%<%builtin Project%>%>"].ResponsibilityTeamAndState = ResponsibilityTeamAndState;
-	data["<%<%builtin Project%>%>"].ChangeRequestType = ChangeRequestType;
-	data["<%<%builtin Project%>%>"].ChangeCategoryAndChangeInitiator = ChangeCategoryAndChangeInitiator;
-	data["<%<%builtin Project%>%>"].ChangeOrderType = ChangeOrderType;
-	data["<%<%builtin Project%>%>"].TestPlanType = TestPlanType;
-	data["<%<%builtin Project%>%>"].TestObjectiveType = TestObjectiveType;
-	data["<%<%builtin Project%>%>"].TestSessionType = TestSessionType;
-	data["<%<%builtin Project%>%>"].TaskData = TaskData;
-	data["<%<%builtin Project%>%>"].SupplierMonitorTaskData = SupplierMonitorTaskData;
-	data["<%<%builtin Project%>%>"].ReleaseData = ReleaseData;
-	data["<%<%builtin Project%>%>"].RiskData = RiskData;
-	data["<%<%builtin Project%>%>"].LLAndBPData = LLAndBPData;
-</script>
-<%enddetail%>
-<div>
-	<span class="spanRight">
-		<strong>Project: </strong>
-		<select class="selectProject" id="Project" name="Project" style="width:210px;height: 30px;" >
-			<option value="all"> - Please Select - </option>
-		</select>
-	</span>
-	<span class="spanRight">
-		<strong>Area: </strong>
-		<select class="selectArea" id="Area" name="Area" name="Area" style="width:210px;height: 30px;">
-			<option value="all"> - Please Select - </option>
-		</select>
-	</span>
-	<span class="spanRight">
-		<strong>StartDate-EndDate:</strong>
-		<input type="date" name="user_date" />-
-		<input type="date" name="user_date" />
-	</span>	
-</div>
-<!--画表格-->
-<div id = "projectDom" style = " margin-bottom:10px">
-
-</div>
-
-</body>
-<script>
-    console.log(Projects);
-    console.log(data);
-    console.log(Area);
-    getProjectDate();
-   
-   //Projects下拉选
-   var ProjectElm = document.getElementById("Project");
-   for(var i = 0;i<Projects.length;i++){ 
+	//Projects下拉选
+	var ProjectElm = document.getElementById("Project");
+	for(var i = 0;i<Projects.length;i++){ 
 	   var newItem = new Option(Projects[i],Projects[i]);   
 	   ProjectElm.options.add(newItem); 
-   } 
-   //Projects下拉选改变事件 
+	   
+	   //先给统计数据初始化
+	   CountData[Projects[i]] = {};
+	} 
+    
+	 //Projects下拉选改变事件 
 	ProjectElm.onchange = function(){ 
     	// 通过对象获取value和text
         var ProjectVal = this.value;
@@ -594,6 +385,26 @@ description="Text appearing at the bottom of the report page."
 		} 	
 	}
 	
+	//按时间搜索 
+	function submit(){
+		var proDate = document.getElementById("sub");
+		var satrtDate = document.getElementById("start_date").value;
+		var endte = document.getElementById("end_date").value;
+		console.log(satrtDate);
+		console.log(endte);
+		var proDate = [];
+		proDate.push(satrtDate);
+		proDate.push(endte);
+		countDate(proDate)//统计数据
+		console.log(proDate);
+		console.log(CountData);
+		getProjectDate();//加载DOM
+	}
+	
+	countDate("")//统计数据
+	console.log(CountData);
+	getProjectDate();//加载DOM
+		
 	//显示隐藏table
 	function xstable(ProjectVal){
 		var title = document.getElementsByClassName("title");
@@ -619,8 +430,295 @@ description="Text appearing at the bottom of the report page."
 			alltr[i].hidden = false;
 		}
 	}
-   			
+	
+	//循环统计每个project的数据
+	function countDate(proDate){
+		for(var i = 0;i<Projects.length;i++){ 
+		//每个project统计先清空
+		QATaskData = {
+            "State":[{"Open":0},{"In Progress":0},{"Completed":0},{"Cancelled":0}]
+        }	
+		ResponsibilityTeamData = {
+            "Open":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+            "In Progress":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+            "Verify":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+            "Closed":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+        }
+		DocumentDate ={
+            "Open":[{"System Requirement Specification Document":0},
+                {"System Architectural Design Specification Document":0},
+                {"Software Requirement Specification Document":0},
+                {"Software Architectural Design Specification Document":0},
+                {"Software Detail Design Specification Document":0},
+                {"Hardware Requirement Specification Document":0},
+                {"Hardware Design Document":0},
+                {"General Document":0},
+                {"Test Suite":0}],
+            "InReview":[{"System Requirement Specification Document":0},
+                {"System Architectural Design Specification Document":0},
+                {"Software Requirement Specification Document":0},
+                {"Software Architectural Design Specification Document":0},
+                {"Software Detail Design Specification Document":0},
+                {"Hardware Requirement Specification Document":0},
+                {"Hardware Design Document":0},
+                {"General Document":0},
+                {"Test Suite":0}],
+            "Audit":[{"System Requirement Specification Document":0},
+                {"System Architectural Design Specification Document":0},
+                {"Software Requirement Specification Document":0},
+                {"Software Architectural Design Specification Document":0},
+                {"Software Detail Design Specification Document":0},
+                {"Hardware Requirement Specification Document":0},
+                {"Hardware Design Document":0},
+                {"General Document":0},
+                {"Test Suite":0}],
+            "In Approve":[{"System Requirement Specification Document":0},
+                {"System Architectural Design Specification Document":0},
+                {"Software Requirement Specification Document":0},
+                {"Software Architectural Design Specification Document":0},
+                {"Software Detail Design Specification Document":0},
+                {"Hardware Requirement Specification Document":0},
+                {"Hardware Design Document":0},
+                {"General Document":0},
+                {"Test Suite":0}],
+            "Published":[{"System Requirement Specification Document":0},
+                {"System Architectural Design Specification Document":0},
+                {"Software Requirement Specification Document":0},
+                {"Software Architectural Design Specification Document":0},
+                {"Software Detail Design Specification Document":0},
+                {"Hardware Requirement Specification Document":0},
+                {"Hardware Design Document":0},
+                {"General Document":0},
+                {"Test Suite":0}],
+            "Retired":[{"System Requirement Specification Document":0},
+                {"System Architectural Design Specification Document":0},
+                {"Software Requirement Specification Document":0},
+                {"Software Architectural Design Specification Document":0},
+                {"Software Detail Design Specification Document":0},
+                {"Hardware Requirement Specification Document":0},
+                {"Hardware Design Document":0},
+                {"General Document":0},
+                {"Test Suite":0}],
+            "Inactive":[{"System Requirement Specification Document":0},
+                {"System Architectural Design Specification Document":0},
+                {"Software Requirement Specification Document":0},
+                {"Software Architectural Design Specification Document":0},
+                {"Software Detail Design Specification Document":0},
+                {"Hardware Requirement Specification Document":0},
+                {"Hardware Design Document":0},
+                {"General Document":0},
+                {"Test Suite":0}]
+        }
+		SourceAndType = {
+			 "Requirement":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},{"Performance":0},{"Gramer":0},{"Design Defect":0}],
+			 "System Architecture":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},{"Performance":0},{"Gramer":0},{"Design Defect":0}],
+			 "Software Architecture":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},{"Performance":0},{"Gramer":0},{"Design Defect":0}],
+			 "Software Detailed Design":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},{"Performance":0},{"Gramer":0},{"Design Defect":0}],
+			 "Code":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},{"Performance":0},{"Gramer":0},{"Design Defect":0}],
+			 "Test":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},{"Performance":0},{"Gramer":0},{"Design Defect":0}],
+			 "Software Integration":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},{"Performance":0},{"Gramer":0},{"Design Defect":0}],
+			 "System Integration":[{"Function":0},{"Logical":0},{"Norms":0},{"Interface":0},{"Performance":0},{"Gramer":0},{"Design Defect":0}] 
+		}
+		OriginAndTaskPhase = {
+			"Software Unit Test" : [{"Open":0},{"Pending":0},{"Closed":0}],
+			"Software Integration Test" : [{"Open":0},{"Pending":0},{"Closed":0}],
+			"Software Qulification Test" : [{"Open":0},{"Pending":0},{"Closed":0}],
+			"System Integration Test" : [{"Open":0},{"Pending":0},{"Closed":0}],
+			"System Qulification Test" : [{"Open":0},{"Pending":0},{"Closed":0}] 
+		}
+		StateAndDefectState = {
+			"Open" : [{"false":0},{"true":0}],
+			"In Testing" : [{"false":0},{"true":0}],
+			"In Progress" : [{"false":0},{"true":0}],
+			"In Analysis" : [{"false":0},{"true":0}],
+			"Analyzed" : [{"false":0},{"true":0}] 
+		}
+		ResponsibilityTeamAndState = {
+			"PM" : [{"Open":0},{"In Analysis":0},{"Analyzed":0},{"In Progress":0},{"InTesting":0},{"Verified":0},{"Closed":0},{"Rejected":0},{"Postponed":0}],
+			"STS" : [{"Open":0},{"In Analysis":0},{"Analyzed":0},{"In Progress":0},{"InTesting":0},{"Verified":0},{"Closed":0},{"Rejected":0},{"Postponed":0}],
+			"ASW" : [{"Open":0},{"In Analysis":0},{"Analyzed":0},{"In Progress":0},{"InTesting":0},{"Verified":0},{"Closed":0},{"Rejected":0},{"Postponed":0}],
+			"BSW" : [{"Open":0},{"In Analysis":0},{"Analyzed":0},{"In Progress":0},{"InTesting":0},{"Verified":0},{"Closed":0},{"Rejected":0},{"Postponed":0}],
+			"HW" : [{"Open":0},{"In Analysis":0},{"Analyzed":0},{"In Progress":0},{"InTesting":0},{"Verified":0},{"Closed":0},{"Rejected":0},{"Postponed":0}],
+			"TEST" : [{"Open":0},{"In Analysis":0},{"Analyzed":0},{"In Progress":0},{"InTesting":0},{"Verified":0},{"Closed":0},{"Rejected":0},{"Postponed":0}],
+			"QA" : [{"Open":0},{"In Analysis":0},{"Analyzed":0},{"In Progress":0},{"InTesting":0},{"Verified":0},{"Closed":0},{"Rejected":0},{"Postponed":0}],
+		}
+		ChangeRequestType = {
+			"Change Request" : [{"Open":0},{"In Progress":0},{"Approveed":0},{"Fixed":0},{"Closed":0},{"Rejected":0},{"Cancelled":0},{"Postponed":0}] 
+		}
+		ChangeCategoryAndChangeInitiator = {
+			"REQ Change" : [{"Customer":0},{"Supplier":0},{"Internal":0}],
+			"Design Change" : [{"Customer":0},{"Supplier":0},{"Internal":0}],
+			"Plan Change" : [{"Customer":0},{"Supplier":0},{"Internal":0}]
+		}
+		ChangeOrderType = {
+			"Change Order" : [{"Open":0},{"In Development":0},{"Verify":0},{"Closed":0}] 
+		}
+		TestPlanType = {
+			"Test Plan" : [{"Submit":0},{"In Testing":0},{"In Approve":0},{"Completed":0},{"Delay":0},{"Cancelled":0}] 
+		}
+		TestObjectiveType = {
+			"Test Objective" : [{"Submit":0},{"In Testing":0},{"In Approve":0},{"Completed":0},{"Delay":0},{"Cancelled":0}] 
+		}
+		TestSessionType = {
+			"Test Session" : [{"Submit":0},{"In Testing":0},{"In Approve":0},{"Completed":0},{"Delay":0},{"Cancelled":0}] 
+		}
+		TaskData = {
+			"PM" : [{"Open":0},{"In Development":0},{"Completed":0},{"Cancelled":0}],
+			"STS" : [{"Open":0},{"In Development":0},{"Completed":0},{"Cancelled":0}],
+			"ASW" : [{"Open":0},{"In Development":0},{"Completed":0},{"Cancelled":0}],
+			"BSW" : [{"Open":0},{"In Development":0},{"Completed":0},{"Cancelled":0}],
+			"HW" : [{"Open":0},{"In Development":0},{"Completed":0},{"Cancelled":0}], 
+			"TEST" : [{"Open":0},{"In Development":0},{"Completed":0},{"Cancelled":0}], 
+			"QA" : [{"Open":0},{"In Development":0},{"Completed":0},{"Cancelled":0}] 
+		}
+		SupplierMonitorTaskData = {
+			"PM" : [{"Open":0},{"In Progress":0},{"In Review":0},{"Audit":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}],
+			"STS" : [{"Open":0},{"In Progress":0},{"In Review":0},{"Audit":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}],
+			"ASW" : [{"Open":0},{"In Progress":0},{"In Review":0},{"Audit":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}],
+			"BSW" : [{"Open":0},{"In Progress":0},{"In Review":0},{"Audit":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}],
+			"HW" : [{"Open":0},{"In Progress":0},{"In Review":0},{"Audit":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}], 
+			"TEST" : [{"Open":0},{"In Progress":0},{"In Review":0},{"Audit":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}],
+			"QA" : [{"Open":0},{"In Progress":0},{"In Review":0},{"Audit":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}] 
+		} 
+		ReleaseData = {
+			"Release" : [{"Open":0},{"In Progress":0},{"Audit":0},{"In Approve":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}] 
+		}
+		RiskData = {
+			"Risk":[{"Open":0},{"In Analysis":0},{"Rejected":0},{"Analyzed":0},{"In Monitoring":0},{"Postponed":0},{"Cloesd":0}]
+		} 
+		LLAndBPData = {
+			"LL & BP" : [{"Open":0},{"In Analysis":0},{"Postponed":0},{"Rejected":0},{"Accepted":0},{"Published":0},{"Retired":0}] 
+		} 
+	
    
+	   infoData(QATaskData,"QATaskData",Projects[i],"QA Task",proDate);
+	   infoData(ResponsibilityTeamData,"ResponsibilityTeamData",Projects[i],"Non-Conformance Issue",proDate);
+	   infoData(DocumentDate,"DocumentDate",Projects[i],"All Document",proDate);
+	   infoData(SourceAndType,"SourceAndType",Projects[i],"Defect",proDate);
+	   infoData(OriginAndTaskPhase,"OriginAndTaskPhase",Projects[i],"Defect",proDate);
+	   infoData(StateAndDefectState,"StateAndDefectState",Projects[i],"Defect",proDate);
+	   infoData(ResponsibilityTeamAndState,"ResponsibilityTeamAndState",Projects[i],"Defect",proDate);
+	   infoData(ChangeRequestType,"ChangeRequestType",Projects[i],"Change Request",proDate);
+	   infoData(ChangeCategoryAndChangeInitiator,"ChangeCategoryAndChangeInitiator",Projects[i],"Change Request",proDate);
+	   infoData(ChangeOrderType,"ChangeOrderType",Projects[i],"Change Order",proDate);
+	   infoData(TestPlanType,"TestPlanType",Projects[i],"Test Plan",proDate);
+	   infoData(TestObjectiveType,"TestObjectiveType",Projects[i],"Test Objective",proDate);
+	   infoData(TestSessionType,"TestSessionType",Projects[i],"Test Session",proDate);
+	   infoData(TaskData,"TaskData",Projects[i],"Task","");
+	   infoData(SupplierMonitorTaskData,"SupplierMonitorTaskData",Projects[i],"Supplier Monitor Task",proDate);
+	   infoData(ReleaseData,"ReleaseData",Projects[i],"Release",proDate);
+	   infoData(RiskData,"RiskData",Projects[i],"Risk","");
+	   infoData(LLAndBPData,"LLAndBPData",Projects[i],"LL & BP",proDate); 
+	} 
+	}
+
+	
+    //给定义好的统计数据赋值	
+	function infoData(proData,proTypeName,project,projecttype,projectdate){
+		var arr = Object.keys(proData);  
+		//console.log(arr.length);  //3
+		if(arr.length > 1){
+			for(var key in proData){
+			var pd = sjcl(project,projecttype,projectdate,key); //先判断横列有没有
+			if(pd){
+				var filed = proData[key];//数组 横列字段
+				for(var i = 0;i<filed.length;i++){  // 竖列字段
+					var obj = filed[i];  //对象
+					var name = Object.keys(obj)[0];//key
+					var pd = sjcl(project,projecttype,projectdate,name);//在判断竖列有没有
+					if(pd){
+						var count = parseInt(obj[name]); 
+						obj[name] = count+1;
+					}
+				}
+			}
+			}
+			
+		}else {
+			for(var  key in proData){
+			var filed = proData[key];//数组 横列字段
+				for(var i = 0;i<filed.length;i++){  // 竖列字段
+					var obj = filed[i];  //对象
+					var name = Object.keys(obj)[0];//key
+					var pd = sjcl(project,projecttype,projectdate,name);
+					if(pd){
+						var count = parseInt(obj[name]);
+						obj[name] = count+1;
+					}
+				}
+			}
+		}
+		CountData[project][proTypeName] =  proData ;
+		
+	}
+	
+	//处理数据 根据条件查询数据有没有
+	function sjcl(project,projecttype,projectdate,filedName){ 
+		for(var key in data){
+			var filed = data[key];//数组 
+			for(var i =0;i<filed.length;i++){
+				var filedsx = filed[i];  //对象
+				var name = Object.keys(filedsx)[0];//key
+				var value = filedsx[name];  //value 
+				//if(value[2]==projectdate){ //时间单独判断
+					if(name == filedName && value[0] == project && value[1]==projecttype){
+						var ActualStartDate = "";
+						var ActualEndDate =  "";
+						var CreatedDate = "";
+						var SatrtDate = "";
+						var EndDate = ""; 
+						if(projectdate != "" ){  //过滤条件 时间
+							SatrtDate = projectdate[0];
+							EndDate = projectdate[1];
+						} 	
+						if(value[2].split("-") > 1){ //大于一表示有Actual Start Date和Actual End Date
+							var ActualStartDate = value[2].split("-")[0].split(" ")[0]; 
+							var ActualEndDate = value[2].split("-")[1].split(" ")[0]; 
+						}else {
+							var CreatedDate = value[2].split(" ")[0];
+					
+						}
+						//根据时间过滤
+						if(SatrtDate != "" && EndDate != ""){
+							if(ActualStartDate != "" && ActualEndDate !=""){
+								if(ActualStartDate > SatrtDate && ActualEndDate < EndDate){
+									return true;
+								}
+							}else {  //根据CreatedDate判断
+								if(CreatedDate > SatrtDate && CreatedDate < EndDate){
+									return true;
+								}
+							} 
+						}else if(SatrtDate != "" ){
+							if(ActualStartDate != ""){
+								if(ActualStartDate > SatrtDate){
+									return true;
+								}
+							}else {  //根据CreatedDate判断
+								if(CreatedDate > SatrtDate){
+									return true;
+								}
+							} 
+						}else if(EndDate != ""){
+							if(ActualEndDate !=""){
+								if(ActualEndDate < EndDate){
+									return true;
+								}
+							}else {  //根据CreatedDate判断
+								if(ActualEndDate > EndDate){
+									return true;
+								}
+							} 
+						}else {
+							return true;
+						} 
+					}
+				//} 
+			} 
+		}
+		return false;
+	}
+	
 //给html赋值
 	function getDate(elm,date){
 		//console.log(elm);
@@ -641,12 +739,12 @@ description="Text appearing at the bottom of the report page."
 		}
 		elm.innerHTML = html;
 	}
-	
+
 	function getProjectDate(){
 		var html = '';
 		//先加载所有dom
-		for(var key in data){
-			var arr = data[key]; 
+		for(var key in CountData){
+			var arr = CountData[key]; 
 			var projectId = key.split("/")[1];
 			//console.log("sj---------:"+obj["ProjectIdA"]);
 			html += '<p class="title" id="'+key.split("/")[1]+'Title">'+ key +'</p>'+
@@ -1077,8 +1175,8 @@ description="Text appearing at the bottom of the report page."
 		document.getElementById("projectDom").innerHTML = html;
 		
 		//在给需要赋值的dom赋值
-		for(var key in data){
-			var arr = data[key];
+		for(var key in CountData){
+			var arr = CountData[key];
 			 
 			getDate(document.getElementById("QATaskData-"+key.split("/")[1]),arr["QATaskData"]);
 			getDate(document.getElementById("ReponsibiltyTeam-"+key.split("/")[1]),arr["ResponsibilityTeamData"]);
@@ -1103,5 +1201,6 @@ description="Text appearing at the bottom of the report page."
 		}
 		 
 	}
+	
 </script>
 </html>
