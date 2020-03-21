@@ -143,6 +143,44 @@ function sendMailToUser(toList,text, html){
 	log("Success");
 }
 
+//已回复用户是否上传附件
+function getfj(user,delta){
+	log("yi hui fu yong hu :"+user);
+	 
+	var ls = [];
+	var createdBys = ""; //获取上传附件的人员
+	var attachmentBeans	= delta.getAttachmentBeans("Attachments");//获取所有附件 
+	for(var j = 0 ;j<attachmentBeans.length;j++){
+		var attachmentBean = attachmentBeans[j];
+		log("yi shang chuang fujian de yong hu "+attachmentBean.getCreatedBy());
+		var createdBy = attachmentBean.getCreatedBy();//附件的创建用户 
+		createdBys += getUserName(createdBy.trim())+",";
+	}
+	 
+	for(var i =0;i<user.length;i++){
+		var personReplied = getUserName(user[i]); 
+		log("createdBys================"+createdBys);
+		log("user[i]================="+personReplied); 
+		
+		if(createdBys.indexOf(personReplied) == -1){ //判断已回复人员在不在上传附件的人员中
+			log("yi hui fu yong hu wei shangchuang fujian :"+personReplied);
+			ls.push(personReplied);
+			
+			RecipientMailbox.push(user[i]);   //邮件人员
+			assignUser += personReplied+",";//名字
+			//丁丁
+			//receiveIds.add(user.trim());
+			//userFullName = server.getUserBean(user.trim()).getFullName();
+			var obj = {};
+			obj.id = user[i];
+			obj.name = server.getUserBean(user[i]).getFullName();
+			receiveIds.push(obj);
+		}
+	}
+	
+	return ls;//返回已回复但没有上传附件的用户
+}
+
 //用户(权限)
 function getUserName(user){
     var srt = "";
@@ -160,6 +198,7 @@ function isReply(delta){
 	var noticeUser3 = noticeUser2.split(",");
 
 	var notUser = "";
+	var personReplied = [];//已回复人员
 	for(var i =0;i<noticeUser3.length;i++){
 		var user = noticeUser3[i];			
 		if(noticeComment.indexOf(user.trim()) == -1){
@@ -174,9 +213,22 @@ function isReply(delta){
 			obj.name = server.getUserBean(user.trim()).getFullName();
 			receiveIds.push(obj);
 			 //log("RecipientMailbox : " + RecipientMailbox[i]);
+		}else {
+			 
+			personReplied.push(user.trim());
+		} 
+	}
+	
+	var personRepliedName = getfj(personReplied,delta); //获取已回复但是没有上传附件的用户 
+	if(personRepliedName.length > 0){
+		//notUser += personRepliedName;
+		for(var i =0;i<personRepliedName.length;i++){
+			 notUser += personRepliedName[i] + ",";
+			
 		}
 	}
-	//log("----------------" + notUser);
+	
+	log("notUser----------------" + notUser);
 	return notUser;
 } 
 
