@@ -38,10 +38,300 @@
 	</style>
     <%screenStyleSheet%>
     <%printerStyleSheet%>
-	<script>
+	
+    <script  language="javascript">
+		var line_count=0;
 		
+		var REPORT_ISSUES = "";
 		
-	</script>
+		function writeEvenOddTRTag() {
+			line_count++; 
+			
+			if (line_count%2 == 0)
+				document.write("<tr class='even_row'>");
+			else
+				document.write("<tr class='odd_row'>"); 
+				
+			
+		}
+		var projectInt=0;
+		function printnoi(){
+			
+			
+			
+			for(var i=0;i<1;i++){	
+				projectInt++;
+				if (projectInt%2 == 0){
+					document.write("<tr class='even_row'>");
+				}else{
+					document.write("<tr class='odd_row'>");
+				}		
+				
+			}
+		}
+
+		function printText(field){
+			var contentList = field.split("`"); 
+			console.log(contentList);
+			
+		
+			var category = contentList[0];
+			var goal = contentList[1];
+			var metric = contentList[2];
+			var attribute = contentList[3];
+			var formula = contentList[4];
+			var legends = contentList[5];
+			var targetValue = contentList[6];
+			var actualValue = contentList[7];
+			var unit = contentList[8];
+			
+			
+			
+			var signFirst = "&lt;;&gt;";
+			var signNext = "&lt;:&gt;";
+			var signContentOne = "&lt;and&gt;";
+			var signContentTwo = ":";
+			
+			var categoryLists 	=  new Array();
+			var goalLists 		=  new Array();
+			var metricLists 	=  new Array();
+			var attributeLists 	=  new Array();
+			var formulaLists 	=  new Array();
+			var legendsLists 	=  new Array();
+			var targetValueLists =  new Array();
+			var actualValueLists =  new Array();
+			var unitLists 	=  new Array();
+			
+			if(	null!=category && "" != category){
+				categoryLists 	= (""+category).split(signFirst);
+			}
+			
+			if(	null!=goal && "" != goal){
+				goalLists 	= (""+goal).split(signFirst);
+			}
+			if(	null!=metric && "" != metric){
+				metricLists 	= (""+metric).split(signFirst);
+			}
+			if(	null!=attribute && "" != attribute){
+				attributeLists 	= (""+attribute).split(signFirst);
+			}
+			if(	null!=formula && "" != formula){
+				formulaLists 	= (""+formula).split(signFirst);
+			}
+			if(	null!=legends && "" != legends){
+				legendsLists 	= (""+legends).split(signFirst);
+			}
+			if(	null!=targetValue && "" != targetValue){
+				targetValueLists = (""+targetValue).split(signFirst);
+			}
+			
+			if(	null!=actualValue && "" != actualValue){
+				actualValueLists 	= (""+actualValue).split(signFirst);
+				
+				
+				
+			}
+			if(	null!=unit && "" != unit){
+				unitLists 	= (""+unit).split(signFirst);
+			}
+
+			
+			
+			
+			var snoArray 			=  new Array();
+			var projectArray 		=  new Array();
+			
+			
+			var categoryTextArray 	=  new Array();
+			var goalTextArray 		=  new Array();
+			var metricTextArray 	=  new Array();
+			var attributeTextArray 	=  new Array();
+			var formulaTextArray 	=  new Array();
+			var legendsTextArray 	=  new Array();
+			var targetValueArray 	=  new Array();
+			var actualValueArray 	=  new Array();
+			var unitValueArray 		=  new Array();
+			
+			
+			var categoryList 	= new Array();
+			var goalList 		= new Array();
+			var metricList 		= new Array();
+			var attributeList 	= new Array();
+			var formulaList 	= new Array();
+			var legendsList 	= new Array();
+			var targetValueList = new Array();
+			var actualValueList = new Array();
+			var unitList 		= new Array();
+			
+			
+			var addLists       	= new Array();
+			var addListsIndex   = 0; 
+			var indexList       = new Array();
+			var indexNameList       = new Array();
+			
+			var key = 0;
+			var snoIndex = 0;
+			
+			var indexArray = 0;
+			
+			
+			
+			
+			
+			
+			for(var categoryIndex=0 ; categoryIndex<categoryLists.length ; categoryIndex++){
+				if(null != categoryLists[categoryIndex] && "" != categoryLists[categoryIndex]){
+					categoryList = categoryLists[categoryIndex].split(signNext);
+					snoArray[snoIndex] = categoryList[0];
+					categoryTextArray[snoIndex] = categoryList[1]
+				}
+				if(null != goalLists[categoryIndex] && "" != goalLists[categoryIndex]){
+					goalList = goalLists[categoryIndex].split(signNext);
+					goalTextArray[snoIndex] = goalList[1]
+				}
+				if(null != metricLists[categoryIndex] && "" != metricLists[categoryIndex]){
+					metricList = metricLists[categoryIndex].split(signNext);
+					metricTextArray[snoIndex] 	= metricList[1]
+				}
+				if(null != attributeLists[categoryIndex] && "" != attributeLists[categoryIndex]){
+					attributeList = attributeLists[categoryIndex].split(signNext);
+					attributeTextArray[snoIndex] = attributeList[1]
+				}
+				if(null != formulaLists[categoryIndex] && "" != formulaLists[categoryIndex]){
+					formulaList = formulaLists[categoryIndex].split(signNext);
+					formulaTextArray[snoIndex] = formulaList[1]
+				}
+				if(null != legendsLists[categoryIndex] && "" != legendsLists[categoryIndex]){
+					legendsList = legendsLists[categoryIndex].split(signNext);
+					legendsTextArray[snoIndex] = legendsList[1]
+				}
+				if(null != targetValueLists[categoryIndex] && "" != targetValueLists[categoryIndex]){
+					targetValueList = targetValueLists[categoryIndex].split(signNext);
+					targetValueArray[snoIndex] = targetValueList[1]
+				}
+				if(null != actualValueLists[categoryIndex] && "" != actualValueLists[categoryIndex]){
+					actualValueList = actualValueLists[categoryIndex].split(signNext);
+					actualValueArray[snoIndex] = actualValueList[1]
+					
+					if(actualValueList[1].indexOf(",") > 0 ){
+						 
+						var bIndex = 0 
+						var aArry   = new Array();
+						var bArry   = new Array();
+						var bigArray = actualValueList[1].split(",");
+						
+						for(var k=0 ; k<bigArray.length ; k++){
+							var linesList = bigArray[k].split(":");
+							
+							
+							aArry[bIndex] = linesList[0];
+							bArry[bIndex] = linesList[1];
+							bIndex++;
+						}
+						console.log("bArry : " + bArry);
+						console.log("aArry : " + aArry);
+						
+						
+						
+						
+						addLists[addListsIndex] = bArry;
+						indexNameList[addListsIndex] = aArry;
+						console.log("addListsIndex : " + addListsIndex);
+						
+						addListsIndex++;
+						
+						indexList[indexArray] = snoIndex;
+						indexArray++ ;
+						console.log("addLists : " + addLists);
+						console.log("addListsIndex ++: " + addListsIndex);
+					}
+					
+					
+					
+				}
+				if(null != unitLists[categoryIndex] && "" != unitLists[categoryIndex]){
+					unitList = unitLists[categoryIndex].split(signNext);
+					unitValueArray[snoIndex]  = unitList[1]
+				}
+				snoIndex++;
+			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			console.log("addLists : " + addLists);
+			var arrayKey = 0;
+			
+			for(var index=0;index<snoArray.length;index++){
+				if(actualValueArray[index].indexOf(",")<0){
+				
+					printnoi();
+					document.write("<td class='border'>"+snoArray[index]+"</td>");  // SNO
+					
+					document.write("<td class='border'>"+categoryTextArray[index]+"</td>"); // category
+					document.write("<td class='border'>"+goalTextArray[index]+"</td>");
+					document.write("<td class='border'>"+metricTextArray[index]+"</td>");
+					document.write("<td class='border'>"+attributeTextArray[index]+"</td>");
+					document.write("<td class='border'>"+formulaTextArray[index]+"</td>");
+					document.write("<td class='border' style='width:40%;'>"+legendsTextArray[index]+"</td>");
+					document.write("<td class='border'>"+targetValueArray[index]+"</td>");
+					document.write("<td class='border' width='200px'>"+actualValueArray[index]+"</td>");
+					document.write("<td class='border'>"+unitValueArray[index]+"</td>");
+				
+				}	
+				
+				
+				
+				for(var appendIndex=0; appendIndex<indexList.length ; appendIndex++){
+					console.log("appendIndex :  " +  indexList[appendIndex]);
+					console.log("index :  " +  index);
+					if(indexList[appendIndex] == index){
+						
+						
+						for(var i=0 ; i<addLists.length ; i++){
+							console.log("addLists "+ i +" :  " +  addLists[i]);
+							if( i ==arrayKey ){
+								console.log("arrayKey 111111111111111111: " + arrayKey);
+								for(var j=0 ; j<addLists[i].length ; j++){
+									console.log("addLists "+ i +" "+j+" :  " +  addLists[i][j]);
+									var currentArray = addLists[i];
+									var currentNameList = indexNameList[i];
+									printnoi();
+									document.write("<td class='border'>"+snoArray[index]+"</td>");  // SNO
+									
+									document.write("<td class='border'>"+categoryTextArray[index]+"</td>"); // category
+									document.write("<td class='border'>"+goalTextArray[index]+"</td>");
+									document.write("<td class='border'>"+metricTextArray[index]+"</td>");
+									document.write("<td class='border'>"+attributeTextArray[index]+"</td>");
+									document.write("<td class='border'>"+formulaTextArray[index]+"</td>");
+									document.write("<td class='border' style='width:40%;'>"+currentNameList[j]+"</td>");
+									document.write("<td class='border'>"+targetValueArray[index]+"</td>");
+									document.write("<td class='border' width='200px'>"+currentArray[j]+"</td>");
+									document.write("<td class='border'>"+unitValueArray[index]+"</td>");
+								}
+							}
+							
+						}
+						arrayKey++;
+						console.log("arrayKey : " + arrayKey);
+					}
+				}
+			}
+			
+		 
+			
+		}
+		function paramField(field){
+		 document.write("<td class='border'>"+field+"</td>");
+		}
+		
+	</script> 
+	
 </head>
 <%dateformat%>
 <%datetimeformat%>
@@ -72,69 +362,46 @@
 
 <!-- Display issue field values -->
 <%begindetail%>
-<table class="detailcols fullWidth">
-<tr>
-	<!-- Display issue field headings -->
-	<td align="center" rowspan="1"  bgcolor="#A6CAF0" ><font color="#FFFFFF" size="2px">SNO</td>
-	<td align="center" rowspan="1"bgcolor="#A6CAF0"><font color="#FFFFFF" size="2px">Category</td>
-	<td align="center" rowspan="1"bgcolor="#A6CAF0"><font color="#FFFFFF" size="2px">Goal</td>
-	<td align="center" rowspan="1"bgcolor="#A6CAF0"><font color="#FFFFFF" size="2px">Metric</td>
-	<td align="center" rowspan="1" bgcolor="#A6CAF0"><font color="#FFFFFF" size="2px">Attribute</td>
-	<td align="center" rowspan="1" bgcolor="#A6CAF0"><font color="#FFFFFF" size="2px">Formula</th>
-	<td align="center" rowspan="1" bgcolor="#A6CAF0"><font color="#FFFFFF" size="2px">Legends</td>
-	<td align="center" rowspan="1" bgcolor="#A6CAF0"><font color="#FFFFFF" size="2px">Target Value</font></td>
-	<td align="center" rowspan="1" bgcolor="#A6CAF0"><font color="#FFFFFF" size="2px">Actual Value</font></td>
-	<td class = "one" align="center"  bgcolor="#5499EF"><font color="#FFFFFF" size="2px">Unit</font></td>
-</tr>
+	<table class="detailcols fullWidth">
 	<script type="text/javascript">
-		var splitSperator = "<;>";
-		var splitColon ="<:>";
-		var categoryAll = <%<%builtin KPI Category%>%>;//所有的Category
-		var goalAll = <%<%builtin KPI Goal%>%>;//所有的Goal
-		var metricAll = <%<%builtin KPI Metric%>%>;//所有的Metric
-		var attributeAll = <%<%builtin KPI Attribute%>%>;//所有的Attribute
-		var formulaAll = <%<%builtin KPI Formula%>%>;//所有的Formula
-		var legendsAll = <%<%builtin KPI Legends%>%>;//所有的Legends
-		var targetValueAll = <%<%builtin KPI Target Value%>%>;//所有的Target Value
-		var actualValueAll = <%<%builtin KPI Actual Value%>%>;//所有的Actual Value, 需要根据Actual Value的值，判断是否拆分显示
-		var unitAll = <%<%builtin KPI Unit%>%>;//所有的Unit
+	document.write("<p class='title'> <%Project%></p>");
 	
-		var categoryList = categoryAll.split(splitSperator);
-		var goalList = goalAll.split(splitSperator);
-		var metricList = metricAll.split(splitSperator);
-		var attributeList = attributeAll.split(splitSperator);
-		var formulaList = formulaAll.split(splitSperator);
-		var legendsList = legendsAll.split(splitSperator);
-		var targetList = targetValueAll.split(splitSperator);
-		var actualList = actualValueAll.split(splitSperator);
-		var unitList = unitAll.split(splitSperator);
-		for(var index=0; index<categoryList.length; index++){
-			var singleCategory = categoryList[index];
-			var snoCategory = singleCategory.split(splitColon);
-			var SNO = snoCategory[0];
-			var category = snoCategory[1];
-			var snoGoal = goalList[index].split(splitColon);
-			var goal = snoGoal[1];
-			var snoMetric = metricList[index].split(splitColon);
-			var metric = snoMetric[1];
-			var snoAttribute = attributeList[index].split(splitColon);
-			var attribute = snoAttribute[1];
-			var snoFormula = formulaList[index].split(splitColon);
-			var formula = snoFormula[1];
-			var snoLegends = legendsList[index].split(splitColon);
-			var legends = snoLegends[1];
-			var snoTarget = targetList[index].split(splitColon);
-			var target = snoTarget[1];
-			var snoActual = actualList[index].split(splitColon);
-			var actual = snoActual[1];
-			var snoUnit = unitList[index].split(splitColon);
-			var unit = snoUnit[1];
-		}
+	document.write("<tr>");
+	
+	document.write("<td align='center' rowspan='1'  bgcolor='#A6CAF0'><font color='#FFFFFF' size='2px'>SNO.</td>");
+	
+	document.write("<td align='center' rowspan='1'	bgcolor='#A6CAF0'><font color='#FFFFFF' size='2px'>Category</td>");
+	document.write("<td align='center' rowspan='1'	bgcolor='#A6CAF0'><font color='#FFFFFF' size='2px'>Goal</td>");
+	document.write("<td align='center' rowspan='1'	bgcolor='#A6CAF0'><font color='#FFFFFF' size='2px'>Metric</td>");
+	document.write("<td align='center' rowspan='1'	bgcolor='#A6CAF0'><font color='#FFFFFF' size='2px'>Attribute</td>");
+	document.write("<td align='center' rowspan='1' 	bgcolor='#A6CAF0'><font color='#FFFFFF' size='2px'>Formula</td>");
+	document.write("<td align='center' rowspan='1' 	bgcolor='#A6CAF0'><font color='#FFFFFF' size='2px'>Legends</td>");
+	document.write("<td align='center' rowspan='1' 	bgcolor='#A6CAF0' width='200px'><font color='#FFFFFF' size='2px'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspTarget&nbspValue&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>");
+	document.write("<td align='center' rowspan='1' 	bgcolor='#5499EF' ><font color='#FFFFFF' size='2px'>Actual Value</td>");
+	document.write("<td align='center' rowspan='1' 	bgcolor='#A6CAF0' ><font color='#FFFFFF' size='2px'>Unit</td>");
+	document.write("</tr>");
 	</script>
- </table>
-
+	
+	<script type="text/javascript">
+		writeEvenOddTRTag();
+		if(REPORT_ISSUES == "") REPORT_ISSUES = <%<%builtin ID%>%>;
+		else REPORT_ISSUES = REPORT_ISSUES+","+<%<%builtin ID%>%>;
+	</script>
+	<%iteratefields%>
+	
+	 <%/iteratefields%>
+	
+	<script type="text/javascript">
+		printnoi();
+	</script>
+	
+	<script type="text/javascript">
+		var str  = "<%KPI Category%>" + "`" + "<%KPI Goal%>" + "`" +"<%KPI Metric%>" + "`" + "<%KPI Attribute%>" + "`" + "<%KPI Formula%>" + "`" + "<%KPI Legends%>" + "`" + "<%KPI Target Value%>" + "`" + "<%KPI Actual Value%>" + "`" + "<%KPI Unit%>" ;
+		printText(str);  
+	
+	</script>
 <%enddetail%>
-
+</table>
 <center class="footer">&reportfooter</center>
 
 <script type="text/javascript">
