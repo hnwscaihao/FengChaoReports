@@ -8,8 +8,8 @@
 // This trigger is a pre-trigger.
 // <p>
 // <p>
-// Author : Hao Cai.
-// Create Date : 2018-12-09
+// Author : Wang Wei.
+// Create Date : 2020-3-13
 // </p>
 ///START
 // @param String Subject

@@ -8,8 +8,8 @@
 // This trigger is a pre-trigger.
 // <p>
 // <p>
-// Author : Hao Cai.
-// Create Date : 2018-12-09
+// Author : Wang Wei.
+// Create Date : 2020-3-5
 // </p>
 //已回复用户是否上传附件
 function getfj(user){
