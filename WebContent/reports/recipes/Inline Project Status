@@ -44,9 +44,9 @@
 		 
 		var Projects =[];
 		
-		//var RiskDate = [{"Open":0},{"In Analysis":0},{"Rejected":0},{"Analyzed":0},{"In Monitoring":0},{"Postponed":0},{"Cloesd":0}];
+		//var RiskDate = [{"Open":0},{"In Analysis":0},{"Rejected":0},{"Analyzed":0},{"In Monitoring":0},{"Postponed":0},{"Closed":0}];
 		var RiskDate = {
-			"Risk":[{"Open":0},{"In Analysis":0},{"Rejected":0},{"Analyzed":0},{"In Monitoring":0},{"Postponed":0},{"Cloesd":0}]
+			"Risk":[{"Open":0},{"In Analysis":0},{"Rejected":0},{"Analyzed":0},{"In Monitoring":0},{"Postponed":0},{"Closed":0}]
 		};
 		
 		var DefectTypeData = {
@@ -96,7 +96,7 @@
 			"Plan Change":[{"Customer":0},{"Supplier":0},{"Internal":0}]
 		};
 		var ChangeRequestStateDate = {
-			"ChangeRequest" : [{"Open":0},{"In Progress":0},{"Approveed":0},{"Fixed":0},{"Closed":0},{"Rejected":0},{"Cancelled":0},{"Postponed":0}]
+			"ChangeRequest" : [{"Open":0},{"In Progress":0},{"Approved":0},{"Fixed":0},{"Closed":0},{"Rejected":0},{"Cancelled":0},{"Postponed":0}]
 		};
 		var ChangeOrderDate = {
 			"ChangeOrder" : [{"Open":0},{"In Development":0},{"Verify":0},{"Closed":0}]
@@ -171,7 +171,7 @@
 			"Plan Change":[{"Customer":0},{"Supplier":0},{"Internal":0}]
 		};
 		ChangeRequestStateDate = {
-			"ChangeRequest" : [{"Open":0},{"In Progress":0},{"Approveed":0},{"Fixed":0},{"Closed":0},{"Rejected":0},{"Cancelled":0},{"Postponed":0}]
+			"ChangeRequest" : [{"Open":0},{"CCB":0},{"In Progress":0},{"Approved":0},{"Fixed":0},{"Closed":0},{"Rejected":0},{"Cancelled":0},{"Postponed":0}]
 		};
 		ChangeOrderDate = {
 			"ChangeOrder" : [{"Open":0},{"In Development":0},{"Verify":0},{"Closed":0}]
@@ -342,7 +342,7 @@
 			}
 		}
 		//Origin and Task Phase
-		for(var key in TaskPhasData ){ 
+		for(var key in TaskPhasData ){
 			if("<%Origin%>" == key){
 				var arr = TaskPhasData[key];
 				for(var i = 0;i<arr.length;i++){
@@ -359,7 +359,7 @@
 			}
 		}
 		//State and defectState
-		for(var key in DefectStateDate){ 
+		for(var key in DefectStateDate){
 			if("<%State%>" == key){
 				var arr = DefectStateDate[key];
 				for(var i = 0;i<arr.length;i++){
@@ -376,7 +376,7 @@
 			}
 		}
 		//State and Responsibility Team
-		for(var key in DefectResponsibilityTeamDate){ 
+		for(var key in DefectResponsibilityTeamDate){
 			if("<%State%>" == key){
 				var arr = DefectResponsibilityTeamDate[key];
 				for(var i = 0;i<arr.length;i++){
@@ -447,6 +447,9 @@
 
 	} 
 	var ls = ProjectDate[Projects.length-1];
+	if(!ls){
+		ProjectDate[Projects.length-1]={};
+	}
 	console.log(ls);
 	ProjectDate[Projects.length-1].DefectTypeData = DefectTypeData;
 	ProjectDate[Projects.length-1].RiskDate = RiskDate;
@@ -539,6 +542,13 @@
 		//先加载所有dom
 		for(var i = 0;i<ProjectDate.length;i++){
 			var obj = ProjectDate[i].project;
+			if(!obj){
+				obj = {
+					projectType:"Project",
+					ProjectSummary :Projects[i],
+					State :""
+				}
+			}
 			//console.log("sj---------:"+obj["ProjectIdA"]);
 			html += '<p class="title">'+obj["projectType"]+' <a class="title" href="'+obj["ProjectIdA"]+'" target="_blank">'+obj["projectId"]+'</a>: '+obj["ProjectSummary"]+'</p>\n' +
         '<table class="detailrows fullWidth">\n' +
@@ -826,7 +836,7 @@
         '\t\t\t\t\t<th style="text-align:center; " >Analyzed</th>\n' +
         '\t\t\t\t\t<th style="text-align:center; " >In Monitoring</th>\n' +
         '\t\t\t\t\t<th style="text-align:center; " >Postponed</th>\n' +
-        '\t\t\t\t\t<th style="text-align:center; " >Cloesd</th>\n' +
+        '\t\t\t\t\t<th style="text-align:center; " >Closed</th>\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tbody id = "RiskState'+obj["projectId"]+'">\n' +
         '\t\t\t\t\t\n' +
@@ -980,8 +990,9 @@
         '\t\t\t\t<tr class="even_row" style="width: 100%;">\n' +
         '\t\t\t\t\t<th style="text-align:center; width: 30%" ></th>\n' +
         '\t\t\t\t\t<th style="text-align:center; " >Open</th>\n' +
+        '\t\t\t\t\t<th style="text-align:center; " >CCB</th>\n' +
         '\t\t\t\t\t<th style="text-align:center; " >In Progress</th>\n' +
-        '\t\t\t\t\t<th style="text-align:center; " >Approveed</th>\n' +
+        '\t\t\t\t\t<th style="text-align:center; " >Approved</th>\n' +
         '\t\t\t\t\t<th style="text-align:center; " >Fixed</th>\n' +
         '\t\t\t\t\t<th style="text-align:center; " >Closed</th>\n' +
         '\t\t\t\t\t<th style="text-align:center; " >Rejected</th>\n' +
