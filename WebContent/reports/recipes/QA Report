@@ -126,6 +126,19 @@ description="Text appearing at the bottom of the report page."
 
 </body>
 <script>
+	//设置时间不能大于当前时间  得到当前时间
+	var date_now = new Date();
+	//得到当前年份
+	var year = date_now.getFullYear();
+	//得到当前月份 
+	var month = date_now.getMonth()+1 < 10 ? "0"+(date_now.getMonth()+1) : (date_now.getMonth()+1);
+	//得到当前日子（多少号）
+	var date = date_now.getDate() < 10 ? "0"+date_now.getDate() : date_now.getDate();
+	//设置input标签的max属性 
+	var divId = document.createAttribute("max"); //创建属性
+	divId.value = year+"-"+month+"-"+date; //设置属性值
+	document.getElementById("start_date").setAttributeNode(divId); // 添加属性 
+	
     console.log(data);  
 		//统计数据
 		var CountData = {}; 
