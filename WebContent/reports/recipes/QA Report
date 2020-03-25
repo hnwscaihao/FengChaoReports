@@ -711,11 +711,15 @@ description="Text appearing at the bottom of the report page."
 					var pd = sjcl(project,projecttype,projectdate,name);
 					if(pd){
 						var count = parseInt(obj[name]);
+						if(proTypeName == "QATaskData"){
+							console.log(count);
+						}
 						obj[name] = count+1;
 					}
 				}
 			}
 		}
+		
 		CountData[project][proTypeName] =  proData ;
 		
 	}
