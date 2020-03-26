@@ -51,6 +51,26 @@ description="Text appearing at the bottom of the report page."
 		var Projects =[];	
 		//project type  
 		var Area =["QA Task","Non-Conformance Issue","Document","Defect Source And Defect Type","Defect Origin And TaskPhase","Defect State And DefectState","Defect ResponsibilityTeam And State","ChangeRequestType","ChangeCategory And ChangeInitiator","ChangeOrderType","Test Plan","Test Objective","Test Session","Task","Supplier Monitor Task","Release","Risk","LL & BP"];		
+		
+			//project 統計字段
+		var QATaskDataInit = [];
+		var ResponsibilityTeamDataInit = [];
+		var DocumentDateInit = [];
+		var SourceAndTypeInit = [];
+		var OriginAndTaskPhaseInit = [];
+		var StateAndDefectStateInit = [];
+		var ResponsibilityTeamAndStateInit = [];
+		var ChangeRequestTypeInit = [];
+		var ChangeCategoryAndChangeInitiatorInit = [];
+		var ChangeOrderTypeInit = [];
+		var TestPlanTypeInit = [];
+		var TestObjectiveTypeInit = [];
+		var TestSessionTypeInit = [];
+		var TaskDataInit = [];
+		var SupplierMonitorTaskDataInit = [];
+		var ReleaseDataInit = [];
+		var RiskDataInit = [];
+		var LLAndBPDataInit = [];
 	</script>
 </head>
 <%begindetail%>
@@ -66,36 +86,54 @@ description="Text appearing at the bottom of the report page."
 	}else { 
 		proDate = "<%Created Date%>"; 
 	}
-	var  StateDate = "<%State%>" == "&nbsp;"?"null":"<%State%>";
-	data["State"].push({[StateDate]:["<%<%builtin Project%>%>","<%<%builtin Type%>%>",proDate]}); 
 	
-	var  ResponsibilityTeamDate = "<%Responsibility Team%>" == "&nbsp;"?"null":"<%Responsibility Team%>"; 
-	data["Responsibility Team"].push({[ResponsibilityTeamDate]:["<%<%builtin Project%>%>","<%<%builtin Type%>%>",proDate]}); 
-    
-	var  TypeDate = "<%Type%>" == "&nbsp;"?"null":"<%Type%>";
-	data["Type"].push({[TypeDate]:["<%<%builtin Project%>%>","<%<%builtin Type%>%>",proDate]}); 
-	
-	var  DefectSourceDate = "<%Defect Source%>" == "&nbsp;"?"null":"<%Defect Source%>";
-	data["Defect Source"].push({[DefectSourceDate]:["<%<%builtin Project%>%>","<%<%builtin Type%>%>",proDate]}); 
-	
-	var  DefectTypeDate = "<%Defect Type%>" == "&nbsp;"?"null":"<%Defect Type%>";
-	data["Defect Type"].push({[DefectTypeDate]:["<%<%builtin Project%>%>","<%<%builtin Type%>%>",proDate]}); 
-	
-	var  OriginDate = "<%Origin%>" == "&nbsp;"?"null":"<%Origin%>";
-	data["Origin"].push({[OriginDate]:["<%<%builtin Project%>%>","<%<%builtin Type%>%>",proDate]}); 
-	
-	var  TaskPhaseDate = "<%Task Phase%>" == "&nbsp;"?"null":"<%Task Phase%>";
-	data["Task Phase"].push({[TaskPhaseDate]:["<%<%builtin Project%>%>","<%<%builtin Type%>%>",proDate]}); 
-	
-	var  defectStateDate = "<%defectState%>" == "&nbsp;"?"null":"<%defectState%>";
-	data["defectState"].push({[defectStateDate]:["<%<%builtin Project%>%>","<%<%builtin Type%>%>",proDate]}); 
-	
-	var  ChangeCategoryDate = "<%Change Category%>" == "&nbsp;"?"null":"<%Change Category%>";
-	data["Change Category"].push({[ChangeCategoryDate]:["<%<%builtin Project%>%>","<%<%builtin Type%>%>",proDate]}); 
-	
-	var  ChangeInitiatorDate = "<%Change Initiator%>" == "&nbsp;"?"null":"<%Change Initiator%>";
-	data["Change Initiator"].push({[ChangeInitiatorDate]:["<%<%builtin Project%>%>","<%<%builtin Type%>%>",proDate]}); 
-		
+	if("<%<%builtin Type%>%>" == "QA Task"){
+		 QATaskDataInit.push({"<%<%builtin Project%>%>":{"<%State%>":[proDate]}});
+	}
+	if("<%<%builtin Type%>%>" == "Non-Conformance Issue"){
+		 ResponsibilityTeamDataInit.push({"<%<%builtin Project%>%>":{"<%State%>:<%Responsibility Team%>":[proDate]}});
+	}
+	if("<%<%builtin Type%>%>" == "Document"){
+		  ChangeOrderDateInit.push({"<%<%builtin Project%>%>":{"<%State%>:<%Type%>":[proDate]}});
+	}
+	if("<%<%builtin Type%>%>" == "Defect"){
+		  SourceAndTypeInit.push({"<%<%builtin Project%>%>":{"<%Defect Source%>:<%Defect Type%>":[proDate]}});
+		  OriginAndTaskPhaseInit.push({"<%<%builtin Project%>%>":{"<%Origin%>:<%Task Phase%>":[proDate]}});
+		  StateAndDefectStateInit.push({"<%<%builtin Project%>%>":{"<%State%>:<%defectState%>":[proDate]}});
+		  ResponsibilityTeamAndStateInit.push({"<%<%builtin Project%>%>":{"<%Responsibility Team%>:<%State%>":[proDate]}});
+	}
+	if("<%<%builtin Type%>%>" == "Change Request"){
+		  ChangeRequestTypeInit.push({"<%<%builtin Project%>%>":{"<%State%>":[proDate]}});
+		  ChangeCategoryAndChangeInitiatorInit.push({"<%<%builtin Project%>%>":{"<%Change Category%>:<%Change Initiator%>":[proDate]}});
+	}
+	if("<%<%builtin Type%>%>" == "Change Order"){
+		  ChangeOrderTypeInit.push({"<%<%builtin Project%>%>":{"<%State%>":[proDate]}});
+	}
+	if("<%<%builtin Type%>%>" == "Test Plan"){
+		 TestPlanTypeInit.push({"<%<%builtin Project%>%>":{"<%State%>":[proDate]}});
+	}
+	if("<%<%builtin Type%>%>" == "Test Objective"){
+		 TestObjectiveTypeInit.push({"<%<%builtin Project%>%>":{"<%State%>":[proDate]}});
+	}
+	if("<%<%builtin Type%>%>" == "Test Session"){
+		 TestSessionTypeInit.push({"<%<%builtin Project%>%>":{"<%State%>":[proDate]}});
+	} 
+	if("<%<%builtin Type%>%>" == "Task"){
+		  TaskDataInit.push({"<%<%builtin Project%>%>":{"<%Responsibility Team%>:<%State%>":[proDate]}});
+	}
+	if("<%<%builtin Type%>%>" == "Supplier Monitor Task"){
+		  SupplierMonitorTaskDataInit.push({"<%<%builtin Project%>%>":{"<%Responsibility Team%>:<%State%>":[proDate]}});
+	}
+	if("<%<%builtin Type%>%>" == "Release"){
+		  ReleaseDataInit.push({"<%<%builtin Project%>%>":{"<%State%>":[proDate]}});
+	}
+	if("<%<%builtin Type%>%>" == "Risk"){
+		  RiskDataInit.push({"<%<%builtin Project%>%>":{"<%State%>":[proDate]}});
+	}
+	if("<%<%builtin Type%>%>" == "LL and BP"){
+		  LLAndBPDataInit.push({"<%<%builtin Project%>%>":{"<%State%>":[proDate]}});
+	}
+	//console.log("type:"+"<%<%builtin Type%>%>") 
 </script>
 <%enddetail%>
 <div>
@@ -126,6 +164,27 @@ description="Text appearing at the bottom of the report page."
 
 </body>
 <script>
+//统计有问题先看初始保存数据有没有问题
+    // console.log(QATaskDataInit);
+     //console.log(ResponsibilityTeamDataInit);
+     //console.log(DocumentDateInit);
+    // console.log(SourceAndTypeInit);
+     //console.log(OriginAndTaskPhaseInit);
+     //console.log(StateAndDefectStateInit);
+    // console.log(ResponsibilityTeamAndStateInit);
+    // console.log(ChangeRequestTypeInit);
+    // console.log(ChangeCategoryAndChangeInitiatorInit);
+     //console.log(ChangeOrderTypeInit);
+    // console.log(TestPlanTypeInit);
+    // console.log(TestObjectiveTypeInit);
+    // console.log(TestSessionTypeInit);
+    // console.log(TaskDataInit);
+    // console.log(SupplierMonitorTaskDataInit);
+     //console.log(ReleaseDataInit);
+    // console.log(RiskDataInit);
+    // console.log(LLAndBPDataInit);  
+
+
 	//设置时间不能大于当前时间  得到当前时间
 	var date_now = new Date();
 	//得到当前年份
@@ -263,9 +322,9 @@ description="Text appearing at the bottom of the report page."
 		}
 		//Change ChangeCategoryAndChangeInitiator   
 		var ChangeCategoryAndChangeInitiator = {
-			"REQ Change" : [{"Customer":0},{"Supplier":0},{"Internal":0}],
-			"Design Change" : [{"Customer":0},{"Supplier":0},{"Internal":0}],
-			"Plan Change" : [{"Customer":0},{"Supplier":0},{"Internal":0}]
+			"REQ change" : [{"Customer":0},{"Supplier":0},{"Internal":0}],
+			"Design change" : [{"Customer":0},{"Supplier":0},{"Internal":0}],
+			"Plan change" : [{"Customer":0},{"Supplier":0},{"Internal":0}]
 		}
 		// Change ChangeOrderType 
 		var ChangeOrderType = {
@@ -614,9 +673,9 @@ description="Text appearing at the bottom of the report page."
 			"Change Request" : [{"Open":0},{"In Progress":0},{"Approveed":0},{"Fixed":0},{"Closed":0},{"Rejected":0},{"Cancelled":0},{"Postponed":0}] 
 		}
 		ChangeCategoryAndChangeInitiator = {
-			"REQ Change" : [{"Customer":0},{"Supplier":0},{"Internal":0}],
-			"Design Change" : [{"Customer":0},{"Supplier":0},{"Internal":0}],
-			"Plan Change" : [{"Customer":0},{"Supplier":0},{"Internal":0}]
+			"REQ change" : [{"Customer":0},{"Supplier":0},{"Internal":0}],
+			"Design change" : [{"Customer":0},{"Supplier":0},{"Internal":0}],
+			"Plan change" : [{"Customer":0},{"Supplier":0},{"Internal":0}]
 		}
 		ChangeOrderType = {
 			"Change Order" : [{"Open":0},{"In Development":0},{"Verify":0},{"Closed":0}] 
@@ -658,138 +717,130 @@ description="Text appearing at the bottom of the report page."
 			"LL & BP" : [{"Open":0},{"In Analysis":0},{"Postponed":0},{"Rejected":0},{"Accepted":0},{"Published":0},{"Retired":0}] 
 		} 
 	
-   
-	   infoData(QATaskData,"QATaskData",Projects[i],"QA Task",proDate);
-	   infoData(ResponsibilityTeamData,"ResponsibilityTeamData",Projects[i],"Non-Conformance Issue",proDate);
-	   infoData(DocumentDate,"DocumentDate",Projects[i],"All Document",proDate);
-	   infoData(SourceAndType,"SourceAndType",Projects[i],"Defect",proDate);
-	   infoData(OriginAndTaskPhase,"OriginAndTaskPhase",Projects[i],"Defect",proDate);
-	   infoData(StateAndDefectState,"StateAndDefectState",Projects[i],"Defect",proDate);
-	   infoData(ResponsibilityTeamAndState,"ResponsibilityTeamAndState",Projects[i],"Defect",proDate);
-	   infoData(ChangeRequestType,"ChangeRequestType",Projects[i],"Change Request",proDate);
-	   infoData(ChangeCategoryAndChangeInitiator,"ChangeCategoryAndChangeInitiator",Projects[i],"Change Request",proDate);
-	   infoData(ChangeOrderType,"ChangeOrderType",Projects[i],"Change Order",proDate);
-	   infoData(TestPlanType,"TestPlanType",Projects[i],"Test Plan",proDate);
-	   infoData(TestObjectiveType,"TestObjectiveType",Projects[i],"Test Objective",proDate);
-	   infoData(TestSessionType,"TestSessionType",Projects[i],"Test Session",proDate);
-	   infoData(TaskData,"TaskData",Projects[i],"Task","");
-	   infoData(SupplierMonitorTaskData,"SupplierMonitorTaskData",Projects[i],"Supplier Monitor Task",proDate);
-	   infoData(ReleaseData,"ReleaseData",Projects[i],"Release",proDate);
-	   infoData(RiskData,"RiskData",Projects[i],"Risk","");
-	   infoData(LLAndBPData,"LLAndBPData",Projects[i],"LL & BP",proDate); 
+       //参数1 自定义统计数据  2统计数据名字  3，priject类型 4.查询的总数据 5查询时间 
+	   dlsjtj(QATaskData,"QATaskData",Projects[i],QATaskDataInit,proDate);
+	   slsjtj(ResponsibilityTeamData,"ResponsibilityTeamData",Projects[i],ResponsibilityTeamDataInit,proDate);
+	   slsjtj(DocumentDate,"DocumentDate",Projects[i],DocumentDateInit,proDate);
+	   slsjtj(SourceAndType,"SourceAndType",Projects[i],SourceAndTypeInit,proDate);
+	   slsjtj(OriginAndTaskPhase,"OriginAndTaskPhase",Projects[i],OriginAndTaskPhaseInit,proDate);
+	   slsjtj(StateAndDefectState,"StateAndDefectState",Projects[i],StateAndDefectStateInit,proDate);
+	   slsjtj(ResponsibilityTeamAndState,"ResponsibilityTeamAndState",Projects[i],ResponsibilityTeamAndStateInit,proDate);
+	   dlsjtj(ChangeRequestType,"ChangeRequestType",Projects[i],ChangeRequestTypeInit,proDate);
+	   slsjtj(ChangeCategoryAndChangeInitiator,"ChangeCategoryAndChangeInitiator",Projects[i],ChangeCategoryAndChangeInitiatorInit,proDate);
+	   dlsjtj(ChangeOrderType,"ChangeOrderType",Projects[i],ChangeOrderTypeInit,proDate);
+	   dlsjtj(TestPlanType,"TestPlanType",Projects[i],TestPlanTypeInit,proDate);
+	   dlsjtj(TestObjectiveType,"TestObjectiveType",Projects[i],TestObjectiveTypeInit,proDate);
+	   dlsjtj(TestSessionType,"TestSessionType",Projects[i],TestSessionTypeInit,proDate);
+	   slsjtj(TaskData,"TaskData",Projects[i],TaskDataInit,proDate);
+	   slsjtj(SupplierMonitorTaskData,"SupplierMonitorTaskData",Projects[i],SupplierMonitorTaskDataInit,proDate);
+	   dlsjtj(ReleaseData,"ReleaseData",Projects[i],ReleaseDataInit,proDate);
+	   dlsjtj(RiskData,"RiskData",Projects[i],RiskDataInit,proDate);
+	   dlsjtj(LLAndBPData,"LLAndBPData",Projects[i],LLAndBPDataInit,proDate); 
 	} 
 	}
-
 	
-    //给定义好的统计数据赋值	
-	function infoData(proData,proTypeName,project,projecttype,projectdate){
-		var arr = Object.keys(proData);  
-		//console.log(arr.length);  //3
-		if(arr.length > 1){
-			for(var key in proData){
-			var pd = sjcl(project,projecttype,projectdate,key); //先判断横列有没有
-			if(pd){
-				var filed = proData[key];//数组 横列字段
-				for(var i = 0;i<filed.length;i++){  // 竖列字段
-					var obj = filed[i];  //对象
-					var name = Object.keys(obj)[0];//key
-					var pd = sjcl(project,projecttype,projectdate,name);//在判断竖列有没有
-					if(pd){
-						var count = parseInt(obj[name]); 
-						obj[name] = count+1;
-					}
-				}
-			}
-			}
-			
-		}else {
-			for(var  key in proData){
-			var filed = proData[key];//数组 横列字段
-				for(var i = 0;i<filed.length;i++){  // 竖列字段
-					var obj = filed[i];  //对象
-					var name = Object.keys(obj)[0];//key
-					var pd = sjcl(project,projecttype,projectdate,name);
-					if(pd){
-						var count = parseInt(obj[name]);
-						if(proTypeName == "QATaskData"){
-							console.log(count);
-						}
-						obj[name] = count+1;
-					}
-				}
+	//多列数据统计
+	function slsjtj(zdysj,proTypeName,projectType,cxsj,proDate){
+		for(key in zdysj){
+			var arr = zdysj[key];
+			for(var i =0;i<arr.length;i++){
+				var obj = arr[i];
+				var name = Object.keys(obj)[0];   
+				var value = obj[name];
+				var allname = key+":"+name;
+				var sl = sjtj(allname,projectType,cxsj,proDate); 
+				var count = parseInt(value); 
+				obj[name] = count+sl;
 			}
 		}
-		
-		CountData[project][proTypeName] =  proData ;
-		
+		CountData[projectType][proTypeName] =  zdysj;
 	}
-	
-	//处理数据 根据条件查询数据有没有
-	function sjcl(project,projecttype,projectdate,filedName){ 
-		for(var key in data){
-			var filed = data[key];//数组 
-			for(var i =0;i<filed.length;i++){
-				var filedsx = filed[i];  //对象
-				var name = Object.keys(filedsx)[0];//key
-				var value = filedsx[name];  //value 
-				//if(value[2]==projectdate){ //时间单独判断
-					if(name == filedName && value[0] == project && value[1]==projecttype){
-						var ActualStartDate = "";
+ 
+	//单列数据统计
+    function dlsjtj(zdysj,proTypeName,projectType,cxsj,proDate){
+		var arr = zdysj[Object.keys(zdysj)[0]];
+		for(var i=0;i<arr.length;i++){
+			var obj = arr[i];
+			var name = Object.keys(obj)[0];  
+			var value = obj[name];
+			var sl = sjtj(name,projectType,cxsj,proDate)
+			var count = parseInt(value); 
+			obj[name] = count+sl;
+		}
+		CountData[projectType][proTypeName] =  zdysj ;
+	}	
+	 console.log("----");
+	 
+	 //根据查询数据计算数量
+	function sjtj(key,projectType,cxsj,proDate){
+		var count =0;
+		for(var i =0;i<cxsj.length;i++){
+			var obj = cxsj[i];
+			var name = Object.keys(obj)[0];  
+			var obj1 = obj[name];
+			
+			var value = Object.keys(obj1)[0]; 
+			var pDate = obj1[value];
+			            
+			if(key == value && projectType == name){
+				var ActualStartDate = "";
 						var ActualEndDate =  "";
 						var CreatedDate = "";
 						var SatrtDate = "";
 						var EndDate = ""; 
-						if(projectdate != "" ){  //过滤条件 时间
-							SatrtDate = projectdate[0];
-							EndDate = projectdate[1];
+						if(proDate != "" ){  //过滤条件 时间
+							SatrtDate = proDate[0];
+							EndDate = proDate[1];
 						} 	
-						if(value[2].split("-") > 1){ //大于一表示有Actual Start Date和Actual End Date
-							var ActualStartDate = value[2].split("-")[0].split(" ")[0]; 
-							var ActualEndDate = value[2].split("-")[1].split(" ")[0]; 
+						 
+						var ls = pDate.toString();
+						if(ls.split("-") > 1){ //大于一表示有Actual Start Date和Actual End Date
+							var ActualStartDate = ls.split("-")[0].split(" ")[0]; 
+							var ActualEndDate = ls.split("-")[1].split(" ")[0]; 
 						}else {
-							var CreatedDate = value[2].split(" ")[0];
+							var CreatedDate = ls.split(" ")[0];
 					
 						}
 						//根据时间过滤
 						if(SatrtDate != "" && EndDate != ""){
 							if(ActualStartDate != "" && ActualEndDate !=""){
-								if(ActualStartDate > SatrtDate && ActualEndDate < EndDate){
-									return true;
+								if(ActualStartDate > SatrtDate && ActualEndDate <= EndDate){
+									count++;
 								}
 							}else {  //根据CreatedDate判断
-								if(CreatedDate > SatrtDate && CreatedDate < EndDate){
-									return true;
+								if(CreatedDate > SatrtDate && CreatedDate <= EndDate){
+									count++;
 								}
 							} 
 						}else if(SatrtDate != "" ){
 							if(ActualStartDate != ""){
 								if(ActualStartDate > SatrtDate){
-									return true;
+									count++;
 								}
 							}else {  //根据CreatedDate判断
 								if(CreatedDate > SatrtDate){
-									return true;
+									count++;
 								}
 							} 
 						}else if(EndDate != ""){
 							if(ActualEndDate !=""){
-								if(ActualEndDate < EndDate){
-									return true;
+								if(ActualEndDate <= EndDate){
+									count++;
 								}
 							}else {  //根据CreatedDate判断
-								if(ActualEndDate > EndDate){
-									return true;
+								if(ActualEndDate <= EndDate){
+									count++;
 								}
 							} 
 						}else {
-							return true;
+							count++;
 						} 
-					}
-				//} 
-			} 
+				
+			}	
 		}
-		return false;
-	}
+		return count;
+	} 
+	 
 	
 //给html赋值
 	function getDate(elm,date){
@@ -798,6 +849,36 @@ description="Text appearing at the bottom of the report page."
 		var html = '';
 		for(var key in date){
 			var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+key+ ':</th>';
+			var html2 = "";
+			var arr = date[key];
+			for(var i =0;i<arr.length;i++){
+				var obj = arr[i];
+				//console.log(Object.keys(obj)[0]);
+				//onsole.log(Object.values(obj)[0]);
+			
+				html2 += '<td style="text-align:center; "> '+Object.values(obj)[0]+'</td>';
+			}			
+			html += html1+html2+'</tr>';
+		}
+		elm.innerHTML = html;
+	}
+	
+	function getDefectStateDate(elm,date){
+		var html = '';
+		for(var key in date){
+			var name = "";
+			if(key == "Open"){
+				name = "Problem Definition";
+			}else if(key == "In Testing"){
+				name = "Validation and Closed";
+			}else if(key == "In Progress"){
+				name = "Execute Corrective Action";
+			}else if(key == "In Analysis"){
+				name = "Problem Confirmation";
+			}else if(key == "Analyzed"){
+				name = "Develop Inverstigation";
+			}
+			var html1 = '<tr class="odd_row" style="width: 100%;"><th style="text-align:right; width: 30%">'+name+ ':</th>';
 			var html2 = "";
 			var arr = date[key];
 			for(var i =0;i<arr.length;i++){
@@ -1256,7 +1337,7 @@ description="Text appearing at the bottom of the report page."
 
 			getDate(document.getElementById("DefectSourceAndDefectType-"+key.split("/")[1]),arr["SourceAndType"]);
 			getDate(document.getElementById("DefectOriginAndTaskPhase-"+key.split("/")[1]),arr["OriginAndTaskPhase"]);
-			getDate(document.getElementById("DefectStateAndDefectState-"+key.split("/")[1]),arr["StateAndDefectState"]);
+			getDefectStateDate(document.getElementById("DefectStateAndDefectState-"+key.split("/")[1]),arr["StateAndDefectState"]);
 			getDate(document.getElementById("DefectResponsibilityTeamAndState-"+key.split("/")[1]),arr["ResponsibilityTeamAndState"]);
 			getDate(document.getElementById("ChangeRequestType-"+key.split("/")[1]),arr["ChangeRequestType"]);
 			getDate(document.getElementById("ChangeCategoryAndChangeInitiator-"+key.split("/")[1]),arr["ChangeCategoryAndChangeInitiator"]);
