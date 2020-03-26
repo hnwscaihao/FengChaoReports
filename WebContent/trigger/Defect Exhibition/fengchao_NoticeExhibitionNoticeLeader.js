@@ -1,22 +1,22 @@
-// <b>Document In Review to Audit State Change Check</b>
+//
+// <b>Integrity Manager POST-Event Trigger</b>
 // <p>
-// MKS ALM 2009 solution
-// <p>
-// When the Document is rejected to fall back to the previous state, 
-// check if the Comment field is filled. If not, throw a prompt
-// <p>
-// This trigger is a pre-trigger.
-// <p>
-// <p>
-// Author : Wang Wei.
-// Create Date : 2020-3-13
-// </p>
-///START
+//
 // @param String Subject
 //
 // @param String Title
 //
 // @param String Note Info
+
+
+function abort(s){
+    eb.abortScript(s, true);
+}
+
+function log(s){
+    Packages.mks.util.Logger.message(s);
+}
+log("Start Notice Exhibition Leader");
 
 var eb = bsf.lookupBean("siEnvironmentBean");//环境变量
 //log("----- eb = " +  eb);
@@ -32,7 +32,7 @@ var params = bsf.lookupBean("parametersBean");
 //log("----- newState =" + delta.getNewState());
  
 var RecipientMailbox = [];//收件人
-var assignUser = "";//收件用户名
+var assignUser = "";//收件用户
 																					
 var createUser;
 //触发器参数
@@ -109,10 +109,10 @@ function sendMailToUser(toList,text, html){
 	email.setHostName(host);
 	// 字符编码集的设置  
 	email.setCharset("UTF-8");
-	// 发送人的邮箱  
-	email.setFrom("lxg_java@163.com", "ALM");  
-	// 如果需要认证信息的话，设置认证：用户名-密码。分别为发件人在邮件服务器上的注册名称和密码  //服务器只能保存用户名，不能保存密码
-	email.setAuthentication("lxg_java@163.com", "xinyu2019");
+	// 发送人的邮箱
+	email.setFrom("alm@gwm.cn", "ALM");  
+	// 如果需要认证信息的话，设置认证：用户名-密码。分别为发件人在邮件服务器上的注册名称和密码  //服务器只能保存用户名，不能保存密密码
+	email.setAuthentication("alm@gwm.cn", "123@alm.com");
 	//主题
 	var currSubject = "To : " + assignUser;
 	if(createUser && createUser != ""){
@@ -138,7 +138,7 @@ function sendMailToUser(toList,text, html){
 	// 要发送的信息，由于使用了HtmlEmail，可以在邮件内容中使用HTML标签  
 	email.setHtmlMsg(html);
 	
-	// 发送  
+	//发送
 	email.send();
 	log("Success");
 }
@@ -149,11 +149,11 @@ function getfj(user,delta){
 	 
 	var ls = [];
 	var createdBys = ""; //获取上传附件的人员
-	var attachmentBeans	= delta.getAttachmentBeans("Attachments");//获取所有附件 
+	var attachmentBeans	= delta.getAttachmentBeans("Attachments");//获取所有附件
 	for(var j = 0 ;j<attachmentBeans.length;j++){
 		var attachmentBean = attachmentBeans[j];
 		log("yi shang chuang fujian de yong hu "+attachmentBean.getCreatedBy());
-		var createdBy = attachmentBean.getCreatedBy();//附件的创建用户 
+		var createdBy = attachmentBean.getCreatedBy();//附件的创建用户
 		createdBys += getUserName(createdBy.trim())+",";
 	}
 	 
@@ -192,12 +192,21 @@ function getUserName(user){
 //延时未回复人员
 function isReply(delta){
 	var noticeComment = delta.getFieldValue("Comment");
-    var noticeUser = [ ];
-    noticeUser = delta.getFieldValue("Notice Users").toString();
-	var noticeUser2 = noticeUser.substring(1,noticeUser.length()-1);
-	var noticeUser3 = noticeUser2.split(",");
+	if(!noticeComment || noticeComment == null || noticeComment == "null"){
+		noticeComment = "";
+	}
 
-	var notUser = "";
+    var noticeUser = [ ];
+     var noticeUser = [];
+	var noticeUser3 = [];
+	var NoticeUsers = delta.getFieldValue("Notice Users");
+	if(!NoticeUsers || NoticeUsers == null || NoticeUsers == "null"){
+		NoticeUsers = ""; 
+	}else {
+	    noticeUser = NoticeUsers.toString();
+	    var noticeUser2 = noticeUser.substring(1,noticeUser.length()-1);
+	    noticeUser3 = noticeUser2.split(",");
+	} 	var notUser = "";
 	var personReplied = [];//已回复人员
 	for(var i =0;i<noticeUser3.length;i++){
 		var user = noticeUser3[i];			
@@ -251,7 +260,7 @@ function testPlanCheck(){
 		for(var a = 0;a<users.length;a++){
 			RecipientMailbox.push(users[a].trim());
 			assignUser += getUserName(users[a].trim())+",";
-			//丁丁
+			//钉钉
 			//receiveIds.add(users[a].trim());
 			//userFullName = server.getUserBean(users[a].trim()).getFullName();
 			var obj = {};
@@ -282,15 +291,11 @@ function getUserByEmail(){
     }
 }
 
-//打印
-function log(s){
-    Packages.mks.util.Logger.message(s);
-}
 
 //判断是否延期
-function documentCommentCheck(){
+function main(){
 
-	//log("...Schedual Send Item Length ---------------=" + allItemIds.length);
+	log("...Schedual Send Item Length ---------------=" + allItemIds.length);
 	if(!allItemIds || allItemIds.length == 0){
 		return;
 	}
@@ -446,14 +451,13 @@ function createHTMLBody(delta){
       return msg;
 
 }
-
+log("Defect Notice Leader Start");
 
 //主判断方法
-documentCommentCheck();
+main();
 
+log("Defect Notice Leader End");
 //UTF字符转换
  function ReChange(pValue){
       return unescape(pValue.replace(/&#x/g,'%u').replace(/\\u/g,'%u').replace(/;/g,''));
 }
-
- 

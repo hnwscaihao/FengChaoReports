@@ -38,69 +38,22 @@
 		function getImgTag(health){
 			return "<img src='<%hosturl%>MKS_ALM_2009/" + health.toLowerCase() + ".gif' alt='" + health + "'/>";
 		}
-		
-			
-		var ProjectDate = [];
 		 
+		//project 数量
 		var Projects =[];
+		//project 統計字段
+		var projectCountData = {};
 		
-		//var RiskDate = [{"Open":0},{"In Analysis":0},{"Rejected":0},{"Analyzed":0},{"In Monitoring":0},{"Postponed":0},{"Closed":0}];
-		var RiskDate = {
-			"Risk":[{"Open":0},{"In Analysis":0},{"Rejected":0},{"Analyzed":0},{"In Monitoring":0},{"Postponed":0},{"Closed":0}]
-		};
+		var ChangeOrderDateInit = [];
+		var ChangeRequestStateDateInit = [];
+		var RiskDateInit = [];
 		
-		var DefectTypeData = {
-			"Function" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
-			{"Software Integration":0},{"System Integration":0}],
-			"Logical" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
-			{"Software Integration":0},{"System Integration":0}],
-			"Norms" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
-			{"Software Integration":0},{"System Integration":0}],
-			"Interface" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
-			{"Software Integration":0},{"System Integration":0}],
-			"Performance" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
-			{"Software Integration":0},{"System Integration":0}],
-			"Grammer" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
-			{"Software Integration":0},{"System Integration":0}],
-			"Design Defect" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture ":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
-			{"Software Integration":0},{"System Integration":0}],
-		}		
-		var TaskPhasData = {
-			"Software Unit Test":[{"Open":0},{"Pending":0},{"Closed":0}],
-			"Software Integration Test":[{"Open":0},{"Pending":0},{"Closed":0}],
-			"Software Qulification Test":[{"Open":0},{"Pending":0},{"Closed":0}],
-			"System Integration Test":[{"Open":0},{"Pending":0},{"Closed":0}],
-			"System Qulification Test":[{"Open":0},{"Pending":0},{"Closed":0}]
-		};
-		var DefectStateDate = {
-			"Open":[{"false":0},{"true":0}],
-			"In Testing":[{"false":0},{"true":0}],
-			"In Progress":[{"false":0},{"true":0}],
-			"In Analysis":[{"false":0},{"true":0}],
-			"Analyzed":[{"false":0},{"true":0}]
-		};
-		var DefectResponsibilityTeamDate = {
-			"Open":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
-			"In Analysis":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
-			"Analyzed":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
-			"In Progress":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
-			"InTesting":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
-			"Verified":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
-			"Closed":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
-			"Rejected":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
-			"Postponed":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}]
-		};
-		var ChangeRequestDate = {
-			"REQ Change":[{"Customer":0},{"Supplier":0},{"Internal":0}],
-			"Design Change":[{"Customer":0},{"Supplier":0},{"Internal":0}],
-			"Plan Change":[{"Customer":0},{"Supplier":0},{"Internal":0}]
-		};
-		var ChangeRequestStateDate = {
-			"ChangeRequest" : [{"Open":0},{"In Progress":0},{"Approved":0},{"Fixed":0},{"Closed":0},{"Rejected":0},{"Cancelled":0},{"Postponed":0}]
-		};
-		var ChangeOrderDate = {
-			"ChangeOrder" : [{"Open":0},{"In Development":0},{"Verify":0},{"Closed":0}]
-		};
+		var DefectTypeDataInit = [];
+		var TaskPhasDataInit = [];
+		var DefectStateDateInit = [];
+		var DefectResponsibilityTeamDateInit = [];
+		var ChangeRequestDateInit = [];
+		
 	</script>
 </head>
 <%dateformat MM/dd/yy HH:mm:ss%>
@@ -108,81 +61,27 @@
 <body style="padding:2% 5% 2% 5%; ">
 <%begindetail%>
 <script>
-	//Project数据 
-	var data = {
-		"project" : {},
-		"RiskDate" : {},
-		"DefectTypeData" : {},
-		"TaskPhasData" : {},
-		"DefectStateDate" : {},
-		"DefectResponsibilityTeamDate" : {},
-		"ChangeRequestStateDate" : {},
-		"ChangeRequestDate" : {},
-		"ChangeOrderDate" : {},
-	};
-	console.log("Type : "+"<%<%builtin Type%>%>");
-	console.log("project : "+"<%<%builtin Project%>%>");
-	if(Projects.indexOf("<%<%builtin Project%>%>") == -1){
-		//每个project都要清除全局统计数据
-		DefectTypeData = {
-			"Function" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
-			{"Software Integration":0},{"System Integration":0}],
-			"Logical" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
-			{"Software Integration":0},{"System Integration":0}],
-			"Norms" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
-			{"Software Integration":0},{"System Integration":0}],
-			"Interface" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
-			{"Software Integration":0},{"System Integration":0}],
-			"Performance" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
-			{"Software Integration":0},{"System Integration":0}],
-			"Grammer" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
-			{"Software Integration":0},{"System Integration":0}],
-			"Design Defect" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture ":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
-			{"Software Integration":0},{"System Integration":0}],
-		}		
-		TaskPhasData = {
-			"Software Unit Test":[{"Open":0},{"Pending":0},{"Closed":0}],
-			"Software Integration Test":[{"Open":0},{"Pending":0},{"Closed":0}],
-			"Software Qulification Test":[{"Open":0},{"Pending":0},{"Closed":0}],
-			"System Integration Test":[{"Open":0},{"Pending":0},{"Closed":0}],
-			"System Qulification Test":[{"Open":0},{"Pending":0},{"Closed":0}]
-		};
-		DefectStateDate = {
-			"Open":[{"false":0},{"true":0}],
-			"In Testing":[{"false":0},{"true":0}],
-			"In Progress":[{"false":0},{"true":0}],
-			"In Analysis":[{"false":0},{"true":0}],
-			"Analyzed":[{"false":0},{"true":0}]
-		};
-		DefectResponsibilityTeamDate = {
-			"Open":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
-			"In Analysis":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
-			"Analyzed":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
-			"In Progress":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
-			"InTesting":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
-			"Verified":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
-			"Closed":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
-			"Rejected":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
-			"Postponed":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}]
-		};
-		ChangeRequestDate = {
-			"REQ Change":[{"Customer":0},{"Supplier":0},{"Internal":0}],
-			"Design Change":[{"Customer":0},{"Supplier":0},{"Internal":0}],
-			"Plan Change":[{"Customer":0},{"Supplier":0},{"Internal":0}]
-		};
-		ChangeRequestStateDate = {
-			"ChangeRequest" : [{"Open":0},{"CCB":0},{"In Progress":0},{"Approved":0},{"Fixed":0},{"Closed":0},{"Rejected":0},{"Cancelled":0},{"Postponed":0}]
-		};
-		ChangeOrderDate = {
-			"ChangeOrder" : [{"Open":0},{"In Development":0},{"Verify":0},{"Closed":0}]
-		};
-		Projects.push("<%<%builtin Project%>%>");
-		
-		console.log(111111);
+   
+	if("<%<%builtin Type%>%>" == "Change Order"){
+		 ChangeOrderDateInit.push({"<%<%builtin Project%>%>":"<%State%>"});
+	}
+	if("<%<%builtin Type%>%>" == "Change Request"){
+		 ChangeRequestStateDateInit.push({"<%<%builtin Project%>%>":"<%State%>"});
+		 ChangeRequestDateInit.push({"<%<%builtin Project%>%>":"<%Change Category%>"+":"+"<%Change Initiator%>"});
+	}
+	if("<%<%builtin Type%>%>" == "Risk"){
+		 RiskDateInit.push({"<%<%builtin Project%>%>":"<%State%>"});
+	}
+    if("<%<%builtin Type%>%>" == "Defect"){
+		 DefectTypeDataInit.push({"<%<%builtin Project%>%>":"<%Defect Type%>"+":"+"<%Defect Source%>"});
+		 TaskPhasDataInit.push({"<%<%builtin Project%>%>":"<%Origin%>"+":"+"<%Task Phase%>"});
+		 DefectStateDateInit.push({"<%<%builtin Project%>%>":"<%State%>"+":"+"<%defectState%>"});
+		 DefectResponsibilityTeamDateInit.push({"<%<%builtin Project%>%>":"<%State%>"+":"+"<%Responsibility Team%>"}); 
 	}
 	
-	if("<%<%builtin Type%>%>" == "Project" && Projects[Projects.length-1] == "<%<%builtin Project%>%>"){
-		
+	 
+	 if(Projects.indexOf("<%<%builtin Project%>%>") == -1){
+		Projects.push("<%<%builtin Project%>%>");
 		var project  ={
 					"projectType" : "<%<%builtin Type%>%>",
 					"projectId" : "<%<%builtin ID%>%>",
@@ -299,170 +198,11 @@
 					"Total Pass Percentage of Planned Project" : "<%Total Pass Percentage of Planned Project%>",
 					
 				};
-		
-
-		data.project = project;
-		ProjectDate[Projects.length-1] = data;	
+				
+		projectCountData["<%<%builtin Project%>%>"] = 	project;	
 	}
 	
-	//risk数据
-	if("<%<%builtin Type%>%>" == "Risk"  && Projects[Projects.length-1] == "<%<%builtin Project%>%>"){
-		//risk State
-		for(var key in RiskDate){ 
-			var arr = RiskDate[key];
-			for(var i = 0;i<arr.length;i++){
-				var obj = arr[i];
-				if("<%State%>" == Object.keys(obj)[0]){
-					var count = parseInt(obj["<%State%>"]);
-					//console.log(count);
-					obj["<%State%>"] = count+1;
-						
-				}
-				//console.log(obj);
-			}
-		}
-	}
-	//Defect数据
-	if("<%<%builtin Type%>%>" == "Defect"  && Projects[Projects.length-1] == "<%<%builtin Project%>%>"){
-		//type 和 Source
-		for(var key in DefectTypeData){ 
-			if("<%Defect Type%>" == key){
-				var arr = DefectTypeData[key];
-				for(var i = 0;i<arr.length;i++){
-					var obj = arr[i];
-					//console.log("<%Defect Type%>" +":" + "<%Defect Source%>");
-					if("<%Defect Source%>" == Object.keys(obj)[0]){
-						var count = parseInt(obj["<%Defect Source%>"]);
-						//console.log(count);
-						obj["<%Defect Source%>"] = count+1;
-						
-					}
-					//console.log(obj);
-				}
-			}
-		}
-		//Origin and Task Phase
-		for(var key in TaskPhasData ){
-			if("<%Origin%>" == key){
-				var arr = TaskPhasData[key];
-				for(var i = 0;i<arr.length;i++){
-					var obj = arr[i];
-					//console.log("<%Origin%>" +":" + "<%Task Phase%>");
-					if("<%Task Phase%>" == Object.keys(obj)[0]){
-						var count = parseInt(obj["<%Task Phase%>"]);
-						//console.log(count);
-						obj["<%Task Phase%>"] = count+1;
-						
-					}
-					//console.log(obj);
-				}
-			}
-		}
-		//State and defectState
-		for(var key in DefectStateDate){
-			if("<%State%>" == key){
-				var arr = DefectStateDate[key];
-				for(var i = 0;i<arr.length;i++){
-					var obj = arr[i];
-					//console.log("<%State%>" +":" + "<%defectState%>");
-					if("<%defectState%>" == Object.keys(obj)[0]){
-						var count = parseInt(obj["<%defectState%>"]);
-						//console.log(count);
-						obj["<%defectState%>"] = count+1;
-						
-					}
-					//console.log(obj);
-				}
-			}
-		}
-		//State and Responsibility Team
-		for(var key in DefectResponsibilityTeamDate){
-			if("<%State%>" == key){
-				var arr = DefectResponsibilityTeamDate[key];
-				for(var i = 0;i<arr.length;i++){
-					var obj = arr[i];
-					//console.log("<%State%>" +":" + "<%Responsibility Team%>");
-					if("<%Responsibility Team%>" == Object.keys(obj)[0]){
-						var count = parseInt(obj["<%Responsibility Team%>"]);
-						//console.log(count);
-						obj["<%Responsibility Team%>"] = count+1;
-						
-					}
-					//console.log(obj);
-				}
-			}
-		} 
-	}
-	//Change Request数据 
-    if("<%<%builtin Type%>%>" == "Change Request"  && Projects[Projects.length-1] == "<%<%builtin Project%>%>"){
-		//Change Request State
-		for(var key in ChangeRequestStateDate){ 
-			var arr = ChangeRequestStateDate[key];
-			for(var i = 0;i<arr.length;i++){
-				var obj = arr[i];
-				if("<%State%>" == Object.keys(obj)[0]){
-					var count = parseInt(obj["<%State%>"]);
-					//console.log(count);
-					obj["<%State%>"] = count+1;
-						
-				}
-				//console.log(obj);
-			}
-		}
-		
-		//Change Category and Change Initiator
-		for(var key in ChangeRequestDate){ 
-		console.log("-----------------"+"<%Change Category%> : "+ "<%Change Initiator%>");
-	 
-			if("<%Change Category%>" == key){
-				var arr = ChangeRequestDate[key];
-				for(var i = 0;i<arr.length;i++){
-					var obj = arr[i];
-					if("<%Change Initiator%>" == Object.keys(obj)[0]){
-						var count = parseInt(obj["<%Change Initiator%>"]);
-						//console.log(count);
-						obj["<%Change Initiator%>"] = count+1;
-						
-					}
-					//console.log(obj);
-				}
-			}
-		}
-	} 
-	
-	//Change Order数据   
-    if("<%<%builtin Type%>%>" == "Change Order"  && Projects[Projects.length-1] == "<%<%builtin Project%>%>"){
-		//Change Order State
-		for(var key in ChangeOrderDate){ 
-			var arr = ChangeOrderDate[key];
-				for(var i = 0;i<arr.length;i++){
-					var obj = arr[i];
-					if("<%State%>" == Object.keys(obj)[0]){
-						var count = parseInt(obj["<%State%>"]);
-						//console.log(count);
-						obj["<%State%>"] = count+1;
-						
-					}
-					//console.log(obj);
-				}
-		}
-
-	} 
-	var ls = ProjectDate[Projects.length-1];
-	if(!ls){
-		ProjectDate[Projects.length-1]={};
-	}
-	console.log(ls);
-	ProjectDate[Projects.length-1].DefectTypeData = DefectTypeData;
-	ProjectDate[Projects.length-1].RiskDate = RiskDate;
-	
-	ProjectDate[Projects.length-1].TaskPhasData = TaskPhasData;
-	ProjectDate[Projects.length-1].DefectStateDate = DefectStateDate;
-	ProjectDate[Projects.length-1].DefectResponsibilityTeamDate = DefectResponsibilityTeamDate;
-	ProjectDate[Projects.length-1].ChangeRequestStateDate = ChangeRequestStateDate;
-	ProjectDate[Projects.length-1].ChangeRequestDate = ChangeRequestDate;
-	ProjectDate[Projects.length-1].ChangeOrderDate = ChangeOrderDate;
-
+	  
 	
 </script>
 <%enddetail%>
@@ -473,20 +213,211 @@
 </body>
 <script>
 	 
-	console.log(ProjectDate);
+	console.log(ChangeOrderDateInit);  
+	console.log(ChangeRequestStateDateInit);  
+	console.log(RiskDateInit);  
+	console.log(DefectTypeDataInit);  
+	console.log(TaskPhasDataInit);  
+	console.log(DefectStateDateInit);  
+	console.log(DefectResponsibilityTeamDateInit);  
+	console.log(ChangeRequestDateInit);  
+	
+	
+      
+	
+		//统计数据
+	var CountData = {}; 
+	var RiskDate = {
+			"Risk":[{"Open":0},{"In Analysis":0},{"Rejected":0},{"Analyzed":0},{"In Monitoring":0},{"Postponed":0},{"Closed":0}]
+		};
+	var DefectTypeData = {
+			"Function" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
+			{"Software Integration":0},{"System Integration":0}],
+			"Logical" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
+			{"Software Integration":0},{"System Integration":0}],
+			"Norms" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
+			{"Software Integration":0},{"System Integration":0}],
+			"Interface" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
+			{"Software Integration":0},{"System Integration":0}],
+			"Performance" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
+			{"Software Integration":0},{"System Integration":0}],
+			"Grammer" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
+			{"Software Integration":0},{"System Integration":0}],
+			"Design Defect" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture ":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
+			{"Software Integration":0},{"System Integration":0}],
+		}		
+	var TaskPhasData = {
+			"Software Unit Test":[{"Open":0},{"Pending":0},{"Closed":0}],
+			"Software Integration Test":[{"Open":0},{"Pending":0},{"Closed":0}],
+			"Software Qulification Test":[{"Open":0},{"Pending":0},{"Closed":0}],
+			"System Integration Test":[{"Open":0},{"Pending":0},{"Closed":0}],
+			"System Qulification Test":[{"Open":0},{"Pending":0},{"Closed":0}]
+		};
+	var DefectStateDate = {
+			"Open":[{"false":0},{"true":0}],
+			"In Testing":[{"false":0},{"true":0}],
+			"In Progress":[{"false":0},{"true":0}],
+			"In Analysis":[{"false":0},{"true":0}],
+			"Analyzed":[{"false":0},{"true":0}]
+		};
+	var DefectResponsibilityTeamDate = {
+			"Open":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+			"In Analysis":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+			"Analyzed":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+			"In Progress":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+			"InTesting":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+			"Verified":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+			"Closed":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+			"Rejected":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+			"Postponed":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}]
+		};
+	var ChangeRequestDate = {
+			"REQ change":[{"Customer":0},{"Supplier":0},{"Internal":0}],
+			"Design change":[{"Customer":0},{"Supplier":0},{"Internal":0}],
+			"Plan change":[{"Customer":0},{"Supplier":0},{"Internal":0}]
+		};
+	var ChangeRequestStateDate = {
+			"Change Request" : [{"Open":0},{"In Progress":0},{"Approved":0},{"Fixed":0},{"Closed":0},{"Rejected":0},{"Cancelled":0},{"Postponed":0}]
+		};
+	var ChangeOrderDate = {
+			"Change Order" : [{"Open":0},{"In Development":0},{"Verify":0},{"Closed":0}]
+		};
+	
+	//先给统计数据初始化
+	for(var i = 0;i<Projects.length;i++){  
+	   CountData[Projects[i]] = {};
+	} 
+	
+	//循环统计每个project的数据
+	function countDate(proDate){
+		for(var i = 0;i<Projects.length;i++){ 
+		//每个project统计先清空
+		RiskDate = {
+			"Risk":[{"Open":0},{"In Analysis":0},{"Rejected":0},{"Analyzed":0},{"In Monitoring":0},{"Postponed":0},{"Closed":0}]
+		};
+	    DefectTypeData = {
+			"Function" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
+			{"Software Integration":0},{"System Integration":0}],
+			"Logical" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
+			{"Software Integration":0},{"System Integration":0}],
+			"Norms" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
+			{"Software Integration":0},{"System Integration":0}],
+			"Interface" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
+			{"Software Integration":0},{"System Integration":0}],
+			"Performance" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
+			{"Software Integration":0},{"System Integration":0}],
+			"Grammer" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
+			{"Software Integration":0},{"System Integration":0}],
+			"Design Defect" :[{"Requirement":0},{"System Architecture":0},{"Software Architecture ":0},{"Software Detailed Design":0},{"Code":0},{"Test":0},
+			{"Software Integration":0},{"System Integration":0}],
+		}		
+	    TaskPhasData = {
+			"Software Unit Test":[{"Open":0},{"Pending":0},{"Closed":0}],
+			"Software Integration Test":[{"Open":0},{"Pending":0},{"Closed":0}],
+			"Software Qulification Test":[{"Open":0},{"Pending":0},{"Closed":0}],
+			"System Integration Test":[{"Open":0},{"Pending":0},{"Closed":0}],
+			"System Qulification Test":[{"Open":0},{"Pending":0},{"Closed":0}]
+		};
+		DefectStateDate = {
+			"Open":[{"false":0},{"true":0}],
+			"In Testing":[{"false":0},{"true":0}],
+			"In Progress":[{"false":0},{"true":0}],
+			"In Analysis":[{"false":0},{"true":0}],
+			"Analyzed":[{"false":0},{"true":0}]
+		};
+		DefectResponsibilityTeamDate = {
+			"Open":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+			"In Analysis":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+			"Analyzed":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+			"In Progress":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+			"InTesting":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+			"Verified":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+			"Closed":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+			"Rejected":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}],
+			"Postponed":[{"PM":0},{"STS":0},{"ASW":0},{"BSW":0},{"HW":0},{"TEST":0},{"QA":0}]
+		};
+		ChangeRequestDate = {
+			"REQ change":[{"Customer":0},{"Supplier":0},{"Internal":0}],
+			"Design change":[{"Customer":0},{"Supplier":0},{"Internal":0}],
+			"Plan change":[{"Customer":0},{"Supplier":0},{"Internal":0}]
+		};
+		ChangeRequestStateDate = {
+			"Change Request" : [{"Open":0},{"In Progress":0},{"Approved":0},{"Fixed":0},{"Closed":0},{"Rejected":0},{"Cancelled":0},{"Postponed":0}]
+		};
+		ChangeOrderDate = {
+			"Change Order" : [{"Open":0},{"In Development":0},{"Verify":0},{"Closed":0}]
+		};
+	
+       //参数1 自定义统计数据  2priject类型 3，统计数据名字 4.查询的总数据 
+	  	dlsjtj(ChangeOrderDate,Projects[i],"ChangeOrderDate",ChangeOrderDateInit);
+	  	dlsjtj(ChangeRequestStateDate,Projects[i],"ChangeRequestStateDate",ChangeRequestStateDateInit);
+	  	dlsjtj(RiskDate,Projects[i],"RiskDate",RiskDateInit);
+		
+	  	slsjtj(DefectTypeData,Projects[i],"DefectTypeData",DefectTypeDataInit);
+	  	slsjtj(TaskPhasData,Projects[i],"TaskPhasData",TaskPhasDataInit);
+	  	slsjtj(DefectStateDate,Projects[i],"DefectStateDate",DefectStateDateInit);
+	  	slsjtj(DefectResponsibilityTeamDate,Projects[i],"DefectResponsibilityTeamDate",DefectResponsibilityTeamDateInit);
+	  	slsjtj(ChangeRequestDate,Projects[i],"ChangeRequestDate",ChangeRequestDateInit);
+	    
+	    
+	   } 
+	}
+    countDate("");
+	getProjectDate();//加载DOM
+	//多列数据统计
+	function slsjtj(zdysj,projectType,proTypeName,cxsj){
+		for(key in zdysj){
+			var arr = zdysj[key];
+			for(var i =0;i<arr.length;i++){
+				var obj = arr[i];
+				var name = Object.keys(obj)[0];   
+				var value = obj[name];
+				var allname = key+":"+name;
+				var sl = sjtj(allname,projectType,cxsj); 
+				var count = parseInt(value); 
+				obj[name] = count+sl;
+			}
+		}
+		CountData[projectType][proTypeName] =  zdysj;
+	}
+ 
+	//单列数据统计
+    function dlsjtj(zdysj,projectType,proTypeName,cxsj){
+		var arr = zdysj[Object.keys(zdysj)[0]];
+		for(var i=0;i<arr.length;i++){
+			var obj = arr[i];
+			var name = Object.keys(obj)[0];  
+			var value = obj[name];
+			var sl = sjtj(name,projectType,cxsj)
+			var count = parseInt(value); 
+			obj[name] = count+sl;
+		}
+		CountData[projectType][proTypeName] =  zdysj ;
+	}	
+	 console.log("----");
 	 
+	 //根据查询数据计算数量
+	function sjtj(key,projectType,cxsj){
+		var count =0;
+		for(var i =0;i<cxsj.length;i++){
+			var obj = cxsj[i];
+			var name = Object.keys(obj)[0];  
+			var value = obj[name];
+			console.log(key + ":" +typeof(key));
+			console.log(value + ":" +typeof(value));
+			console.log("Design Change:Customer"  == "Design change:Customer");
+			console.log(key.trim() == value.trim());
+			            
+			if(key == value && projectType == name){
+				count++;	
+			}	
+		}
+		return count;
+	} 
 	
-	getProjectDate()
+    console.log(CountData);
 	
-    //getRiskDate();
-	//getDefectDate();
-	//getTaskPhasData();
-	//getDefectStateDate();
-	//getDefectResponsibilityTeamDate();
-	//getChangeRequestDate();
-	//getChangeRequestStateDate();
-	//getChangeOrderDate();
-	
+ 
 	//给html赋值
 	function getDate(elm,date){
 		//console.log(elm);
@@ -542,51 +473,46 @@
 	function getProjectDate(){
 		var html = '';
 		//先加载所有dom
-		for(var i = 0;i<ProjectDate.length;i++){
-			var obj = ProjectDate[i].project;
-			if(!obj){
-				obj = {
-					projectType:"Project",
-					ProjectSummary :Projects[i],
-					State :""
-				}
-			}
+		for(var key in CountData){
+			var projectData = projectCountData[key]; //project统计数据
+			var obj = CountData[key];
+			
 			//console.log("sj---------:"+obj["ProjectIdA"]);
-			html += '<p class="title">'+obj["projectType"]+' <a class="title" href="'+obj["ProjectIdA"]+'" target="_blank">'+obj["projectId"]+'</a>: '+obj["ProjectSummary"]+'</p>\n' +
+			html += '<p class="title">'+projectData["projectType"]+' <a class="title" href="'+projectData["ProjectIdA"]+'" target="_blank">'+projectData["projectId"]+'</a>: '+projectData["ProjectSummary"]+'</p>\n' +
         '<table class="detailrows fullWidth">\n' +
         '\t<tr>\n' +
         '\t\t<td style="width: 50%;">\n' +
         '\t\t\t<table class="detailrows" style="width: 100%;">\n' +
         '\t\t\t\t<tr class="even_row">\n' +
         '\t\t\t\t\t<th nowrap style="width: 30%;">State:</th>\n' +
-        '\t\t\t\t\t<td style="width: 70%;">'+obj["State"]+'</td>\n' +
+        '\t\t\t\t\t<td style="width: 70%;">'+projectData["State"]+'</td>\n' +
         '\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="odd_row">\n' +
         '\t\t\t\t\t<th nowrap style="width: 30%;">ASIL:</th>\n' +
-        '\t\t\t\t\t<td style="width: 70%;">'+obj["ASIL"]+'</td>\n' +
+        '\t\t\t\t\t<td style="width: 70%;">'+projectData["ASIL"]+'</td>\n' +
         '\n' +
         '\t\t\t\t\t\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="even_row">\n' +
         '\t\t\t\t\t<th nowrap style="width: 30%;">Project Start Date:</th>\n' +
-        '\t\t\t\t\t<td style="width: 70%;">'+obj["Project Start Date"]+'</td>\n' +
+        '\t\t\t\t\t<td style="width: 70%;">'+projectData["Project Start Date"]+'</td>\n' +
         '\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="odd_row">\n' +
         '\t\t\t\t\t<th nowrap style="width: 30%;">Project End Date:</th>\n' +
-        '\t\t\t\t\t<td style="width: 70%;">'+obj["Project End Date"]+'</td>\n' +
+        '\t\t\t\t\t<td style="width: 70%;">'+projectData["Project End Date"]+'</td>\n' +
         '\n' +
         '\t\t\t\t\t\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="even_row">\n' +
         '\t\t\t\t\t<th nowrap style="width: 30%;">Project Manager:</th>\n' +
-        '\t\t\t\t\t<td style="width: 70%;">'+obj["Project Manager"]+'</td>\n' +
+        '\t\t\t\t\t<td style="width: 70%;">'+projectData["Project Manager"]+'</td>\n' +
         '\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="odd_row">\n' +
         '\t\t\t\t\t<th nowrap style="width: 15%;">TeamMembers:</th>\n' +
-        '\t\t\t\t\t<td style="width: 70%;">'+obj["TeamMembers"]+'</td>\n' +
+        '\t\t\t\t\t<td style="width: 70%;">'+projectData["TeamMembers"]+'</td>\n' +
         '\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t</table>\n' +
@@ -596,36 +522,36 @@
         '\t\t\t<table class="detailrows" style="width: 100%;">\n' +
         '\t\t\t\t<tr class="even_row">\n' +
         '\t\t\t\t\t<th nowrap style="text-align:right; width: 30%;">Project Start:</th>\n' +
-        '\t\t\t\t\t<td style="width: 70%;">'+obj["Project Start"]+'</td>\n' +
+        '\t\t\t\t\t<td style="width: 70%;">'+projectData["Project Start"]+'</td>\n' +
         '\t\t\t\t\t\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="odd_row">\n' +
         '\t\t\t\t\t\n' +
         '\t\t\t\t\t<th nowrap style="text-align:right; width: 30%;">Project Acceptance:</th>\n' +
-        '\t\t\t\t\t<td style="width: 70%;">'+obj["Project Acceptance"]+'</td>\n' +
+        '\t\t\t\t\t<td style="width: 70%;">'+projectData["Project Acceptance"]+'</td>\n' +
         '\t\t\t\t\t\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="even_row">\n' +
         '\t\t\t\t\t\n' +
         '\t\t\t\t\t<th nowrap style="text-align:right; width: 30%;">Project Plan:</th>\n' +
-        '\t\t\t\t\t<td style="width: 70%;">'+obj["Project Plan"]+'</td>\n' +
+        '\t\t\t\t\t<td style="width: 70%;">'+projectData["Project Plan"]+'</td>\n' +
         '\t\t\t\t\t\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="odd_row">\n' +
         '\t\t\t\t\t\n' +
         '\t\t\t\t\t<th nowrap style="text-align:right; width: 30%;">Functional Specification Freeze:</th>\n' +
-        '\t\t\t\t\t<td style="width: 70%;">'+obj["Functional Specification Freeze"]+'</td>\n' +
+        '\t\t\t\t\t<td style="width: 70%;">'+projectData["Functional Specification Freeze"]+'</td>\n' +
         '\t\t\t\t\t\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="even_row">\n' +
         '\t\t\t\t\t\n' +
         '\t\t\t\t\t<th nowrap style="text-align:right; width: 30%;">Code Freeze:</th>\n' +
-        '\t\t\t\t\t<td style="width: 70%;">'+obj["Code Freeze"]+'</td>\n' +
+        '\t\t\t\t\t<td style="width: 70%;">'+projectData["Code Freeze"]+'</td>\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="odd_row">\n' +
         '\t\t\t\t\t\n' +
         '\t\t\t\t\t<th nowrap style="text-align:right; width: 30%; ">Development Complete:</th>\n' +
-        '\t\t\t\t\t<td style="width: 70%; ">'+obj["Development Complete"]+'</td>\n' +
+        '\t\t\t\t\t<td style="width: 70%; ">'+projectData["Development Complete"]+'</td>\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t</table>\n' +
         '\t\t</td>\n' +
@@ -644,153 +570,153 @@
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="odd_row" style="width: 100%;">\n' +
         '\t\t\t\t\t<th style="text-align:right; width: 40%">Stakeholder Requirement Documents:</th>\n' +
-        '\t\t\t\t\t<td style="text-align:center; width: 15%" >'+obj["Pending Stakeholder Requirement Document Count"]+'</td>\n' +
-        '\t\t\t\t\t<td style="text-align:center; width: 15%">'+obj["Open Stakeholder Requirement Document Count"]+'</td>\n' +
-        '\t\t\t\t\t<td style="text-align:center; width: 15%">'+obj["Close Stakeholder Requirement Document Count"]+'</td>\n' +
+        '\t\t\t\t\t<td style="text-align:center; width: 15%" >'+projectData["Pending Stakeholder Requirement Document Count"]+'</td>\n' +
+        '\t\t\t\t\t<td style="text-align:center; width: 15%">'+projectData["Open Stakeholder Requirement Document Count"]+'</td>\n' +
+        '\t\t\t\t\t<td style="text-align:center; width: 15%">'+projectData["Close Stakeholder Requirement Document Count"]+'</td>\n' +
         '\t\t\t\t\t<td style="text-align:center; width: 15%">\n' +
-        '\t\t\t\t\t\t'+obj["Total Stakeholder Requirement Document Count"]+'\n' +
+        '\t\t\t\t\t\t'+projectData["Total Stakeholder Requirement Document Count"]+'\n' +
         '\t\t\t\t\t</td>\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="even_row">\n' +
         '\t\t\t\t\t<th style="text-align:right">System Requirement Specification Documents:</th>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending System Requirement Specification Document Count"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Open System Requirement Specification Document Count"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed System Requirement Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Pending System Requirement Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Open System Requirement Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Closed System Requirement Specification Document Count"]+' </td>\n' +
         '\t\t\t\t\t<td style="text-align:center">\n' +
-        '\t\t\t\t\t\t'+obj["Total System Requirement Specification Document Count"]+' \n' +
+        '\t\t\t\t\t\t'+projectData["Total System Requirement Specification Document Count"]+' \n' +
         '\t\t\t\t\t</td>\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="odd_row">\n' +
         '\t\t\t\t\t<th style="text-align:right">System Architectural Design Specification Documents:</th>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending System Architectural Design Specification Document Count"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Open System Architectural Design Specification Document Count"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed System Architectural Design Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Pending System Architectural Design Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Open System Architectural Design Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Closed System Architectural Design Specification Document Count"]+' </td>\n' +
         '\t\t\t\t\t<td style="text-align:center">\n' +
-        '\t\t\t\t\t\t'+obj["Total System Architectural Design Specification Document Count"]+' \n' +
+        '\t\t\t\t\t\t'+projectData["Total System Architectural Design Specification Document Count"]+' \n' +
         '\t\t\t\t\t</td>\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="even_row">\n' +
         '\t\t\t\t\t<th style="text-align:right">Software Requirement Specification Documents:</th>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Software Requirement Specification Document Count"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Software Requirement Specification Document Count"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Software Requirement Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Pending Software Requirement Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Open Software Requirement Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Closed Software Requirement Specification Document Count"]+' </td>\n' +
         '\t\t\t\t\t<td style="text-align:center">\n' +
-        '\t\t\t\t\t\t'+obj["Total Software Requirement Specification Document Count"]+' \n' +
+        '\t\t\t\t\t\t'+projectData["Total Software Requirement Specification Document Count"]+' \n' +
         '\t\t\t\t\t</td>\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="odd_row">\n' +
         '\t\t\t\t\t<th style="text-align:right">Software Architectural Design Specification Documents:</th>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Software Architectural Design Specification Document Count"]+'</td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Software Architectural Design Specification Document Count"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Software Architectural Design Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Pending Software Architectural Design Specification Document Count"]+'</td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Open Software Architectural Design Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Closed Software Architectural Design Specification Document Count"]+' </td>\n' +
         '\t\t\t\t\t<td style="text-align:center">\n' +
-        '\t\t\t\t\t\t'+obj["Total Software Architectural Design Specification Document Count"]+' \n' +
+        '\t\t\t\t\t\t'+projectData["Total Software Architectural Design Specification Document Count"]+' \n' +
         '\t\t\t\t\t</td>\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="even_row">\n' +
         '\t\t\t\t\t<th style="text-align:right">Software Detail Design Specification Documents:</th>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Software Detail Design Specification Document Count"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Software Detail Design Specification Document Count"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Software Detail Design Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Pending Software Detail Design Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Open Software Detail Design Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Closed Software Detail Design Specification Document Count"]+' </td>\n' +
         '\t\t\t\t\t<td style="text-align:center">\n' +
-        '\t\t\t\t\t\t'+obj["Total Software Detail Design Specification Document Count"]+' \n' +
+        '\t\t\t\t\t\t'+projectData["Total Software Detail Design Specification Document Count"]+' \n' +
         '\t\t\t\t\t</td>\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="odd_row">\n' +
         '\t\t\t\t\t<th style="text-align:right">Hardware Requirement Specification Documents:</th>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Hardware Requirement Specification Document Count"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Hardware Requirement Specification Document Count"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Hardware Requirement Specification Document Count"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Total Hardware Requirement Specification Document Count"]+' \n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Pending Hardware Requirement Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Open Hardware Requirement Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Closed Hardware Requirement Specification Document Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Total Hardware Requirement Specification Document Count"]+' \n' +
         '\t\t\t\t\t</td>\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="even_row">\n' +
         '\t\t\t\t\t<th style="text-align:right">Models:</th>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Models Count E"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Models Count E"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Models Count E"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Total Models Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Pending Models Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Open Models Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Closed Models Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Total Models Count E"]+' </td>\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="odd_row">\n' +
         '\t\t\t\t\t<th style="text-align:right">Test Objectives:</th>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Test Objective Count"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Test Objective Count"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Test Objective Count"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Total Test Objective Count"]+'</td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Pending Test Objective Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Open Test Objective Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Closed Test Objective Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Total Test Objective Count"]+'</td>\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="even_row">\n' +
         '\t\t\t\t\t<th style="text-align:right">Test Plans:</th>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Test Plan Count E"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Test Plan Count E"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Test Plan Count E"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Total Test Plan Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Pending Test Plan Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Open Test Plan Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Closed Test Plan Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Total Test Plan Count E"]+' </td>\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="odd_row">\n' +
         '\t\t\t\t\t<th style="text-align:right">Test Suites:</th>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Test Suite Count"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Test Suite Count"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Test Suite Count"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Total Test Suite Count"]+' \n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Pending Test Suite Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Open Test Suite Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Closed Test Suite Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Total Test Suite Count"]+' \n' +
         '\t\t\t\t\t\n' +
         '\t\t\t\t\t</td>\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="even_row">\n' +
         '\t\t\t\t\t<th style="text-align:right">Test Sessions:</th>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Test Session Count"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Test Session Count"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Test Session Count"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Total Test Session Count"]+' \n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Pending Test Session Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Open Test Session Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Closed Test Session Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Total Test Session Count"]+' \n' +
         '\t\t\t\t\t\n' +
         '\t\t\t\t\t</td>\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="odd_row">\n' +
         '\t\t\t\t\t<th style="text-align:right">Defects:</th>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Defect Count"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Defect Count"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Defect Count"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Total Defect Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Pending Defect Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Open Defect Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Closed Defect Count"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Total Defect Count"]+' </td>\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="even_row">\n' +
         '\t\t\t\t\t<th style="text-align:right">Tasks:</th>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Tasks Count E"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Tasks Count E"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Tasks Count E"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Total Tasks Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Pending Tasks Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Open Tasks Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Closed Tasks Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Total Tasks Count E"]+' </td>\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="odd_row">\n' +
         '\t\t\t\t\t<th style="text-align:right">Change Requests:</th>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Change Request Count E"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Change Request Count E"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Change Request Count E"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Total Change Request Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Pending Change Request Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Open Change Request Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Closed Change Request Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Total Change Request Count E"]+' </td>\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="even_row">\n' +
         '\t\t\t\t\t<th style="text-align:right">Change Orders:</th>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Change Order Count E"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Change Order Count E"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Change Order Count E"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Total Change Order Count E"]+'</td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Pending Change Order Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Open Change Order Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Closed Change Order Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Total Change Order Count E"]+'</td>\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="odd_row">\n' +
         '\t\t\t\t\t<th style="text-align:right">Releases:</th>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Releases Count E"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Releases Count E"]+'</td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Releases Count E"]+'</td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Total Releases Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Pending Releases Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Open Releases Count E"]+'</td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Closed Releases Count E"]+'</td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Total Releases Count E"]+' </td>\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="even_row">\n' +
         '\t\t\t\t\t<th style="text-align:right">Non-conformance Issues:</th>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Non-conformance Issues Count E"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Non-conformance Issues Count E"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Non-conformance Issues Count E"]+'</td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Total Non-conformance Issues Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Pending Non-conformance Issues Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Open Non-conformance Issues Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Closed Non-conformance Issues Count E"]+'</td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Total Non-conformance Issues Count E"]+' </td>\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t\t<tr class="odd_row">\n' +
         '\t\t\t\t\t<th style="text-align:right">Supplier Monitor Tasks:</th>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Pending Supplier Monitor Tasks Count E"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Open Supplier Monitor Tasks Count E"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Closed Supplier Monitor Tasks Count E"]+' </td>\n' +
-        '\t\t\t\t\t<td style="text-align:center">'+obj["Total Supplier Monitor Tasks Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Pending Supplier Monitor Tasks Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Open Supplier Monitor Tasks Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Closed Supplier Monitor Tasks Count E"]+' </td>\n' +
+        '\t\t\t\t\t<td style="text-align:center">'+projectData["Total Supplier Monitor Tasks Count E"]+' </td>\n' +
         '\t\t\t\t</tr>\n' +
         '\t\t\t</table>\n' +
         '\t\t</td>\n' +
@@ -800,20 +726,20 @@
         '\t<tr>\n' +
         '\t\t<td>\n' +
         '\t\t\t<table class="detailrows">\n' +
-        '\t\t\t\t<tr class="even_row"><th nowrap>Total Planned Count:</th><td width="100%">'+obj["Total Planned Count Project"]+'</td></tr>\n' +
-        '\t\t\t\t<tr class="odd_row"><th nowrap>Total Run Count:</th><td width="100%">'+obj["Total Run Count Project"]+' </td></tr>\n' +
-        '\t\t\t\t<tr class="even_row"><th nowrap>Total Pass Count:</th><td width="100%">'+obj["Total Pass Count Project"]+' </td></tr>\n' +
-        '\t\t\t\t<tr class="odd_row"><th nowrap>Total Fail Count:</th><td width="100%">'+obj["Total Fail Count Project"]+' </td></tr>\n' +
-        '\t\t\t\t<tr class="even_row"><th nowrap>Total Other Count:</th><td width="100%">'+obj["Total Other Count Project"]+' </td></tr>\n' +
-        '\t\t\t\t<tr class="odd_row"><th nowrap>Total Blocked Count:</th><td width="100%">'+obj["Total Blocked Count Project"]+' </td></tr>\n' +
-        '\t\t\t\t<tr class="even_row"><th nowrap>Total Suspect Results Count:</th><td width="100%">'+obj["Total Suspect Results Count Project"]+' </td></tr>\n' +
+        '\t\t\t\t<tr class="even_row"><th nowrap>Total Planned Count:</th><td width="100%">'+projectData["Total Planned Count Project"]+'</td></tr>\n' +
+        '\t\t\t\t<tr class="odd_row"><th nowrap>Total Run Count:</th><td width="100%">'+projectData["Total Run Count Project"]+' </td></tr>\n' +
+        '\t\t\t\t<tr class="even_row"><th nowrap>Total Pass Count:</th><td width="100%">'+projectData["Total Pass Count Project"]+' </td></tr>\n' +
+        '\t\t\t\t<tr class="odd_row"><th nowrap>Total Fail Count:</th><td width="100%">'+projectData["Total Fail Count Project"]+' </td></tr>\n' +
+        '\t\t\t\t<tr class="even_row"><th nowrap>Total Other Count:</th><td width="100%">'+projectData["Total Other Count Project"]+' </td></tr>\n' +
+        '\t\t\t\t<tr class="odd_row"><th nowrap>Total Blocked Count:</th><td width="100%">'+projectData["Total Blocked Count Project"]+' </td></tr>\n' +
+        '\t\t\t\t<tr class="even_row"><th nowrap>Total Suspect Results Count:</th><td width="100%">'+projectData["Total Suspect Results Count Project"]+' </td></tr>\n' +
         '\t\t\t</table>\n' +
         '\t\t</td>\n' +
         '\t\t<td valign="top">\n' +
         '\t\t\t<table class="detailrows">\n' +
-        '\t\t\t<tr><th nowrap>Total Run Percentage:</th><td>'+obj["Total Run Percentage Project"]+' </td></tr>\n' +
-        '\t\t\t<tr><th nowrap>Total Pass Percentage of Run:</th><td>'+obj["Total Pass Percentage of Run Project"]+' </tr>\n' +
-        '\t\t\t<tr><th nowrap>Total Pass Percentage of Planned:</th><td>'+obj["Total Pass Percentage of Planned Project"]+'</td></tr>\n' +
+        '\t\t\t<tr><th nowrap>Total Run Percentage:</th><td>'+projectData["Total Run Percentage Project"]+' </td></tr>\n' +
+        '\t\t\t<tr><th nowrap>Total Pass Percentage of Run:</th><td>'+projectData["Total Pass Percentage of Run Project"]+' </tr>\n' +
+        '\t\t\t<tr><th nowrap>Total Pass Percentage of Planned:</th><td>'+projectData["Total Pass Percentage of Planned Project"]+'</td></tr>\n' +
         '\t\t\t</table>\n' +
         '\t\t</td>\n' +
         '\t</tr>\n' +
@@ -840,7 +766,7 @@
         '\t\t\t\t\t<th style="text-align:center; " >Postponed</th>\n' +
         '\t\t\t\t\t<th style="text-align:center; " >Closed</th>\n' +
         '\t\t\t\t</tr>\n' +
-        '\t\t\t\t<tbody id = "RiskState'+obj["projectId"]+'">\n' +
+        '\t\t\t\t<tbody id = "RiskState'+projectData["projectId"]+'">\n' +
         '\t\t\t\t\t\n' +
         '\t\t\t\t</tbody>\n' +
         '\t\t\t</table>\n' +
@@ -870,7 +796,7 @@
         '\t\t\t\t\t<th style="text-align:center; " >Software Integration</th>\n' +
         '\t\t\t\t\t<th style="text-align:center; " >System Integration</th>\n' +
         '\t\t\t\t</tr>\n' +
-        '\t\t\t\t<tbody id = "defectTypeAndSousce'+obj["projectId"]+'">\n' +
+        '\t\t\t\t<tbody id = "defectTypeAndSousce'+projectData["projectId"]+'">\n' +
         '\t\t\t\t\t \n' +
         '\t\t\t\t</tbody>\n' +
         '\t\t\t</table>\n' +
@@ -894,7 +820,7 @@
         '\t\t\t\t\t<th style="text-align:center; " >Pending</th>\n' +
         '\t\t\t\t\t<th style="text-align:center; " >Closed</th>\n' +
         '\t\t\t\t</tr>\n' +
-        '\t\t\t\t<tbody id = "defectOriginAndTaskPhase'+obj["projectId"]+'">\n' +
+        '\t\t\t\t<tbody id = "defectOriginAndTaskPhase'+projectData["projectId"]+'">\n' +
         '\t\t\t\t\t\n' +
         '\t\t\t\t</tbody>\n' +
         '\t\t\t</table>\n' +
@@ -917,7 +843,7 @@
         '\t\t\t\t\t<th style="text-align:center; " >Not Delay</th>\n' +
         '\t\t\t\t\t<th style="text-align:center; " >Delay</th>\n' +
         '\t\t\t\t</tr>\n' +
-        '\t\t\t\t<tbody id = "defectStateAndDefectState'+obj["projectId"]+'">\n' +
+        '\t\t\t\t<tbody id = "defectStateAndDefectState'+projectData["projectId"]+'">\n' +
         '\t\t\t\t\t\n' +
         '\t\t\t\t</tbody>\n' +
         '\t\t\t</table>\n' +
@@ -945,7 +871,7 @@
         '\t\t\t\t\t<th style="text-align:center; " >TEST</th>\n' +
         '\t\t\t\t\t<th style="text-align:center; " >QA</th>\n' +
         '\t\t\t\t</tr>\n' +
-        '\t\t\t\t<tbody id = "defectStateAndResponsibilityTeam'+obj["projectId"]+'">\n' +
+        '\t\t\t\t<tbody id = "defectStateAndResponsibilityTeam'+projectData["projectId"]+'">\n' +
         '\t\t\t\t\t\n' +
         '\t\t\t\t</tbody>\n' +
         '\t\t\t</table>\n' +
@@ -971,7 +897,7 @@
         '\t\t\t\t\t<th style="text-align:center; " >Supplier</th>\n' +
         '\t\t\t\t\t<th style="text-align:center; " >Internal</th>\n' +
         '\t\t\t\t</tr>\n' +
-        '\t\t\t\t<tbody id = "ChangeCategoryAndChangeInitiator'+obj["projectId"]+'">\n' +
+        '\t\t\t\t<tbody id = "ChangeCategoryAndChangeInitiator'+projectData["projectId"]+'">\n' +
         '\t\t\t\t\t\n' +
         '\t\t\t\t</tbody>\n' +
         '\t\t\t</table>\n' +
@@ -991,8 +917,7 @@
         '\t\t\t<table class="detailcols" style="width: 100%;">\n' +
         '\t\t\t\t<tr class="even_row" style="width: 100%;">\n' +
         '\t\t\t\t\t<th style="text-align:center; width: 30%" ></th>\n' +
-        '\t\t\t\t\t<th style="text-align:center; " >Open</th>\n' +
-        '\t\t\t\t\t<th style="text-align:center; " >CCB</th>\n' +
+        '\t\t\t\t\t<th style="text-align:center; " >Open</th>\n' + 
         '\t\t\t\t\t<th style="text-align:center; " >In Progress</th>\n' +
         '\t\t\t\t\t<th style="text-align:center; " >Approved</th>\n' +
         '\t\t\t\t\t<th style="text-align:center; " >Fixed</th>\n' +
@@ -1001,7 +926,7 @@
         '\t\t\t\t\t<th style="text-align:center; " >Cancelled</th>\n' +
         '\t\t\t\t\t<th style="text-align:center; " >Postponed</th>\n' +
         '\t\t\t\t</tr>\n' +
-        '\t\t\t\t<tbody id = "ChangeRequestState'+obj["projectId"]+'">\n' +
+        '\t\t\t\t<tbody id = "ChangeRequestState'+projectData["projectId"]+'">\n' +
         '\t\t\t\t\t\n' +
         '\t\t\t\t</tbody>\n' +
         '\t\t\t</table>\n' +
@@ -1027,7 +952,7 @@
         '\t\t\t\t\t<th style="text-align:center; " >Verify</th>\n' +
         '\t\t\t\t\t<th style="text-align:center; " >Closed</th>\n' +
         '\t\t\t\t</tr>\n' +
-        '\t\t\t\t<tbody id = "ChangeOrderState'+obj["projectId"]+'">\n' +
+        '\t\t\t\t<tbody id = "ChangeOrderState'+projectData["projectId"]+'">\n' +
         '\t\t\t\t\t\n' +
         '\t\t\t\t</tbody>\n' +
         '\t\t\t</table>\n' +
@@ -1042,29 +967,22 @@
 		document.getElementById("projectDom").innerHTML = html;
 		
 		//在给需要赋值的dom赋值
-		for(var i = 0;i<ProjectDate.length;i++){
-			var project1 = ProjectDate[i].project;
-			var RiskDate1 = ProjectDate[i].RiskDate;
-			var DefectTypeData1 = ProjectDate[i].DefectTypeData;
-			var TaskPhasData1 = ProjectDate[i].TaskPhasData;
-			var DefectStateDate1 = ProjectDate[i].DefectStateDate;
-			var DefectResponsibilityTeamDate1 = ProjectDate[i].DefectResponsibilityTeamDate;
-			var ChangeRequestStateDate1 = ProjectDate[i].ChangeRequestStateDate;
-			var ChangeRequestDate1 = ProjectDate[i].ChangeRequestDate;
-			var ChangeOrderDate1 = ProjectDate[i].ChangeOrderDate;
+		for(var key in CountData){
+			var arr = CountData[key];
+			var project1 = projectCountData[key]; //project统计数据
+		 
 			
+			getDate(document.getElementById("RiskState"+project1["projectId"]),arr["RiskDate"]);
 			
-			getDate(document.getElementById("RiskState"+project1["projectId"]),RiskDate1);
+			getDate(document.getElementById("defectTypeAndSousce"+project1["projectId"]),arr["DefectTypeData"]);
+			getDate(document.getElementById("defectOriginAndTaskPhase"+project1["projectId"]),arr["TaskPhasData"]);
+			getDefectStateDate(document.getElementById("defectStateAndDefectState"+project1["projectId"]),arr["DefectStateDate"]);
+			getDate(document.getElementById("defectStateAndResponsibilityTeam"+project1["projectId"]),arr["DefectResponsibilityTeamDate"]);
 			
-			getDate(document.getElementById("defectTypeAndSousce"+project1["projectId"]),DefectTypeData1);
-			getDate(document.getElementById("defectOriginAndTaskPhase"+project1["projectId"]),TaskPhasData1);
-			getDefectStateDate(document.getElementById("defectStateAndDefectState"+project1["projectId"]),DefectStateDate1);
-			getDate(document.getElementById("defectStateAndResponsibilityTeam"+project1["projectId"]),DefectResponsibilityTeamDate1);
+			getDate(document.getElementById("ChangeCategoryAndChangeInitiator"+project1["projectId"]),arr["ChangeRequestDate"]);
+			getDate(document.getElementById("ChangeRequestState"+project1["projectId"]),arr["ChangeRequestStateDate"]);
 			
-			getDate(document.getElementById("ChangeCategoryAndChangeInitiator"+project1["projectId"]),ChangeRequestDate1);
-			getDate(document.getElementById("ChangeRequestState"+project1["projectId"]),ChangeRequestStateDate1);
-			
-			getDate(document.getElementById("ChangeOrderState"+project1["projectId"]),ChangeOrderDate1);
+			getDate(document.getElementById("ChangeOrderState"+project1["projectId"]),arr["ChangeOrderDate"]);
 		}
 		 
 		
