@@ -130,7 +130,7 @@ description="Text appearing at the bottom of the report page."
 	if("<%<%builtin Type%>%>" == "Risk"){
 		  RiskDataInit.push({"<%<%builtin Project%>%>":{"<%State%>":[proDate]}});
 	}
-	if("<%<%builtin Type%>%>" == "LL and BP"){
+	if("<%<%builtin Type%>%>" == "LL and BP" || "<%<%builtin Type%>%>" == "LL & BP"){
 		  LLAndBPDataInit.push({"<%<%builtin Project%>%>":{"<%State%>":[proDate]}});
 	}
 	//console.log("type:"+"<%<%builtin Type%>%>") 
@@ -165,24 +165,24 @@ description="Text appearing at the bottom of the report page."
 </body>
 <script>
 //统计有问题先看初始保存数据有没有问题
-    // console.log(QATaskDataInit);
-     //console.log(ResponsibilityTeamDataInit);
-     //console.log(DocumentDateInit);
-    // console.log(SourceAndTypeInit);
-     //console.log(OriginAndTaskPhaseInit);
-     //console.log(StateAndDefectStateInit);
-    // console.log(ResponsibilityTeamAndStateInit);
-    // console.log(ChangeRequestTypeInit);
-    // console.log(ChangeCategoryAndChangeInitiatorInit);
-     //console.log(ChangeOrderTypeInit);
-    // console.log(TestPlanTypeInit);
-    // console.log(TestObjectiveTypeInit);
-    // console.log(TestSessionTypeInit);
-    // console.log(TaskDataInit);
-    // console.log(SupplierMonitorTaskDataInit);
-     //console.log(ReleaseDataInit);
-    // console.log(RiskDataInit);
-    // console.log(LLAndBPDataInit);  
+     console.log(QATaskDataInit);
+     console.log(ResponsibilityTeamDataInit);
+     console.log(DocumentDateInit);
+     console.log(SourceAndTypeInit);
+     console.log(OriginAndTaskPhaseInit);
+     console.log(StateAndDefectStateInit);
+     console.log(ResponsibilityTeamAndStateInit);
+     console.log(ChangeRequestTypeInit);
+     console.log(ChangeCategoryAndChangeInitiatorInit);
+     console.log(ChangeOrderTypeInit);
+     console.log(TestPlanTypeInit);
+     console.log(TestObjectiveTypeInit);
+     console.log(TestSessionTypeInit);
+     console.log(TaskDataInit);
+     console.log(SupplierMonitorTaskDataInit);
+     console.log(ReleaseDataInit);
+     console.log(RiskDataInit);
+     console.log(LLAndBPDataInit);  
 
 
 	//设置时间不能大于当前时间  得到当前时间
@@ -309,7 +309,7 @@ description="Text appearing at the bottom of the report page."
 		//Defect ResponsibilityTeamAndState  
 		var ResponsibilityTeamAndState = {
 			"PM" : [{"Open":0},{"In Analysis":0},{"Analyzed":0},{"In Progress":0},{"InTesting":0},{"Verified":0},{"Closed":0},{"Rejected":0},{"Postponed":0}],
-			"STS" : [{"Open":0},{"In Analysis":0},{"Analyzed":0},{"In Progress":0},{"InTesting":0},{"Verified":0},{"Closed":0},{"Rejected":0},{"Postponed":0}],
+			"SYS" : [{"Open":0},{"In Analysis":0},{"Analyzed":0},{"In Progress":0},{"InTesting":0},{"Verified":0},{"Closed":0},{"Rejected":0},{"Postponed":0}],
 			"ASW" : [{"Open":0},{"In Analysis":0},{"Analyzed":0},{"In Progress":0},{"InTesting":0},{"Verified":0},{"Closed":0},{"Rejected":0},{"Postponed":0}],
 			"BSW" : [{"Open":0},{"In Analysis":0},{"Analyzed":0},{"In Progress":0},{"InTesting":0},{"Verified":0},{"Closed":0},{"Rejected":0},{"Postponed":0}],
 			"HW" : [{"Open":0},{"In Analysis":0},{"Analyzed":0},{"In Progress":0},{"InTesting":0},{"Verified":0},{"Closed":0},{"Rejected":0},{"Postponed":0}],
@@ -318,7 +318,7 @@ description="Text appearing at the bottom of the report page."
 		}
 		// Change  ChangeRequestType   
 		var ChangeRequestType = {
-			"Change Request" : [{"Open":0},{"In Progress":0},{"Approveed":0},{"Fixed":0},{"Closed":0},{"Rejected":0},{"Cancelled":0},{"Postponed":0}] 
+			"Change Request" : [{"Open":0},{"In Progress":0},{"Approved":0},{"Fixed":0},{"Closed":0},{"Rejected":0},{"Cancelled":0},{"Postponed":0}] 
 		}
 		//Change ChangeCategoryAndChangeInitiator   
 		var ChangeCategoryAndChangeInitiator = {
@@ -345,7 +345,7 @@ description="Text appearing at the bottom of the report page."
 		//Task   
 		var TaskData = {
 			"PM" : [{"Open":0},{"In Development":0},{"Completed":0},{"Cancelled":0}],
-			"STS" : [{"Open":0},{"In Development":0},{"Completed":0},{"Cancelled":0}],
+			"SYS" : [{"Open":0},{"In Development":0},{"Completed":0},{"Cancelled":0}],
 			"ASW" : [{"Open":0},{"In Development":0},{"Completed":0},{"Cancelled":0}],
 			"BSW" : [{"Open":0},{"In Development":0},{"Completed":0},{"Cancelled":0}],
 			"HW" : [{"Open":0},{"In Development":0},{"Completed":0},{"Cancelled":0}], 
@@ -355,7 +355,7 @@ description="Text appearing at the bottom of the report page."
 		//Supplier Monitor Task  
 		var SupplierMonitorTaskData = {
 			"PM" : [{"Open":0},{"In Progress":0},{"In Review":0},{"Audit":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}],
-			"STS" : [{"Open":0},{"In Progress":0},{"In Review":0},{"Audit":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}],
+			"SYS" : [{"Open":0},{"In Progress":0},{"In Review":0},{"Audit":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}],
 			"ASW" : [{"Open":0},{"In Progress":0},{"In Review":0},{"Audit":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}],
 			"BSW" : [{"Open":0},{"In Progress":0},{"In Review":0},{"Audit":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}],
 			"HW" : [{"Open":0},{"In Progress":0},{"In Review":0},{"Audit":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}], 
@@ -368,7 +368,7 @@ description="Text appearing at the bottom of the report page."
 		}
 		//Risk   
 		var RiskData = {
-			"Risk":[{"Open":0},{"In Analysis":0},{"Rejected":0},{"Analyzed":0},{"In Monitoring":0},{"Postponed":0},{"Cloesd":0}]
+			"Risk":[{"Open":0},{"In Analysis":0},{"Rejected":0},{"Analyzed":0},{"In Monitoring":0},{"Postponed":0},{"Closed":0}]
 		}
 		//LL & BP 
 		var LLAndBPData = {
@@ -423,7 +423,9 @@ description="Text appearing at the bottom of the report page."
 			}else {
 				for(var i =0;i<Projects.length;i++){
 				var proid = Projects[i].split("/")[1];
-				 
+				if(Projects[i].split("/").length>2){
+					 proid = Projects[i].split("/")[1] + Projects[i].split("/")[2]
+				 }
 				for(var j =0;j<tr.length;j++){
 					if(tr[j].getAttribute("id") == proid+AreaVal || tr[j].getAttribute("id") == proid+AreaVal+" statistics" || ary.	  indexOf(tr[j].getAttribute("id")) > -1){
 						ary.push(tr[j].getAttribute("id"));
@@ -443,6 +445,9 @@ description="Text appearing at the bottom of the report page."
 				xstable(proelm);//显示隐藏table
 			}else {
 				var proid = proelm.split("/")[1]; 
+				if(proelm.split("/").length>2){
+					 proid = proelm.split("/")[1] + proelm.split("/")[2]
+				 }
 				for(var i =0;i<tr.length;i++){ 
 				if(tr[i].getAttribute("id") == proid + AreaVal || tr[i].getAttribute("id") == proid + AreaVal+" statistics"){
 					//console.log(proid + AreaVal);
@@ -465,7 +470,7 @@ description="Text appearing at the bottom of the report page."
 		var endte = document.getElementById("end_date").value;
 		console.log(satrtDate);
 		console.log(endte);
-		if(satrtDate == "" && satrtDate == ""){
+		if(satrtDate == "" && endte == ""){
 			alert("Please select a time first!"); 
 		} else {
 			var proDate = [];
@@ -492,6 +497,9 @@ description="Text appearing at the bottom of the report page."
 					var ary = [];
 					for(var i =0;i<Projects.length;i++){
 						var proid = Projects[i].split("/")[1]; 
+						 if(Projects[i].split("/").length>2){
+							proid = Projects[i].split("/")[1] + Projects[i].split("/")[2]
+						}
 						for(var j =0;j<tr1.length;j++){
 							if(tr1[j].getAttribute("id") == proid+Area1 || tr1[j].getAttribute("id") == proid+Area1+" statistics" || ary.	  indexOf(tr1[j].getAttribute("id")) > -1){
 								ary.push(tr1[j].getAttribute("id"));
@@ -504,6 +512,9 @@ description="Text appearing at the bottom of the report page."
 					}
 				} else {
 					var proid = proelm.split("/")[1]; 
+					if(proelm.split("/").length>2){
+						proid = proelm.split("/")[1] + proelm.split("/")[2]
+					}
 					for(var i =0;i<tr1.length;i++){ 
 						if(tr1[i].getAttribute("id") == proid + Area1 || tr1[i].getAttribute("id") == proid + Area1+" statistics"){ 
 							tr1[i].hidden = false;
@@ -536,11 +547,17 @@ description="Text appearing at the bottom of the report page."
 	function xstable(ProjectVal){
 		var title = document.getElementsByClassName("title");
 		var table = document.getElementsByClassName("detailrows fullWidth");
+		var proid = ProjectVal.split("/")[1]; 
+		if(ProjectVal.split("/").length>2){
+			proid = ProjectVal.split("/")[1] + ProjectVal.split("/")[2]
+		}
+		console.log("Title : "+proid+"Title"); 
+		
 		for(var i =0;i<title.length;i++){ 
 			if(ProjectVal == "all"){ 
 				title[i].hidden = false;
 				table[i].hidden = false;
-			}else if(ProjectVal.split("/")[1]+"Title" == title[i].getAttribute("id")){
+			}else if(proid +"Title" == title[i].getAttribute("id")){
 				title[i].hidden = false;
 				table[i].hidden = false;
 			}else {
@@ -662,7 +679,7 @@ description="Text appearing at the bottom of the report page."
 		}
 		ResponsibilityTeamAndState = {
 			"PM" : [{"Open":0},{"In Analysis":0},{"Analyzed":0},{"In Progress":0},{"InTesting":0},{"Verified":0},{"Closed":0},{"Rejected":0},{"Postponed":0}],
-			"STS" : [{"Open":0},{"In Analysis":0},{"Analyzed":0},{"In Progress":0},{"InTesting":0},{"Verified":0},{"Closed":0},{"Rejected":0},{"Postponed":0}],
+			"SYS" : [{"Open":0},{"In Analysis":0},{"Analyzed":0},{"In Progress":0},{"InTesting":0},{"Verified":0},{"Closed":0},{"Rejected":0},{"Postponed":0}],
 			"ASW" : [{"Open":0},{"In Analysis":0},{"Analyzed":0},{"In Progress":0},{"InTesting":0},{"Verified":0},{"Closed":0},{"Rejected":0},{"Postponed":0}],
 			"BSW" : [{"Open":0},{"In Analysis":0},{"Analyzed":0},{"In Progress":0},{"InTesting":0},{"Verified":0},{"Closed":0},{"Rejected":0},{"Postponed":0}],
 			"HW" : [{"Open":0},{"In Analysis":0},{"Analyzed":0},{"In Progress":0},{"InTesting":0},{"Verified":0},{"Closed":0},{"Rejected":0},{"Postponed":0}],
@@ -670,7 +687,7 @@ description="Text appearing at the bottom of the report page."
 			"QA" : [{"Open":0},{"In Analysis":0},{"Analyzed":0},{"In Progress":0},{"InTesting":0},{"Verified":0},{"Closed":0},{"Rejected":0},{"Postponed":0}],
 		}
 		ChangeRequestType = {
-			"Change Request" : [{"Open":0},{"In Progress":0},{"Approveed":0},{"Fixed":0},{"Closed":0},{"Rejected":0},{"Cancelled":0},{"Postponed":0}] 
+			"Change Request" : [{"Open":0},{"In Progress":0},{"Approved":0},{"Fixed":0},{"Closed":0},{"Rejected":0},{"Cancelled":0},{"Postponed":0}] 
 		}
 		ChangeCategoryAndChangeInitiator = {
 			"REQ change" : [{"Customer":0},{"Supplier":0},{"Internal":0}],
@@ -691,7 +708,7 @@ description="Text appearing at the bottom of the report page."
 		}
 		TaskData = {
 			"PM" : [{"Open":0},{"In Development":0},{"Completed":0},{"Cancelled":0}],
-			"STS" : [{"Open":0},{"In Development":0},{"Completed":0},{"Cancelled":0}],
+			"SYS" : [{"Open":0},{"In Development":0},{"Completed":0},{"Cancelled":0}],
 			"ASW" : [{"Open":0},{"In Development":0},{"Completed":0},{"Cancelled":0}],
 			"BSW" : [{"Open":0},{"In Development":0},{"Completed":0},{"Cancelled":0}],
 			"HW" : [{"Open":0},{"In Development":0},{"Completed":0},{"Cancelled":0}], 
@@ -700,7 +717,7 @@ description="Text appearing at the bottom of the report page."
 		}
 		SupplierMonitorTaskData = {
 			"PM" : [{"Open":0},{"In Progress":0},{"In Review":0},{"Audit":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}],
-			"STS" : [{"Open":0},{"In Progress":0},{"In Review":0},{"Audit":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}],
+			"SYS" : [{"Open":0},{"In Progress":0},{"In Review":0},{"Audit":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}],
 			"ASW" : [{"Open":0},{"In Progress":0},{"In Review":0},{"Audit":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}],
 			"BSW" : [{"Open":0},{"In Progress":0},{"In Review":0},{"Audit":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}],
 			"HW" : [{"Open":0},{"In Progress":0},{"In Review":0},{"Audit":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}], 
@@ -711,7 +728,7 @@ description="Text appearing at the bottom of the report page."
 			"Release" : [{"Open":0},{"In Progress":0},{"Audit":0},{"In Approve":0},{"Delivered":0},{"Accepted":0},{"Cancelled":0}] 
 		}
 		RiskData = {
-			"Risk":[{"Open":0},{"In Analysis":0},{"Rejected":0},{"Analyzed":0},{"In Monitoring":0},{"Postponed":0},{"Cloesd":0}]
+			"Risk":[{"Open":0},{"In Analysis":0},{"Rejected":0},{"Analyzed":0},{"In Monitoring":0},{"Postponed":0},{"Closed":0}]
 		} 
 		LLAndBPData = {
 			"LL & BP" : [{"Open":0},{"In Analysis":0},{"Postponed":0},{"Rejected":0},{"Accepted":0},{"Published":0},{"Retired":0}] 
@@ -804,31 +821,31 @@ description="Text appearing at the bottom of the report page."
 						//根据时间过滤
 						if(SatrtDate != "" && EndDate != ""){
 							if(ActualStartDate != "" && ActualEndDate !=""){
-								if(ActualStartDate > SatrtDate && ActualEndDate <= EndDate){
+								if(new Date(ActualStartDate).getTime() > new Date(SatrtDate).getTime() && new Date(ActualEndDate).getTime() <= new Date(EndDate).getTime()){
 									count++;
 								}
 							}else {  //根据CreatedDate判断
-								if(CreatedDate > SatrtDate && CreatedDate <= EndDate){
+								if(new Date(CreatedDate).getTime() > new Date(SatrtDate).getTime() && new Date(CreatedDate).getTime() <=new Date(EndDate).getTime()){
 									count++;
 								}
 							} 
 						}else if(SatrtDate != "" ){
 							if(ActualStartDate != ""){
-								if(ActualStartDate > SatrtDate){
+								if(new Date(ActualStartDate).getTime() > new Date(SatrtDate).getTime()){  
 									count++;
 								}
 							}else {  //根据CreatedDate判断
-								if(CreatedDate > SatrtDate){
+								if(new Date(CreatedDate).getTime() > new Date(SatrtDate).getTime()){
 									count++;
 								}
 							} 
 						}else if(EndDate != ""){
 							if(ActualEndDate !=""){
-								if(ActualEndDate <= EndDate){
+								if(new Date(ActualEndDate).getTime() <= new Date(EndDate).getTime()){
 									count++;
 								}
 							}else {  //根据CreatedDate判断
-								if(ActualEndDate <= EndDate){
+								if(new Date(CreatedDate).getTime() <= new Date(EndDate).getTime()){
 									count++;
 								}
 							} 
@@ -899,9 +916,13 @@ description="Text appearing at the bottom of the report page."
 		for(var key in CountData){
 			var arr = CountData[key]; 
 			var projectId = key.split("/")[1];
+			 
+		    if(key.split("/").length>2){
+			    projectId = key.split("/")[1] + key.split("/")[2]
+	     	}
 			//console.log("sj---------:"+obj["ProjectIdA"]);
-			html += '<p class="title" id="'+key.split("/")[1]+'Title">'+ key +'</p>'+
-					'<table class="detailrows fullWidth" id="'+key.split("/")[1]+'Table">'+
+			html += '<p class="title" id="'+projectId+'Title">'+ key +'</p>'+
+					'<table class="detailrows fullWidth" id="'+projectId+'Table">'+
 						'<tr id="'+projectId+'QA Task"  class = "trls">'+
 							'<td colspan="2" style="padding: 2px 8px; background-color: #B6CCDD; font-weight: bold; text-align: center">'+
 							'<b>QA Task statistics</b></td>'+
@@ -917,7 +938,7 @@ description="Text appearing at the bottom of the report page."
 										'<th style="text-align:center; ">Completed</th>'+
 										'<th style="text-align:center; ">Cancelled</th>'+
 									'</tr>'+
-									'<tbody id=QATaskData-'+key.split("/")[1]+'>'+
+									'<tbody id=QATaskData-'+projectId+'>'+
 
 									'</tbody>'+
 								'</table>'+
@@ -941,7 +962,7 @@ description="Text appearing at the bottom of the report page."
 										'<th style="text-align:center; ">TEST</th>'+
 										'<th style="text-align:center; ">QA</th>'+
 									'</tr>'+
-									'<tbody id=ReponsibiltyTeam-'+key.split("/")[1]+'>'+
+									'<tbody id=ReponsibiltyTeam-'+projectId+'>'+
 
 									'</tbody>'+
 								'</table>'+
@@ -967,7 +988,7 @@ description="Text appearing at the bottom of the report page."
 										'<th style="text-align:center; ">General Document</th>'+
 										'<th style="text-align:center; ">Test Suite</th>'+
 									'</tr>'+
-									'<tbody id=Document-'+key.split("/")[1]+'>'+
+									'<tbody id=Document-'+projectId+'>'+
 
 									'</tbody>'+
 								'</table>'+
@@ -992,7 +1013,7 @@ description="Text appearing at the bottom of the report page."
 										'<th style="text-align:center; ">Gramer</th>'+
 										'<th style="text-align:center; ">Design Defect</th>'+
 									'</tr>'+
-									'<tbody id=DefectSourceAndDefectType-'+key.split("/")[1]+'>'+
+									'<tbody id=DefectSourceAndDefectType-'+projectId+'>'+
 
 									'</tbody>'+
 								'</table>'+
@@ -1012,7 +1033,7 @@ description="Text appearing at the bottom of the report page."
 										'<th style="text-align:center; ">Pending</th>'+
 										'<th style="text-align:center; ">Closed</th>'+ 
 									'</tr>'+
-									'<tbody id=DefectOriginAndTaskPhase-'+key.split("/")[1]+'>'+
+									'<tbody id=DefectOriginAndTaskPhase-'+projectId+'>'+
 
 									'</tbody>'+
 								'</table>'+
@@ -1031,7 +1052,7 @@ description="Text appearing at the bottom of the report page."
 										'<th style="text-align:center; ">Not Delay</th>'+
 										'<th style="text-align:center; ">Delay</th>'+ 
 									'</tr>'+
-									'<tbody id=DefectStateAndDefectState-'+key.split("/")[1]+'>'+
+									'<tbody id=DefectStateAndDefectState-'+projectId+'>'+
 
 									'</tbody>'+
 								'</table>'+
@@ -1057,7 +1078,7 @@ description="Text appearing at the bottom of the report page."
 										'<th style="text-align:center; ">Rejected</th>'+ 
 										'<th style="text-align:center; ">Postponed</th>'+ 
 									'</tr>'+
-									'<tbody id=DefectResponsibilityTeamAndState-'+key.split("/")[1]+'>'+
+									'<tbody id=DefectResponsibilityTeamAndState-'+projectId+'>'+
 
 									'</tbody>'+
 								'</table>'+
@@ -1083,7 +1104,7 @@ description="Text appearing at the bottom of the report page."
 										'<th style="text-align:center; ">Cancelled</th>'+ 
 										'<th style="text-align:center; ">Postponed</th>'+  
 									'</tr>'+
-									'<tbody id=ChangeRequestType-'+key.split("/")[1]+'>'+
+									'<tbody id=ChangeRequestType-'+projectId+'>'+
 
 									'</tbody>'+
 								'</table>'+
@@ -1103,7 +1124,7 @@ description="Text appearing at the bottom of the report page."
 										'<th style="text-align:center; ">Supplier</th>'+ 
 										'<th style="text-align:center; ">Internal</th>'+
 									'</tr>'+
-									'<tbody id=ChangeCategoryAndChangeInitiator-'+key.split("/")[1]+'>'+
+									'<tbody id=ChangeCategoryAndChangeInitiator-'+projectId+'>'+
 
 									'</tbody>'+
 								'</table>'+
@@ -1124,7 +1145,7 @@ description="Text appearing at the bottom of the report page."
 										'<th style="text-align:center; ">Verify</th>'+ 
 										'<th style="text-align:center; ">Closed</th>'+ 
 									'</tr>'+
-									'<tbody id=ChangeOrderType-'+key.split("/")[1]+'>'+
+									'<tbody id=ChangeOrderType-'+projectId+'>'+
 
 									'</tbody>'+
 								'</table>'+
@@ -1148,7 +1169,7 @@ description="Text appearing at the bottom of the report page."
 										'<th style="text-align:center; ">Delay</th>'+ 
 										'<th style="text-align:center; ">Cancelled</th>'+ 
 									'</tr>'+
-									'<tbody id=TestPlan-'+key.split("/")[1]+'>'+
+									'<tbody id=TestPlan-'+projectId+'>'+
 
 									'</tbody>'+
 								'</table>'+
@@ -1171,7 +1192,7 @@ description="Text appearing at the bottom of the report page."
 										'<th style="text-align:center; ">Delay</th>'+ 
 										'<th style="text-align:center; ">Cancelled</th>'+ 
 									'</tr>'+
-									'<tbody id=TestObjective-'+key.split("/")[1]+'>'+
+									'<tbody id=TestObjective-'+projectId+'>'+
 
 									'</tbody>'+
 								'</table>'+
@@ -1194,7 +1215,7 @@ description="Text appearing at the bottom of the report page."
 										'<th style="text-align:center; ">Delay</th>'+ 
 										'<th style="text-align:center; ">Cancelled</th>'+ 
 									'</tr>'+
-									'<tbody id=TestSession-'+key.split("/")[1]+'>'+
+									'<tbody id=TestSession-'+projectId+'>'+
 
 									'</tbody>'+
 								'</table>'+
@@ -1216,7 +1237,7 @@ description="Text appearing at the bottom of the report page."
 										'<th style="text-align:center; ">Completed</th>'+ 
 										'<th style="text-align:center; ">Cancelled</th>'+
 									'</tr>'+
-									'<tbody id=Task-'+key.split("/")[1]+'>'+
+									'<tbody id=Task-'+projectId+'>'+
 
 									'</tbody>'+
 								'</table>'+
@@ -1240,7 +1261,7 @@ description="Text appearing at the bottom of the report page."
 										'<th style="text-align:center; ">Accepted</th>'+
 										'<th style="text-align:center; ">Cancelled</th>'+
 									'</tr>'+
-									'<tbody id=SupplierMonitorTask-'+key.split("/")[1]+'>'+
+									'<tbody id=SupplierMonitorTask-'+projectId+'>'+
 
 									'</tbody>'+
 								'</table>'+
@@ -1265,7 +1286,7 @@ description="Text appearing at the bottom of the report page."
 										'<th style="text-align:center; ">Accepted</th>'+
 										'<th style="text-align:center; ">Cancelled</th>'+
 									'</tr>'+
-									'<tbody id=Release-'+key.split("/")[1]+'>'+
+									'<tbody id=Release-'+projectId+'>'+
 
 									'</tbody>'+
 								'</table>'+
@@ -1288,9 +1309,9 @@ description="Text appearing at the bottom of the report page."
 										'<th style="text-align:center; ">Analyzed</th>'+
 										'<th style="text-align:center; ">In Monitoring</th>'+
 										'<th style="text-align:center; ">Postponed</th>'+
-										'<th style="text-align:center; ">Cloesd</th>'+
+										'<th style="text-align:center; ">Closed</th>'+
 									'</tr>'+
-									'<tbody id=Risk-'+key.split("/")[1]+'>'+
+									'<tbody id=Risk-'+projectId+'>'+
 
 									'</tbody>'+
 								'</table>'+
@@ -1315,7 +1336,7 @@ description="Text appearing at the bottom of the report page."
 										'<th style="text-align:center; ">Published</th>'+
 										'<th style="text-align:center; ">Retired</th>'+
 									'</tr>'+
-									'<tbody id=LLAndBP-'+key.split("/")[1]+'>'+
+									'<tbody id=LLAndBP-'+projectId+'>'+
 
 									'</tbody>'+
 								'</table>'+
@@ -1331,25 +1352,30 @@ description="Text appearing at the bottom of the report page."
 		for(var key in CountData){
 			var arr = CountData[key];
 			 
-			getDate(document.getElementById("QATaskData-"+key.split("/")[1]),arr["QATaskData"]);
-			getDate(document.getElementById("ReponsibiltyTeam-"+key.split("/")[1]),arr["ResponsibilityTeamData"]);
-			getDate(document.getElementById("Document-"+key.split("/")[1]),arr["DocumentDate"]);
+			var proid = key.split("/")[1]; 
+			if(key.split("/").length>2){
+				proid = key.split("/")[1] + key.split("/")[2]
+			}
+			
+			getDate(document.getElementById("QATaskData-"+proid),arr["QATaskData"]);
+			getDate(document.getElementById("ReponsibiltyTeam-"+proid),arr["ResponsibilityTeamData"]);
+			getDate(document.getElementById("Document-"+proid),arr["DocumentDate"]);
 
-			getDate(document.getElementById("DefectSourceAndDefectType-"+key.split("/")[1]),arr["SourceAndType"]);
-			getDate(document.getElementById("DefectOriginAndTaskPhase-"+key.split("/")[1]),arr["OriginAndTaskPhase"]);
-			getDefectStateDate(document.getElementById("DefectStateAndDefectState-"+key.split("/")[1]),arr["StateAndDefectState"]);
-			getDate(document.getElementById("DefectResponsibilityTeamAndState-"+key.split("/")[1]),arr["ResponsibilityTeamAndState"]);
-			getDate(document.getElementById("ChangeRequestType-"+key.split("/")[1]),arr["ChangeRequestType"]);
-			getDate(document.getElementById("ChangeCategoryAndChangeInitiator-"+key.split("/")[1]),arr["ChangeCategoryAndChangeInitiator"]);
-			getDate(document.getElementById("ChangeOrderType-"+key.split("/")[1]),arr["ChangeOrderType"]);
-			getDate(document.getElementById("TestPlan-"+key.split("/")[1]),arr["TestPlanType"]);
-			getDate(document.getElementById("TestObjective-"+key.split("/")[1]),arr["TestObjectiveType"]);
-			getDate(document.getElementById("TestSession-"+key.split("/")[1]),arr["TestSessionType"]);
-			getDate(document.getElementById("Task-"+key.split("/")[1]),arr["TaskData"]);
-			getDate(document.getElementById("SupplierMonitorTask-"+key.split("/")[1]),arr["SupplierMonitorTaskData"]);
-			getDate(document.getElementById("Release-"+key.split("/")[1]),arr["ReleaseData"]);
-			getDate(document.getElementById("Risk-"+key.split("/")[1]),arr["RiskData"]);
-			getDate(document.getElementById("LLAndBP-"+key.split("/")[1]),arr["LLAndBPData"]);
+			getDate(document.getElementById("DefectSourceAndDefectType-"+proid),arr["SourceAndType"]);
+			getDate(document.getElementById("DefectOriginAndTaskPhase-"+proid),arr["OriginAndTaskPhase"]);
+			getDefectStateDate(document.getElementById("DefectStateAndDefectState-"+proid),arr["StateAndDefectState"]);
+			getDate(document.getElementById("DefectResponsibilityTeamAndState-"+proid),arr["ResponsibilityTeamAndState"]);
+			getDate(document.getElementById("ChangeRequestType-"+proid),arr["ChangeRequestType"]);
+			getDate(document.getElementById("ChangeCategoryAndChangeInitiator-"+proid),arr["ChangeCategoryAndChangeInitiator"]);
+			getDate(document.getElementById("ChangeOrderType-"+proid),arr["ChangeOrderType"]);
+			getDate(document.getElementById("TestPlan-"+proid),arr["TestPlanType"]);
+			getDate(document.getElementById("TestObjective-"+proid),arr["TestObjectiveType"]);
+			getDate(document.getElementById("TestSession-"+proid),arr["TestSessionType"]);
+			getDate(document.getElementById("Task-"+proid),arr["TaskData"]);
+			getDate(document.getElementById("SupplierMonitorTask-"+proid),arr["SupplierMonitorTaskData"]);
+			getDate(document.getElementById("Release-"+proid),arr["ReleaseData"]);
+			getDate(document.getElementById("Risk-"+proid),arr["RiskData"]);
+			getDate(document.getElementById("LLAndBP-"+proid),arr["LLAndBPData"]);
 			 
 		}
 		 
