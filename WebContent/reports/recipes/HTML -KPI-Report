@@ -41,24 +41,16 @@
 	
     <script  language="javascript">
 		var line_count=0;
-		
 		var REPORT_ISSUES = "";
-		
 		function writeEvenOddTRTag() {
 			line_count++; 
-			
 			if (line_count%2 == 0)
 				document.write("<tr class='even_row'>");
 			else
 				document.write("<tr class='odd_row'>"); 
-				
-			
 		}
 		var projectInt=0;
 		function printnoi(){
-			
-			
-			
 			for(var i=0;i<1;i++){	
 				projectInt++;
 				if (projectInt%2 == 0){
@@ -66,15 +58,12 @@
 				}else{
 					document.write("<tr class='odd_row'>");
 				}		
-				
 			}
 		}
 
 		function printText(field){
 			var contentList = field.split("`"); 
 			console.log(contentList);
-			
-		
 			var category = contentList[0];
 			var goal = contentList[1];
 			var metric = contentList[2];
@@ -84,8 +73,6 @@
 			var targetValue = contentList[6];
 			var actualValue = contentList[7];
 			var unit = contentList[8];
-			
-			
 			
 			var signFirst = "&lt;;&gt;";
 			var signNext = "&lt;:&gt;";
@@ -124,204 +111,254 @@
 			if(	null!=targetValue && "" != targetValue){
 				targetValueLists = (""+targetValue).split(signFirst);
 			}
-			
 			if(	null!=actualValue && "" != actualValue){
 				actualValueLists 	= (""+actualValue).split(signFirst);
-				
-				
-				
 			}
 			if(	null!=unit && "" != unit){
 				unitLists 	= (""+unit).split(signFirst);
 			}
-
 			
+			var categorMap = new Map();
+			var goalMap = new Map();
+			var metricMap = new Map();
+			var attributeMap = new Map();
+			var formulaMap = new Map();
+			var legendsMap = new Map();
+			var targetValueMap = new Map();
+			var actualValueMap = new Map();
+			var unitMap = new Map();
+			var snoSet = new Set();
 			
-			
-			var snoArray 			=  new Array();
-			var projectArray 		=  new Array();
-			
-			
-			var categoryTextArray 	=  new Array();
-			var goalTextArray 		=  new Array();
-			var metricTextArray 	=  new Array();
-			var attributeTextArray 	=  new Array();
-			var formulaTextArray 	=  new Array();
-			var legendsTextArray 	=  new Array();
-			var targetValueArray 	=  new Array();
-			var actualValueArray 	=  new Array();
-			var unitValueArray 		=  new Array();
-			
-			
-			var categoryList 	= new Array();
-			var goalList 		= new Array();
-			var metricList 		= new Array();
-			var attributeList 	= new Array();
-			var formulaList 	= new Array();
-			var legendsList 	= new Array();
-			var targetValueList = new Array();
-			var actualValueList = new Array();
-			var unitList 		= new Array();
-			
-			
-			var addLists       	= new Array();
-			var addListsIndex   = 0; 
-			var indexList       = new Array();
-			var indexNameList       = new Array();
-			
-			var key = 0;
-			var snoIndex = 0;
-			
-			var indexArray = 0;
-			
-			
-			
-			
-			
-			
+			// 首先循环取到所有的编号
 			for(var categoryIndex=0 ; categoryIndex<categoryLists.length ; categoryIndex++){
 				if(null != categoryLists[categoryIndex] && "" != categoryLists[categoryIndex]){
-					categoryList = categoryLists[categoryIndex].split(signNext);
-					snoArray[snoIndex] = categoryList[0];
-					categoryTextArray[snoIndex] = categoryList[1]
-				}
-				if(null != goalLists[categoryIndex] && "" != goalLists[categoryIndex]){
-					goalList = goalLists[categoryIndex].split(signNext);
-					goalTextArray[snoIndex] = goalList[1]
-				}
-				if(null != metricLists[categoryIndex] && "" != metricLists[categoryIndex]){
-					metricList = metricLists[categoryIndex].split(signNext);
-					metricTextArray[snoIndex] 	= metricList[1]
-				}
-				if(null != attributeLists[categoryIndex] && "" != attributeLists[categoryIndex]){
-					attributeList = attributeLists[categoryIndex].split(signNext);
-					attributeTextArray[snoIndex] = attributeList[1]
-				}
-				if(null != formulaLists[categoryIndex] && "" != formulaLists[categoryIndex]){
-					formulaList = formulaLists[categoryIndex].split(signNext);
-					formulaTextArray[snoIndex] = formulaList[1]
-				}
-				if(null != legendsLists[categoryIndex] && "" != legendsLists[categoryIndex]){
-					legendsList = legendsLists[categoryIndex].split(signNext);
-					legendsTextArray[snoIndex] = legendsList[1]
-				}
-				if(null != targetValueLists[categoryIndex] && "" != targetValueLists[categoryIndex]){
-					targetValueList = targetValueLists[categoryIndex].split(signNext);
-					targetValueArray[snoIndex] = targetValueList[1]
-				}
-				if(null != actualValueLists[categoryIndex] && "" != actualValueLists[categoryIndex]){
-					actualValueList = actualValueLists[categoryIndex].split(signNext);
-					actualValueArray[snoIndex] = actualValueList[1]
+					var ncategoryList = categoryLists[categoryIndex].split(signNext);
+					var categoryKey = ncategoryList[0]
+					var categoryVal = ncategoryList[1]
+					var mksIndex = categoryKey.indexOf(">") ; 
 					
-					if(actualValueList[1].indexOf(",") > 0 ){
-						 
-						var bIndex = 0 
-						var aArry   = new Array();
-						var bArry   = new Array();
-						var bigArray = actualValueList[1].split(",");
-						
-						for(var k=0 ; k<bigArray.length ; k++){
-							var linesList = bigArray[k].split(":");
-							
-							
-							aArry[bIndex] = linesList[0];
-							bArry[bIndex] = linesList[1];
-							bIndex++;
-						}
-						console.log("bArry : " + bArry);
-						console.log("aArry : " + aArry);
-						
-						
-						
-						
-						addLists[addListsIndex] = bArry;
-						indexNameList[addListsIndex] = aArry;
-						console.log("addListsIndex : " + addListsIndex);
-						
-						addListsIndex++;
-						
-						indexList[indexArray] = snoIndex;
-						indexArray++ ;
-						console.log("addLists : " + addLists);
-						console.log("addListsIndex ++: " + addListsIndex);
+					if(mksIndex > 0){
+						categoryKey = categoryKey.substring(mksIndex+1,ncategoryList[0].length);
+						snoSet.add(categoryKey.trim());
+						categorMap.set(categoryKey.trim(),categoryVal);
+					}else{
+						snoSet.add(categoryKey.trim());
+						categorMap.set((categoryKey+"").trim(),categoryVal);
 					}
-					
-					
-					
 				}
-				if(null != unitLists[categoryIndex] && "" != unitLists[categoryIndex]){
-					unitList = unitLists[categoryIndex].split(signNext);
-					unitValueArray[snoIndex]  = unitList[1]
-				}
-				snoIndex++;
 			}
 			
-			
-			
-			
-			
-			
-			
-			
-			
-			console.log("addLists : " + addLists);
-			var arrayKey = 0;
-			
-			for(var index=0;index<snoArray.length;index++){
-				if(actualValueArray[index].indexOf(",")<0){
-				
-					printnoi();
-					document.write("<td class='border'>"+snoArray[index]+"</td>");  // SNO
+			for(var goalIndex=0 ; goalIndex<goalLists.length ; goalIndex++){
+				if(null != goalLists[goalIndex] && "" != goalLists[goalIndex]){
+					var ngoalList = goalLists[goalIndex].split(signNext);
+					var goalKey = ngoalList[0]
+					var goalVal = ngoalList[1]
+					var mksIndex = goalKey.indexOf(">") ; 
 					
-					document.write("<td class='border'>"+categoryTextArray[index]+"</td>"); // category
-					document.write("<td class='border'>"+goalTextArray[index]+"</td>");
-					document.write("<td class='border'>"+metricTextArray[index]+"</td>");
-					document.write("<td class='border'>"+attributeTextArray[index]+"</td>");
-					document.write("<td class='border'>"+formulaTextArray[index]+"</td>");
-					document.write("<td class='border' style='width:40%;'>"+legendsTextArray[index]+"</td>");
-					document.write("<td class='border'>"+targetValueArray[index]+"</td>");
-					document.write("<td class='border' width='200px'>"+actualValueArray[index]+"</td>");
-					document.write("<td class='border'>"+unitValueArray[index]+"</td>");
-				
+					if(mksIndex > 0){
+						goalKey = goalKey.substring(mksIndex+1,goalKey.length);
+						goalMap.set(goalKey.trim(),goalVal);
+					}else{
+						goalMap.set(goalKey.trim(),goalVal);
+					}
+				}
+			}
+			
+			for(var metricIndex=0 ; metricIndex<metricLists.length ; metricIndex++){
+				if(null != metricLists[metricIndex] && "" != metricLists[metricIndex]){
+					var nmetricList = metricLists[metricIndex].split(signNext);
+					var categoryKey = nmetricList[0]
+					var categoryVal = nmetricList[1]
+					var mksIndex = categoryKey.indexOf(">") ; 
+					
+					if(mksIndex > 0){
+						categoryKey = categoryKey.substring(mksIndex+1,categoryKey.length);
+						metricMap.set(categoryKey.trim(),categoryVal);
+					}else{
+						metricMap.set(categoryKey.trim(),categoryVal);
+					}
+				}
+			}
+			for(var attributeIndex=0 ; attributeIndex<attributeLists.length ; attributeIndex++){
+				if(null != attributeLists[attributeIndex] && "" != attributeLists[attributeIndex]){
+					var nattributeList = attributeLists[attributeIndex].split(signNext);
+					var categoryKey = nattributeList[0]
+					var categoryVal = nattributeList[1]
+					var mksIndex = categoryKey.indexOf(">") ; 
+					
+					if(mksIndex > 0){
+						categoryKey = categoryKey.substring(mksIndex+1,categoryKey.length);
+						attributeMap.set(categoryKey.trim(),categoryVal);
+					}else{
+						attributeMap.set(categoryKey.trim(),categoryVal);
+					}
+				}
+			}
+			for(var formulaIndex=0 ; formulaIndex<formulaLists.length ; formulaIndex++){
+				if(null != formulaLists[formulaIndex] && "" != formulaLists[formulaIndex]){
+					var nformulaList = formulaLists[formulaIndex].split(signNext);
+					var categoryKey = nformulaList[0]
+					var categoryVal = nformulaList[1]
+					var mksIndex = categoryKey.indexOf(">") ; 
+					
+					if(mksIndex > 0){
+						categoryKey = categoryKey.substring(mksIndex+1,categoryKey.length);
+						formulaMap.set(categoryKey.trim(),categoryVal);
+					}else{
+						formulaMap.set(categoryKey.trim(),categoryVal);
+					}
+				}
+			}
+			for(var legendsIndex=0 ; legendsIndex<legendsLists.length ; legendsIndex++){
+				if(null != legendsLists[legendsIndex] && "" != legendsLists[legendsIndex]){
+					var nlegendsList = legendsLists[legendsIndex].split(signNext);
+					var categoryKey = nlegendsList[0]
+					var categoryVal = nlegendsList[1]
+					var mksIndex = categoryKey.indexOf(">") ; 
+					
+					if(mksIndex > 0){
+						categoryKey = categoryKey.substring(mksIndex+1,categoryKey.length);
+						legendsMap.set(categoryKey.trim(),categoryVal);
+					}else{
+						legendsMap.set(categoryKey.trim(),categoryVal);
+					}
 				}	
-				
-				
-				
-				for(var appendIndex=0; appendIndex<indexList.length ; appendIndex++){
-					console.log("appendIndex :  " +  indexList[appendIndex]);
-					console.log("index :  " +  index);
-					if(indexList[appendIndex] == index){
+			}
+			for(var targetValueIndex=0 ; targetValueIndex<targetValueLists.length ; targetValueIndex++){
+				if(null != targetValueLists[targetValueIndex] && "" != targetValueLists[targetValueIndex]){
+					var ntargetValueList = targetValueLists[targetValueIndex].split(signNext);
+					var categoryKey = ntargetValueList[0]
+					var categoryVal = ntargetValueList[1]
+					var mksIndex = categoryKey.indexOf(">") ; 
+					console.log("mksIndex : " + mksIndex);
+					if(mksIndex > 0){
+						categoryKey = categoryKey.substring(mksIndex+1,categoryKey.length);
 						
+						targetValueMap.set(categoryKey.trim(),categoryVal);
+					}else{
 						
-						for(var i=0 ; i<addLists.length ; i++){
-							console.log("addLists "+ i +" :  " +  addLists[i]);
-							if( i ==arrayKey ){
-								console.log("arrayKey 111111111111111111: " + arrayKey);
-								for(var j=0 ; j<addLists[i].length ; j++){
-									console.log("addLists "+ i +" "+j+" :  " +  addLists[i][j]);
-									var currentArray = addLists[i];
-									var currentNameList = indexNameList[i];
-									printnoi();
-									document.write("<td class='border'>"+snoArray[index]+"</td>");  // SNO
-									
-									document.write("<td class='border'>"+categoryTextArray[index]+"</td>"); // category
-									document.write("<td class='border'>"+goalTextArray[index]+"</td>");
-									document.write("<td class='border'>"+metricTextArray[index]+"</td>");
-									document.write("<td class='border'>"+attributeTextArray[index]+"</td>");
-									document.write("<td class='border'>"+formulaTextArray[index]+"</td>");
-									document.write("<td class='border' style='width:40%;'>"+currentNameList[j]+"</td>");
-									document.write("<td class='border'>"+targetValueArray[index]+"</td>");
-									document.write("<td class='border' width='200px'>"+currentArray[j]+"</td>");
-									document.write("<td class='border'>"+unitValueArray[index]+"</td>");
-								}
-							}
-							
+						targetValueMap.set(categoryKey.trim(),categoryVal);
+					}
+					
+					
+				}	
+			}
+			
+			var nAindex = 0;
+			var nAArray = new Array();
+			
+			var bigKeyMap = new Map();
+			var bigValMap = new Map();
+			
+			for(var actualValueIndex=0 ; actualValueIndex<actualValueLists.length ; actualValueIndex++){
+				if(null != actualValueLists[actualValueIndex] && "" != actualValueLists[actualValueIndex]){
+					var nactualValueList = actualValueLists[actualValueIndex].split(signNext);
+					var categoryKey = nactualValueList[0]
+					var categoryVal = nactualValueList[1]
+					var mksIndex = categoryKey.indexOf(">") ; 
+					
+					if(mksIndex > 0){
+						categoryKey = categoryKey.substring(mksIndex+1,categoryKey.length);
+						
+						actualValueMap.set(categoryKey.trim(),categoryVal);
+					}else{
+						
+						actualValueMap.set(categoryKey.trim(),categoryVal);
+					}
+					
+					if((categoryVal+"").indexOf(",") > 0){
+						nAArray[nAindex] = categoryKey;
+						nAindex++;
+						var bigArray = categoryVal.split(",");
+						
+						var nBigIndex = 0;
+						var nkeyAry = new Array();
+						var nValAry = new Array();
+						for(var bigIndex=0 ; bigIndex<bigArray.length ; bigIndex++){
+							var linesList = bigArray[bigIndex].split(":");
+							nkeyAry[nBigIndex] = linesList[0];
+							nValAry[nBigIndex] = linesList[1];
+							nBigIndex++;
 						}
-						arrayKey++;
-						console.log("arrayKey : " + arrayKey);
+						bigKeyMap.set(categoryKey.trim(),nkeyAry);
+						bigValMap.set(categoryKey.trim(),nValAry);
 					}
 				}
 			}
+			for(var unitIndex=0 ; unitIndex<unitLists.length ; unitIndex++){
+				if(null != unitLists[unitIndex] && "" != unitLists[unitIndex]){
+					var nunitList = unitLists[unitIndex].split(signNext);
+					
+					var categoryKey = nunitList[0]
+					var categoryVal = nunitList[1]
+					var mksIndex = categoryKey.indexOf(">") ; 
+					if(mksIndex > 0){
+						categoryKey = categoryKey.substring(mksIndex+1,categoryKey.length);
+						
+						unitMap.set(categoryKey.trim(),categoryVal);
+					}else{
+						
+						unitMap.set(categoryKey.trim(),categoryVal);
+					}
+				}
+			}
+			
+			for(x of actualValueMap){
+				console.log( x[0] + "=" + x[1]);
+			}
+			for (var x of snoSet) { // 遍历Set
+				console.log( "snoSet : "+x.trim());
+				console.log( "The "+x+" Value : "+actualValueMap.get(x.trim()));
+			}
+			
+			for (var x of snoSet) { // 遍历Set
+				
+				
+				if(nAArray.indexOf(x)<0){
+					printnoi();
+					document.write("<td class='border'>"+x+"</td>");  // SNO
+					
+					document.write("<td class='border'>"+categorMap.get(x)+"</td>"); // category
+					document.write("<td class='border'>"+goalMap.get(x)+"</td>");
+					document.write("<td class='border'>"+metricMap.get(x)+"</td>");
+					document.write("<td class='border'>"+attributeMap.get(x)+"</td>");
+					document.write("<td class='border'>"+formulaMap.get(x)+"</td>");
+					document.write("<td class='border' style='width:40%;'>"+legendsMap.get(x)+"</td>");
+					document.write("<td class='border'>"+targetValueMap.get(x)+"</td>");
+					document.write("<td class='border' width='200px'>"+actualValueMap.get(x)+"</td>");
+					document.write("<td class='border'>"+unitMap.get(x)+"</td>");
+				}else{
+					var currentKeyArray = bigKeyMap.get(x);
+					var currentValArray = bigValMap.get(x);
+					
+					console.log("currentKeyArray" + currentKeyArray);
+					console.log("currentValArray" + currentValArray);
+					
+					for(var k=0 ; k<currentKeyArray.length ; k++){
+						printnoi();
+						document.write("<td class='border'>"+x+"</td>");  // SNO
+						document.write("<td class='border'>"+categorMap.get(x)+"</td>"); // category
+						document.write("<td class='border'>"+goalMap.get(x)+"</td>");
+						document.write("<td class='border'>"+metricMap.get(x)+"</td>");
+						document.write("<td class='border'>"+attributeMap.get(x)+"</td>");
+						document.write("<td class='border'>"+formulaMap.get(x)+"</td>");
+						document.write("<td class='border' style='width:40%;'>"+currentKeyArray[k]+"</td>");
+						document.write("<td class='border'>"+targetValueMap.get(x)+"</td>");
+						document.write("<td class='border' width='200px'>"+currentValArray[k]+"</td>");
+						document.write("<td class='border'>"+unitMap.get(x)+"</td>");
+						
+						
+					}
+				}
+				
+				
+				
+			}
+			
+			
+			
+			
+			
 			
 		 
 			
@@ -364,7 +401,7 @@
 <%begindetail%>
 	<table class="detailcols fullWidth">
 	<script type="text/javascript">
-	document.write("<p class='title'> <%Project%></p>");
+	document.write("<p class='title'><%<%builtin Type%>%> <a class='title' href='<%hosturl%>im/WebClient?IssueID=<%<%builtin ID%>%>' target='_blank'><%<%builtin ID%>%></a>: <%Project%></p>");
 	
 	document.write("<tr>");
 	

@@ -53,15 +53,6 @@ importPackage(Packages.java.lang);
 
 var fieldMap = new HashMap();//记录所有字段的类型，用以判断条件使用的表达式
 
-function percentNum(num, num2) {
-	if(num2==0 && num ==0){
-		return 0 +"%";
-	}else if(num===0 || !num){
-		return 0 +"%";
-	}
-	return (Math.round(num / num2 * 100)  + "%"); //小数点后两位百分比
-}
-
 /** 循环计算每个项目的*/
 function main(){
 	if(!allItemIds || allItemIds.length == 0){
@@ -170,7 +161,7 @@ function main(){
 					var calculationState = calculationStateMap.get(SNO);//计算对象的状态
 					log("calculationState = "+ calculationState);
 					var calculationCondition = calculationConditonMap.get(SNO);//计算对象的条件
-					log("calculationCondition = "+ calculationCondition);
+					log("calculationCondition = "+ calculationCondition + " || length = " + (calculationCondition?calculationCondition.length():0));
 					var calculationSplit = calculationSplitMap.get(SNO);//拆分显示字段。。Number统计才能拆分显示，A/B类型不拆分
 					log("calculationSplit = "+ calculationSplit);
 					var calculationRecordField = calculationRecordMap.get(SNO);//实际记录字段，A/B类型无实际记录字段
@@ -208,7 +199,7 @@ function main(){
 						}
 						var outConditionArr = undefined;
 						if(calculationCondition && calculationCondition!= null && calculationCondition!=''){
-							outConditionArr = calculationCondition.split(innerSperator);//以()拆分查询条件
+							outConditionArr = calculationCondition.split(innerSperator);//以;拆分查询条件
 						}
 						var resultA = [];
 						var resultB = [];
@@ -230,24 +221,25 @@ function main(){
 						}
 						var lengthA = resultA.length;
 						var lengthB = resultB.length;
-						var SNOVal = keepTwoDecimal(resultA.length/resultB.length*100);
-						if(isNaN(SNOVal))
-							SNOVal = 0;
+						var SNOVal = keepTwoDecimal(lengthA,lengthB);
 						kpiValue = kpiValue + SNO+"<:>"+ SNOVal+"%<;>";
 					}else if("(A-B)/A*100" == formulaStr ){//两部分拆分计算数量，有可能有拆分显示
 						log("(A-B)/A*100");
 						var outObjectArr = calculationObject.split(innerSperator);//获取两个计算指标的查询对象数组，
 						var outStateArr = calculationState?calculationState.split(innerSperator):undefined;//获取两个计算指标的查询状态数组，
 						var outConditionArr = undefined;
-						if(calculationCondition && calculationCondition.length>0){
-							outConditionArr = calculationCondition.split(innerSperator);//以()拆分查询条件
+						if(calculationCondition && calculationCondition!= null && calculationCondition!=''){
+							log("calculationCondition split :" );
+							outConditionArr = calculationCondition.split(innerSperator);//以;拆分查询条件
 						}
+						log("outConditionArr = " + (outConditionArr?outConditionArr.length:"undefined"));
 						var resultA = [];
 						var resultB = [];
 						for(var outInd=0; outInd<outObjectArr.length; outInd++){
 							var objectStr = outObjectArr[outInd];//获取查询数组，如果需要查询多个对象，拆分
 							var stateStr = outStateArr && outStateArr[outInd]?outStateArr[outInd]:undefined;//获取查询状态数组，如果需要查询多个状态，拆分
 							var conditionStr = outConditionArr?outConditionArr[outInd]:undefined;
+							log("conditionStr="+conditionStr);
 							if(outInd == 0){
 								resultA = searchKPI(project,objectStr,stateStr,conditionStr,fields);
 								log("SNO " +SNO+ " resultA="+resultA.length);
@@ -262,24 +254,24 @@ function main(){
 						log("length2 = " + length2);
 						log("length1-2 = " + (length1-length2));
 						log("length1-2/1 = " + (length1-length2)/length1);
-						var SNOVal = keepTwoDecimal(((length1-length2)/length1*100));
-						if(isNaN(SNOVal))
-							SNOVal = 0;
+						var SNOVal = keepTwoDecimal((length1-length2),length1);
 						kpiValue = kpiValue + SNO +"<:>"+ SNOVal +"%<;>";
-					}else if("A/A+B*100" == formulaStr ){//两部分拆分计算数量，有可能有拆分显示
-						log("A/A+B*100");
+					}else if("A/(A+B)*100" == formulaStr ){//两部分拆分计算数量，有可能有拆分显示
+						log("A/(A+B)*100");
 						var outObjectArr = calculationObject.split(innerSperator);//获取两个计算指标的查询对象数组，
 						var outStateArr = calculationState?calculationState.split(innerSperator):undefined;//获取两个计算指标的查询状态数组，
 						var outConditionArr = undefined;
-						if(calculationCondition && calculationCondition.length>0){
-							outConditionArr = calculationCondition.split(innerSperator);//以()拆分查询条件
+						if(calculationCondition && calculationCondition!= null && calculationCondition!=''){
+							outConditionArr = calculationCondition.split(innerSperator);//以;拆分查询条件
 						}
+						log("outConditionArr = " + (outConditionArr?outConditionArr.length:"undefined"));
 						var resultA = [];
 						var resultB = [];
 						for(var outInd=0; outInd<outObjectArr.length; outInd++){
 							var objectStr = outObjectArr[outInd];//获取查询数组，如果需要查询多个对象，拆分
 							var stateStr = outStateArr && outStateArr[outInd]?outStateArr[outInd]:undefined;//获取查询状态数组，如果需要查询多个状态，拆分
 							var conditionStr = outConditionArr?outConditionArr[outInd]:undefined;
+							log("conditionStr="+conditionStr);
 							if(outInd == 0){
 								resultA = searchKPI(project,objectStr,stateStr,conditionStr,fields);
 								log("SNO " +SNO+ " resultA="+resultA.length);
@@ -290,9 +282,7 @@ function main(){
 						}
 						var length1 = resultA.length;
 						var length2 = resultB.length;
-						var SNOVal = keepTwoDecimal((length1/(length1+length2)*100));
-						if(isNaN(SNOVal))
-							SNOVal = 0;
+						var SNOVal = keepTwoDecimal(length1,(length1+length2));
 						kpiValue = kpiValue + SNO + "<:>"+ SNOVal+"%<;>";
 					}else{//当不符合以上任意表达式时，
 						//实际记录字段不为空时；calculationObject只能查询一个对象，否则无法从记录字段获取数据
@@ -345,17 +335,22 @@ function replaceNewline(str){
  * @param num
  * @returns
  */
-function keepTwoDecimal(num) {  
-	var result = parseFloat(num);  
+
+function keepTwoDecimal(num, num2) {
+	log("num 1 = " + num +"num 2 = " + num2);
+	var result = num/num2;
+	log("result = " + result);
 	if (isNaN(result)) {  
 		return 0;  
 	}
-	if( Math.floor(num) === num){
-		return num;
+	result = parseFloat(result);
+	log("result = " + result);
+	if(result == 1){//如果结果为1，返回100
+		return 100;
 	}
-	result = Math.round(num * 100) / 100;  
-	return result;  
-};
+	log(" result = " + (Math.round(result * 10000) / 100));
+	return (Math.round(result * 10000) / 100); //小数点后两位百分比
+}
 
 /**
  * 拆分记录KPI值
@@ -427,8 +422,16 @@ function getSplitValues(SNO,splitFields,calculationObject,calculationState,resul
 				var count = 0;
 				for(var resultIndex = 0; resultIndex<resultList.length; resultIndex++){//判断数据是否符合条件
 					var resultObj = resultList[resultIndex];
-					var resultFirstVal = new java.lang.String(resultObj[firstFieldName]);
-					var resultSecondVal = new java.lang.String(resultObj[secondFieldName]);
+					var resultFirstValue = resultObj[firstFieldName];
+					var resultSecondValue = resultObj[secondFieldName];
+					if(!resultFirstValue || resultFirstValue == null || resultFirstValue == "null"){
+						resultFirstValue = "";
+					}
+					if(!resultSecondValue || resultSecondValue == null || resultSecondValue == "null"){
+						resultSecondValue = "";
+					}
+					var resultFirstVal = new java.lang.String(resultFirstValue);
+					var resultSecondVal = new java.lang.String(resultSecondValue);
 					log("resultObj[" + firstFieldName + "]=" + resultFirstVal + "resultObj[" + secondFieldName + "]=" + resultSecondVal);
 					log("first Value =" + (resultFirstVal.equals(firstValue) ) + " secondValue=" + (resultSecondVal.equals(secondValue) ));
 					if(resultFirstVal.equals(firstValue) && resultSecondVal.equals(secondValue)){
@@ -448,8 +451,12 @@ function getSplitValues(SNO,splitFields,calculationObject,calculationState,resul
 			var count = 0;
 			for(var resultIndex = 0; resultIndex<resultList.length; resultIndex++){//判断数据是否符合条件
 				var resultObj = resultList[resultIndex];
-				var resultFirstVal = new java.lang.String(resultObj[firstFieldName]);
-				log("resultObj[" + firstFieldName + "]=" + resultObj[firstFieldName]);
+				var resultFirstValue = resultObj[firstFieldName];
+				if(!resultFirstValue || resultFirstValue == null || resultFirstValue == "null"){
+					resultFirstValue = "";
+				}
+				var resultFirstVal = new java.lang.String(resultFirstValue);
+				log("resultObj[" + firstFieldName + "]=" + resultFirstVal);
 				if(resultFirstVal.equals(firstValue)){
 					if(realRecord){
 						count = resultObj[calculationRecordField];//保存实际填写的值
@@ -486,6 +493,9 @@ function searchKPI(project,calculationObject,calculationState,calculationConditi
 	var stateArr = calculationState?calculationState.split(innerOr):undefined;//获取查询状态数组，如果需要查询多个状态，拆分
 	var filterMap = new HashMap();//存储IBPL、Relationship等无法直接拼接到Query里面的过滤条件字段，用以过滤
 	var queryDefinition = "((field[Project]="+project+") and (";//拼接类型条件
+	var ibplFields = [];//记录ibpl 字段
+	var ibplOperators = [];//ibpl关联条件
+	var ibplValues = [];//记录ibpl 值
 	log("objectArr="+objectArr.length);
 	if(objectArr.length>0){
 		for(var objInd=0; objInd<objectArr.length; objInd++){
@@ -516,7 +526,7 @@ function searchKPI(project,calculationObject,calculationState,calculationConditi
 	if(calculationCondition && calculationCondition != undefined && calculationCondition != 'undefined'
 			&& calculationCondition!=null && calculationCondition!='null'){
 		log("calculationCondition queryDefinition ="+calculationCondition);
-		var conditionArr = conditionSplit(calculationCondition);//以()拆分查询条件
+		var conditionArr = conditionSplit(calculationCondition);//以;拆分查询条件
 		log("conditionArr" + conditionArr.length);
 		queryDefinition = queryDefinition + " and (";//拼接其他条件
 		var conditionQuery = "";
@@ -545,6 +555,11 @@ function searchKPI(project,calculationObject,calculationState,calculationConditi
 						var fieldBean = server.getFieldBean(field);
 						fieldType = fieldBean.getFieldType();
 						fieldMap.put(field,fieldType);
+					}
+					if("ibpl" == fieldType){//IBPL字段单独记录处理
+						ibplFields.push(field);
+						ibplOperators.push(connectStr);
+						ibplValues.push(value);
 					}
 					log("condition conIndex "+conIndex+" field = " + field);
 					log("condition value = " + value);
@@ -576,6 +591,11 @@ function searchKPI(project,calculationObject,calculationState,calculationConditi
 						fieldType = fieldBean.getFieldType();
 						fieldMap.put(field,fieldType);
 					}
+					if("ibpl" == fieldType){//IBPL字段单独记录处理
+						ibplFields.push(field);
+						ibplOperators.push(connectStr);
+						ibplValues.push(value);
+					}
 					fields.push(field);
 					conditionQuery = conditionQuery + queryField(field,fieldType,connectStr,value);
 					log("conIndex conditionQuery= " + conditionQuery);
@@ -596,6 +616,11 @@ function searchKPI(project,calculationObject,calculationState,calculationConditi
 					fieldType = fieldBean.getFieldType();
 					fieldMap.put(field,fieldType);
 				}
+				if("ibpl" == fieldType){//IBPL字段单独记录处理
+					ibplFields.push(field);
+					ibplOperators.push(connectStr);
+					ibplValues.push(value);
+				}
 				fields.push(field);
 				conditionQuery = conditionQuery + queryField(field,fieldType,connectStr,value);
 				conditionQuery = conditionQuery + ")";//拼接状态条件
@@ -607,7 +632,8 @@ function searchKPI(project,calculationObject,calculationState,calculationConditi
 	}
 	queryDefinition = queryDefinition + ")";//总条件添加)
 	log("All QueryDefinition = " + queryDefinition);
-	return findByConformanceIssue(queryDefinition,fields);
+	var results = findByConformanceIssue(queryDefinition,fields);
+	return results;
 }
 
 /**
@@ -696,7 +722,7 @@ function findByConformanceIssue(queryDefinition,fields){
 	cmd.addOption(new Packages.com.mks.api.Option("fields",mv));
 	cmd.addOption(new Packages.com.mks.api.Option("hostname",mksHost));
 	cmd.addOption(new Packages.com.mks.api.Option("user","admin"));
-	cmd.addOption(new Packages.com.mks.api.Option("password","admin"));
+	cmd.addOption(new Packages.com.mks.api.Option("password",passwd));
 	cmd.addOption(new Packages.com.mks.api.Option("queryDefinition",queryDefinition));
 	var response = sessionBean.executeCmd(cmd);
 	var it = response.getWorkItems(); 
