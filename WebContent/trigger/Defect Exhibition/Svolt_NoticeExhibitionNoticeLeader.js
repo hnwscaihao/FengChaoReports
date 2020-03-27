@@ -14,11 +14,12 @@ function abort(s){
 }
 
 function log(s){
-    Packages.mks.util.Logger.message(s);
+    eb.print(s);
 }
 log("Start Notice Exhibition Leader");
 
 var eb = bsf.lookupBean("siEnvironmentBean");//环境变量
+eb.setMessageCategory("SVOLT");//设置日志分类
 //log("----- eb = " +  eb);
 var server = bsf.lookupBean("imServerBean");//全部服务对象
 //log("----- server = " +  server);

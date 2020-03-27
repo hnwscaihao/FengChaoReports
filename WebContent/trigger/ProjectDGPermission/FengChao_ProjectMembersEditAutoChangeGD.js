@@ -13,10 +13,10 @@ function abort(s){
     eb.abortScript(s, true);
 }
 function log(s){
-    Packages.mks.util.Logger.message(s);
+    eb.print(s);
 }
 var eb = bsf.lookupBean("siEnvironmentBean");
-
+eb.setMessageCategory("SVOLT");//设置日志分类
 // Lookup the parameters bean, and from it find our three parameters, the recipient, the subject, and the message start.
 var params = bsf.lookupBean("parametersBean");
 var mksHost = eb.getServerConfigurationProperty("mksis.logging.syslog.hostname");

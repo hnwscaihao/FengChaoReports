@@ -19,12 +19,11 @@ importPackage(Packages.com.mks.api);
 function abort(s){
     eb.abortScript(s, true);
 }
-
 function log(s){
-    Packages.mks.util.Logger.message(s);
+	eb.print(s,10);
 }
-
 var eb = bsf.lookupBean("siEnvironmentBean");
+eb.setMessageCategory("SVOLT");//设置日志分类
 
 // Lookup the parameters bean, and from it find our three parameters, the recipient, the subject, and the message start.
 var params = bsf.lookupBean("parametersBean");
@@ -45,8 +44,13 @@ var innerPl = "+";//KPI内容，拆分显示的连接符
 var innerComma = ",";//KPI内容，拆分显示的连接符
 var innerEq = "=";//KPI内容，连接条件
 var innerUneq = "!=";//KPI内容，连接条件
+var innerLarger = ">";
+var innerLargerEqu = ">=";
+var innerSmall = "<";
+var innerSmallEqu = "<=";
 var innerBegin = "(";//KPI Condition 多条件连接开始
 var innerEnd = ")";//KPI Condition 多条件连接结束
+var emptyQueryCondition = "and (())";
 
 importPackage(Packages.java.util);
 importPackage(Packages.java.lang);
@@ -496,6 +500,7 @@ function searchKPI(project,calculationObject,calculationState,calculationConditi
 	var ibplFields = [];//记录ibpl 字段
 	var ibplOperators = [];//ibpl关联条件
 	var ibplValues = [];//记录ibpl 值
+	var ibplAndConnect = false;//ibpl and 连接条件
 	log("objectArr="+objectArr.length);
 	if(objectArr.length>0){
 		for(var objInd=0; objInd<objectArr.length; objInd++){
@@ -538,7 +543,7 @@ function searchKPI(project,calculationObject,calculationState,calculationConditi
 			}
 			if(conditions.indexOf(innerOr)>-1 ){// | 连接
 				log("append or : "+conditionFieldVal );
-				conditionQuery = conditionQuery + " (";//拼接其他条件
+				conditionQuery = conditionQuery + "(";//拼接其他条件
 				var conditionList = conditions.split(innerOr);//拆分数组
 				log("conditionList = "+conditionList.length);
 				for(var conIndex=0; conIndex<conditionList.length; conIndex++){
@@ -546,8 +551,8 @@ function searchKPI(project,calculationObject,calculationState,calculationConditi
 					if(conIndex>0){
 						conditionQuery = conditionQuery + " or ";
 					}
-					var connectStr = conditionFieldVal.indexOf(innerUneq)>-1?"!=":"=";
-					var condition = conditionFieldVal.indexOf(innerUneq)>-1?conditionFieldVal.split(innerUneq):conditionFieldVal.split(innerEq);
+					var connectStr = getConnectOperator(conditionFieldVal);
+					var condition = conditionFieldVal.split(connectStr);
 					var field = condition[0].trim();
 					var value = condition[1].trim();
 					var fieldType = fieldMap.get(field);
@@ -569,9 +574,10 @@ function searchKPI(project,calculationObject,calculationState,calculationConditi
 				}
 				conditionQuery = conditionQuery + ")";//拼接状态条件
 			}else if(conditions.indexOf(innerAnd)>-1){// & 连接
+				ibplAndConnect = true;
 				log("append and : " + conditionFieldVal );
-				queryDefinition = queryDefinition + " (";//拼接其他条件
 				var conditionList = conditions.split(innerAnd);//拆分数组
+				queryDefinition = queryDefinition + "(";//拼接其他条件
 				log("conditionList = "+conditionList.length);
 				for(var conIndex=0; conIndex<conditionList.length; conIndex++){
 					var conditionFieldVal = conditionList[conIndex];
@@ -579,8 +585,8 @@ function searchKPI(project,calculationObject,calculationState,calculationConditi
 					if(conIndex>0){
 						conditionQuery = conditionQuery + " and ";
 					}
-					var connectStr = conditionFieldVal.indexOf(innerUneq)>-1?"!=":"=";
-					var condition = conditionFieldVal.indexOf(innerUneq)>-1?conditionFieldVal.split(innerUneq):conditionFieldVal.split(innerEq);
+					var connectStr = getConnectOperator(conditionFieldVal);
+					var condition = conditionFieldVal.split(connectStr);
 					var field = condition[0].trim();
 					var value = condition[1].trim();
 					log("condition conIndex "+conIndex+" field = " + field);
@@ -602,10 +608,12 @@ function searchKPI(project,calculationObject,calculationState,calculationConditi
 				}
 				conditionQuery = conditionQuery + ")";//拼接状态条件
 			}else{//单字段
-				log("append single : "  + conditionFieldVal);
-				conditionQuery = conditionQuery + " (";//拼接其他条件
-				var connectStr = conditions.indexOf(innerUneq)>-1?"!=":"=";
-				var condition = conditions.indexOf(innerUneq)>-1?conditions.split(innerUneq):conditions.split(innerEq);
+				log("append single : "  + conditions);
+				conditionQuery = conditionQuery + "(";//拼接其他条件
+				var connectStr = getConnectOperator(conditions);
+				log("connectStr = " + connectStr);
+				var condition = conditions.split(connectStr);
+				log("condition = " + condition)
 				var field = condition[0].trim();
 				var value = condition[1].trim();
 				log("condition field = " + field);
@@ -622,7 +630,9 @@ function searchKPI(project,calculationObject,calculationState,calculationConditi
 					ibplValues.push(value);
 				}
 				fields.push(field);
-				conditionQuery = conditionQuery + queryField(field,fieldType,connectStr,value);
+				var query = queryField(field,fieldType,connectStr,value);
+				log("query = " + query);
+				conditionQuery = conditionQuery + query;
 				conditionQuery = conditionQuery + ")";//拼接状态条件
 				log("conIndex conditionQuery= " + conditionQuery);
 			}
@@ -632,7 +642,56 @@ function searchKPI(project,calculationObject,calculationState,calculationConditi
 	}
 	queryDefinition = queryDefinition + ")";//总条件添加)
 	log("All QueryDefinition = " + queryDefinition);
+	if(queryDefinition.indexOf(emptyQueryCondition)>-1){//去除空查询条件
+		queryDefinition = queryDefinition.replace(emptyQueryCondition,"");
+	}else if(queryDefinition.indexOf("and ()")>-1){
+		queryDefinition = queryDefinition.replace("and ()","");
+	}
+	if(queryDefinition.indexOf("()")>-1){
+		queryDefinition = queryDefinition.replace("()","");
+	}
+	log("All QueryDefinition = " + queryDefinition);
 	var results = findByConformanceIssue(queryDefinition,fields);
+	if(ibplFields.length>0){//如果需要判断ibpl字段，使用Contains判断
+		var returnResult = [];
+		for(var i=0;i<results.length;i++){
+			var resultObj = results[i];
+			var canAdd = ibplAndConnect?true:false;//or连接假定不符合，and连接假定符合
+			log("IBPL OBJ =" + resultObj);
+			log("ibplAndConnect = " + ibplAndConnect);
+			for(var index=0;index<ibplFields.length;index++){
+				var ibplField = ibplFields[index];
+				var ibplValue = new java.lang.String(ibplValues[index]);
+				var ibplOperator = ibplOperators[index];
+				var resultIbplValue = resultObj[ibplField]?new java.lang.String(resultObj[ibplField]):"";
+				log("ibplField = " + ibplField +" ibplValue = " + ibplValue + " ibplOperator = " + ibplOperator + " resultIbplValue = "+ resultIbplValue );
+				if(ibplAndConnect){//and连接
+					if(ibplOperator == "="){//包含判断
+						if(resultIbplValue.indexOf(ibplValue) < 0){//只要有一个不包含，不添加
+							canAdd = false;
+						}
+					}else if(ibplOperator == "!="){
+						if(resultIbplValue.indexOf(ibplValue) > -1){//只要有一个包含，不添加
+							canAdd = false;
+						}
+					}
+				}else{//or连接
+					if(ibplOperator == "="){//包含判断
+						if(resultIbplValue.indexOf(ibplValue) > -1){//只要有一个包含，添加
+							canAdd = true;
+						}
+					}else if(ibplOperator == "!="){
+						if(resultIbplValue.indexOf(ibplValue) < 0){//只要有一个不包含，添加
+							canAdd = true;
+						}
+					}
+				}
+			}
+			if(canAdd)
+				returnResult.push(resultObj);
+		}
+		return returnResult;
+	}
 	return results;
 }
 
@@ -664,6 +723,32 @@ function conditionSplit(conditionStr){
 	return resultArr;
 }
 
+/*
+ * 获取连接符号
+ *  innerEq   "=";//KPI内容，连接条件
+ *  innerUneq   "!=";//KPI内容，连接条件
+ *  innerLarger   ">";
+ *  innerLargerEqu   ">=";
+ *  innerSmall   "<";
+ *  innerSmallEqu   "<=";
+ */
+function getConnectOperator(conditionFieldVal){
+	if(conditionFieldVal.indexOf(innerUneq)>-1){
+		return innerUneq;
+	}else if(conditionFieldVal.indexOf(innerEq)>-1){
+		return innerEq;
+	}else if(conditionFieldVal.indexOf(innerLargerEqu)>-1){
+		return innerLargerEqu;
+	}else if(conditionFieldVal.indexOf(innerLarger)>-1){
+		return innerLargerEqu;
+	}else if(conditionFieldVal.indexOf(innerSmallEqu)>-1){
+		return innerSmallEqu;
+	}else if(conditionFieldVal.indexOf(innerSmall)>-1){
+		return innerSmall;
+	}
+	return "";
+}
+
 /**
  * 根据字段类型拼接查询条件
  */
@@ -683,7 +768,7 @@ function queryField(field,fieldType,operator,value){
 			result = preOpeator + "(field[" + field + "]=" + value + ")";
 		}else if('ibpl' == fieldType || 'relationship' == fieldType){
 			//IBPL, Relationship 字段 判断需要查询后，循环根据字段判断
-			
+			return result;
 		}else if('pick' == fieldType || 'int' == fieldType || 'boolean' == fieldType 
 				|| 'float' == fieldType || 'phase' == fieldType){
 			log("queryField = " + preOpeator + "(field[" + field + "]=" + value + ")");
@@ -691,8 +776,52 @@ function queryField(field,fieldType,operator,value){
 		}else if('user' == fieldType || 'group' == fieldType){
 			log("queryField = " + preOpeator + "(field[" + field + "]=" + value + ")");
 			result = preOpeator + "(field[" + field + "]=" + value + ")";
-		}else{//
-			
+		}else if('date' == fieldType){//
+			if(operator == "="){// = 连接，只能是today ,yesterday, tomorrow
+				result = "(field[" + field + "] " + value + ")";
+			}else if(operator == "!="){//!= 连接，只能是today ,yesterday, tomorrow
+				result = "not (field[" + field + "] " + value + ")";
+			}else if(operator == "<" || operator == "<="){
+				var sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+				var sdf2 = new java.text.SimpleDateFormat("MMM d, yyyy");
+				var beginDate = new java.util.Date();
+				if("today" == value){//默认是当天
+					
+				}else if("tomorrow" == value){//明天
+					beginDate = beginDate.setDate(beginDate.getDate()+1);
+				}else{//格式化输入时间， yyyy-MM-dd
+					beginDate = sdf.parse(value);
+				}
+				if(operator == "<"){
+					beginDate = beginDate.setDate(beginDate.getDate()+1);
+				}
+				var endDate = new java.util.Date(beginDate.getTime());
+				endDate.setYear(endDate.getYear()+1);//设置比开始时间大一年
+				var beginValue = sdf2.format(beginDate);
+				var endValue = sdf2.format(endDate);
+				result = "(field[" + field + "] between "+ beginValue + " and " + endValue+")";
+			}else{//当大于时，设置起始时间为2019年5月30号，系统干正式部署时间
+				var beginValue = "May 30, 2019";
+				var endDate = new java.util.Date();
+				var sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+				var sdf2 = new java.text.SimpleDateFormat("MMM d, yyyy");
+				if("today" == value){
+					
+				}else if("yesterday" == value){
+					endDate = endDate.setDate(endDate.getDate()+1);
+				}else if("tomorrow" == value){//明天
+					endDate = endDate.setDate(endDate.getDate()+1);
+				}else{//格式化输入时间， yyyy-MM-dd
+					endDate = sdf.parse(value);
+				}
+				if(operator == ">"){
+					endDate = endDate.setDate(endDate.getDate()-1);
+				}
+				var endValue = sdf2.format(endDate);
+				result = "(field[" + field + "] between "+ beginValue + " and " + endValue;
+			}
+			log("field query condition = " + result);
+			return result ;
 		}
 	}
 	if(preOpeator != ''){//如果是not拼接，后面需要拼接)
