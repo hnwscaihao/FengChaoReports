@@ -177,7 +177,7 @@
 		var AllCategory =  [];
 		var categorys = []; 
 		var Releases = []; 
-		var host = "http://192.168.229.133/:7001"; //本机
+		var host = "http://192.168.6.130/:7001"; //本机
 		//var host = "http://10.255.33.189/:7001"; //服务器
 	</script>
 	<style>
@@ -284,6 +284,7 @@
 		<th>Description</th>
 		<th>Tests</th>
 		<th>% Passed</th>
+		<th hidden></th>
 	</tr>
 	<%beginrelationshipsdetail Query[(walkdocordered[<%<%builtin ID%>%>])]%><%filter%>(item is node)<%endfilter%>
 		<script type="text/javascript">
@@ -317,16 +318,14 @@
 				row1.categorys = "<%Relationship Category%>";
 				AllCategory.push(row1);
 				 
-				if("<%Relationship Validated By Trace Count%>" <= 1 | "<%Relationship Validated By Trace Count%>" == "" ){
-				document.write('<td valign="top">0</td>');
-				document.write('<td valign="top"><div class="graph"><strong class="bar" style="width:0px;">0</strong></div></td>');
+				if("<%Relationship Validated By Trace Count%>" <= 0 | "<%Relationship Validated By Trace Count%>" == "" ){
+					document.write('<td valign="top">0</td>');
+					document.write('<td valign="top"><div class="graph"><strong class="bar" style="width:0px;">0</strong></div></td>');
 				}else{
-				document.write('<td valign="top"><%Relationship Validated By Trace Count%></td><td valign="top"><div class="graph"><strong class="bar" style="width:<%Relationship Validated By Pass Percentage%>;"><%Relationship Validated By Pass Percentage%></strong></div></td>');
+					document.write('<td valign="top"><%Relationship Validated By Trace Count%></td>')
+					document.write('<td valign="top"><div class="graph"><strong class="bar" style="width:<%Relationship Validated By Pass Count%>;"><%Relationship Validated By Pass Percentage%></strong></div></td>');
 				}
-				
-				
-				
-				
+				document.write('<td valign="top" hidden><%Relationship Validated By Pass Count%></td>');
 			}
 			</script>
 		</tr>
@@ -538,10 +537,10 @@
 				for(var i =0;i<tr.length;i++){
 					if(i>0 && tr[i].hidden == false){
 						allCount++;
-						if(tr[i].cells[4].innerHTML != "" && tr[i].cells[4].innerHTML > 0){
+						if(tr[i].cells[4] && tr[i].cells[4].innerHTML != "" && tr[i].cells[4].innerHTML > 0){
 							Testcount++;
 						}	
-						if(tr[i].cells[5].innerHTML != "" && tr[i].cells[5].innerHTML > 0){
+						if(tr[i].cells[6] && tr[i].cells[6].innerHTML != "" && tr[i].cells[6].innerHTML > 0){
 							Coveragecount++;
 						}	
 					}
@@ -551,8 +550,23 @@
 		console.log("Testcount : "+Testcount)
 		console.log("Coveragecount : "+Coveragecount)
 		console.log("allCount : "+allCount)
-		document.getElementById("AllTest").innerHTML = Testcount/allCount;
-		document.getElementById("AllCoverage").innerHTML = Coveragecount/allCount;
+		var testRage = keepTwoDecimal(Testcount,allCount);
+		var coverage = keepTwoDecimal(Coveragecount,allCount);
+		document.getElementById("AllTest").innerHTML = testRage;
+		document.getElementById("AllCoverage").innerHTML = coverage;
+	}
+	
+	// 保证两位小数
+	function keepTwoDecimal(num, num2) {
+		var result = num/num2;
+		if (isNaN(result)) {  
+			return 0;  
+		}
+		result = parseFloat(result);
+		if(result == 1){//如果结果为1，返回100
+			return 100;
+		}
+		return (Math.round(result * 10000) / 100); //小数点后两位百分比
 	}
 		
     //与docment联动的Categorys下拉选赋值
