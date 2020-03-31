@@ -177,6 +177,8 @@
 		var AllCategory =  [];
 		var categorys = []; 
 		var Releases = []; 
+		var host = "http://192.168.229.133/:7001"; //本机
+		//var host = "http://10.255.33.189/:7001"; //服务器
 	</script>
 	<style>
 		
@@ -185,6 +187,7 @@
 		.selectWid { width: 225px; border-radius: 5px;}
 		.selectNarr { width: 124px; border-radius: 5px;}
 	</style>
+	
 </head>
 <%dateformat MM/dd/yy HH:mm:ss%>
 <%datetimeformat MM/dd/yyyy h:mm:ss a%>
@@ -206,7 +209,7 @@
 </table>
 <p class="header">&reportheader</p>
 <p class="date"><%currentdate%></p>
-<p><a id="RERUNLINK"><img src="http://http://192.168.229.133/:7001/MKS_ALM_2009/refresh.gif"></a>
+<p><a id="RERUNLINK"><img src= host + "/MKS_ALM_2009/refresh.gif"></a>
 <span class="spanRight">
 		<strong>Release: </strong>
 		<select multip=""  class="selectRelease" id="Release" name="Release" style="width:210px;height: 30px;" >
@@ -223,7 +226,7 @@
 	</span>
 	<span class="spanRight">
 		<strong> Document:</strong>
-		<select class="selectWid" id="DocumentID" name="DocumentID" multip="" name="Release" style="width:210px;height: 30px;" >
+		<select class="selectWid" id="DocumentID" name="DocumentID" multip="" name="Release" style="width:310px;height: 30px;" >
 			<option value="all"> - Please Select - </option>
 		</select>
 	</span>	
@@ -243,7 +246,7 @@
 
     var selectDoc = {};
     selectDoc.value = "<%<%builtin ID%>%>";
-    selectDoc.text = "Document Stakeholder"+"<%<%builtin ID%>%>";
+    selectDoc.text = "<%<%builtin Type%>%>"+"<%<%builtin ID%>%>";
     docData.push(selectDoc);   
 </script>
 
@@ -291,7 +294,7 @@
 			document.write('<tr class="even_row">');
 		}
 		</script>
-			<td valign="top"><a href="http://192.168.229.133:7001/im/WebClient?IssueID=<%Relationship ID%>"><%Relationship ID%></a></td>
+			<td valign="top"><a href= host + "/im/WebClient?IssueID=<%Relationship ID%>"><%Relationship ID%></a></td>
 			<td valign="top"><%Relationship Category%></td>
 			<td  hidden class ="noData"><%Relationship Sample Phase%></td>
 			<td valign="top"><%Relationship Text%></td>
@@ -365,6 +368,7 @@
 		
 		//Document下拉选绑定事件
 		selectDoc.onchange = function(){
+			event.stopPropagation();
     		// 通过对象获取value和text
             var key = this.value;
 			
@@ -517,9 +521,9 @@
 		
 
     	if (REPORT_ISSUES == "") {
-            document.all.RERUNLINK.href = "http://http://192.168.229.133:7001/im/runreport?selection=&currentReportName";
+            document.all.RERUNLINK.href = host + "/im/runreport?selection=&currentReportName";
         } else {
-            document.all.RERUNLINK.href = "http://http://192.168.229.133:7001/im/runreport?selection=&currentReportName&issues=" + REPORT_ISSUES;
+            document.all.RERUNLINK.href = host + "/im/runreport?selection=&currentReportName&issues=" + REPORT_ISSUES;
         }
 		
 	 //查询测试率
