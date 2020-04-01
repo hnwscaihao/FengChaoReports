@@ -61,6 +61,7 @@ var typeData = {
 	"Changeed Calibration Paramenters":"",
 	"Notice Exhibition":"",
 	"Notice Users":[],
+	"Delay Notice Date":"",
 }
 
 //主方法
@@ -112,20 +113,26 @@ function documentCommentCheck(){
 	typeData["Defect Level"] = delta.getFieldValue("Defect Level") == null ? "" : delta.getFieldValue("Defect Level");
 	typeData["Changeed Calibration Paramenters"] = delta.getFieldValue("Changeed Calibration Paramenters") == null ? "" : delta.getFieldValue("Changeed Calibration Paramenters");
 	typeData["Notice Users"] = delta.getNewFieldValue("Notice Users");  
+
+	var d = new Date(delta.getNewFieldValue("Delay Notice Date"));
+	var sjstr = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+	var date = sjstr.replace(/-/g,'/'); 
+	typeData["Delay Notice Date"] = new Date(date).getTime(); 
 	
-    //eb.abortScript("Notice Users:"+delta.getNewFieldValue("Notice Users") ,true);  
+    //eb.abortScript("Notice Users:"+new Date().getTime() +" : " +typeData["Delay Notice Date"],true);  
 	
 	//在创建横展对象 赋值
 	var DefectNoticeExhibition = sb.postNewIssue("Defect Notice Exhibition");
 	//基础属性(必填)
-	DefectNoticeExhibition.setSummary(typeData["Summary"]+"002");
+	DefectNoticeExhibition.setSummary(typeData["Summary"]+"004");
 	DefectNoticeExhibition.setProject(typeData["Project"]);
 	
 	DefectNoticeExhibition.setAssignedUser(typeData["Assigned User"]);
 	DefectNoticeExhibition.setState("Analyzed"); 
 	DefectNoticeExhibition.setFieldValue("Defect Source",typeData["Defect Source"]); 
 	DefectNoticeExhibition.setSetFieldValue("Notice Users",typeData["Notice Users"]); 
-	DefectNoticeExhibition.setFieldValue("Delay Notice Date", new Date().getTime());
+
+	DefectNoticeExhibition.setFieldValue("Delay Notice Date", typeData["Delay Notice Date"]);
 	//DefectNoticeExhibition.setAssignedGroup(typeData["Assigned Group"]);
 	
 	if(typeData["Description"]!=""){
