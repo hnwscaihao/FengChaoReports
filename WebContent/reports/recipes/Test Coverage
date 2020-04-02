@@ -211,7 +211,7 @@
 <p class="date"><%currentdate%></p>
 <p><a id="RERUNLINK"><img src= host + "/MKS_ALM_2009/refresh.gif"></a>
 <span class="spanRight">
-		<strong>Release: </strong>
+		<strong>Sample Phase: </strong>
 		<select multip=""  class="selectRelease" id="Release" name="Release" style="width:210px;height: 30px;" >
 			
 
