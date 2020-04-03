@@ -58,7 +58,7 @@ var typeData = {
 	"Type":"",
 	"Actual finish date":"",
 	"Defect Level":"",
-	"Changeed Calibration Paramenters":"",
+	//"Changeed Calibration Paramenters":"",
 	"Notice Exhibition":"",
 	"Notice Users":[],
 	"Delay Notice Date":"",
@@ -109,17 +109,19 @@ function documentCommentCheck(){
 	typeData["Customer ID"] = delta.getFieldValue("Customer ID") == null ? "" : delta.getFieldValue("Customer ID"); 
 	typeData["Sample Phase"] = delta.getFieldValue("Sample Phase") == null ? "" : delta.getFieldValue("Sample Phase");
 	typeData["Type"] = delta.getFieldValue("Type") == null ? "" : delta.getFieldValue("Type");
+	
+	
 	typeData["Actual finish date"] = delta.getFieldValue("Actual finish date") == null ? "" : delta.getFieldValue("Actual finish date");
 	typeData["Defect Level"] = delta.getFieldValue("Defect Level") == null ? "" : delta.getFieldValue("Defect Level");
-	typeData["Changeed Calibration Paramenters"] = delta.getFieldValue("Changeed Calibration Paramenters") == null ? "" : delta.getFieldValue("Changeed Calibration Paramenters");
+	//typeData["Changeed Calibration Paramenters"] = delta.getFieldValue("Changeed Calibration Paramenters") == null ? "" : delta.getFieldValue("Changeed Calibration Paramenters");
 	typeData["Notice Users"] = delta.getNewFieldValue("Notice Users");  
 
 	var d = new Date(delta.getNewFieldValue("Delay Notice Date"));
 	var sjstr = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
 	var date = sjstr.replace(/-/g,'/'); 
-	typeData["Delay Notice Date"] = new Date(date).getTime(); 
+	typeData["Delay Notice Date"] = new Date(date).getTime();  
 	
-    //eb.abortScript("Notice Users:"+new Date().getTime() +" : " +typeData["Delay Notice Date"],true);  
+    
 	
 	//在创建横展对象 赋值
 	var DefectNoticeExhibition = sb.postNewIssue("Defect Notice Exhibition");
@@ -130,8 +132,17 @@ function documentCommentCheck(){
 	DefectNoticeExhibition.setAssignedUser(typeData["Assigned User"]);
 	DefectNoticeExhibition.setState("Analyzed"); 
 	DefectNoticeExhibition.setFieldValue("Defect Source",typeData["Defect Source"]); 
-	DefectNoticeExhibition.setSetFieldValue("Notice Users",typeData["Notice Users"]); 
-
+	
+	var pdusers = new  java.lang.String(typeData["Notice Users"]);  
+	//eb.abortScript("Notice Users:"+ pdusers.split(",").length,true); 
+	if(pdusers.split(",").length == 1){ 
+		var newUser = new  java.util.HashSet();
+		newUser.add(typeData["Notice Users"]);  
+		DefectNoticeExhibition.setSetFieldValue("Notice Users",newUser);  
+	} else{
+		DefectNoticeExhibition.setSetFieldValue("Notice Users",typeData["Notice Users"]); 
+	}
+	
 	DefectNoticeExhibition.setFieldValue("Delay Notice Date", typeData["Delay Notice Date"]);
 	//DefectNoticeExhibition.setAssignedGroup(typeData["Assigned Group"]);
 	
@@ -207,14 +218,19 @@ function documentCommentCheck(){
 		 // DefectNoticeExhibition.setFieldValue("Type",typeData["Type"]);
 	//}
 	if(typeData["Actual finish date"]!=""){
-		  DefectNoticeExhibition.setFieldValue("Actual finish date",typeData["Actual finish date"]);
+		var d1 = new Date(typeData["Actual finish date"]);
+		var sjstr1 = d1.getFullYear() + '-' + (d1.getMonth() + 1) + '-' + d1.getDate();
+		var date1 = sjstr1.replace(/-/g,'/'); 
+		//typeData["Actual finish date"] = new Date(date1).getTime(); 
+		DefectNoticeExhibition.setFieldValue("Actual finish date",new Date(date1).getTime());
 	}
 	if(typeData["Defect Level"]!=""){
 		  DefectNoticeExhibition.setFieldValue("Defect Level",typeData["Defect Level"]);
 	}
-	if(typeData["Changeed Calibration Paramenters"]!=""){
-		  DefectNoticeExhibition.setFieldValue("Changeed Calibration Paramenters",typeData["Changeed Calibration Paramenters"]);
-	}
+	//客户电脑没有这个字段
+	//if(typeData["Changeed Calibration Paramenters"]!=""){
+		//  DefectNoticeExhibition.setFieldValue("Changeed Calibration Paramenters",typeData["Changeed Calibration Paramenters"]);
+	//}
 	 
 	log("id--------------------------" + delta.	getID());
 	
