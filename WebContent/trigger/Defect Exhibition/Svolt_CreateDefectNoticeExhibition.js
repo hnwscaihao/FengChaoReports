@@ -11,12 +11,18 @@
 // Author : Hao Cai.
 // Create Date : 2018-12-09
 // </p>
+//
+// @param String Project
 
 ///START
 eb = bsf.lookupBean("siEnvironmentBean");//环境变量
+eb.setMessageCategory("SVOLT");//设置日志分类
 log("----- eb = " +  eb);
 sb = bsf.lookupBean("imServerBean");//全部服务对象
 log("----- sb = " +  sb);
+var params = bsf.lookupBean("parametersBean");
+var project = params.getParameter("Project");
+log("Project = " + project);
 delta = bsf.lookupBean("imIssueDeltaBean");//触发对象
  
 log("----- delta = " +  delta.getID());
@@ -69,7 +75,7 @@ documentCommentCheck();
 
  // 打印信息
 function log(s){
-    Packages.mks.util.Logger.message(s);
+    eb.print(s);
 }
 
 function documentCommentCheck(){
@@ -127,7 +133,7 @@ function documentCommentCheck(){
 	var DefectNoticeExhibition = sb.postNewIssue("Defect Notice Exhibition");
 	//基础属性(必填)
 	DefectNoticeExhibition.setSummary(typeData["Summary"]+"004");
-	DefectNoticeExhibition.setProject(typeData["Project"]);
+	DefectNoticeExhibition.setProject(project);
 	
 	DefectNoticeExhibition.setAssignedUser(typeData["Assigned User"]);
 	DefectNoticeExhibition.setState("Analyzed"); 
