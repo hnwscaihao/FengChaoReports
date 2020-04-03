@@ -545,7 +545,7 @@
 						if(test && test != "" && test > 0){
 							testcount++;
 						}
-						if(test != "" && test >0 && test == pass){
+						if(pass != "" && pass >0 && test == pass){
 							passcount++;
 						}
 					}
@@ -555,8 +555,8 @@
 		console.log("testcount : "+testcount)
 		console.log("passcount : "+passcount)
 		console.log("allCount : "+allCount)
-		var PassRage = keepTwoDecimal(testcount,allCount);
-		var coverage = keepTwoDecimal(passcount,allCount);
+		var coverage = keepTwoDecimal(testcount,allCount);
+		var PassRage = keepTwoDecimal(passcount,allCount);
 		document.getElementById("AllTest").innerHTML = coverage; //覆盖率
 		
 		document.getElementById("AllCoverage").innerHTML = PassRage; //通过率
