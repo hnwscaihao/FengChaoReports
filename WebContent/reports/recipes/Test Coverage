@@ -532,8 +532,8 @@
 	function searchAllTest(){
 		var tables =  document.getElementsByClassName("detailrows");
 		var  allCount = 0;
-		var  Passcount = 0;
-		var  Coveragecount = 0;
+		var  testcount = 0;
+		var  passcount = 0;
 		for(var j = 0;j<tables.length;j++){
 			var tr = tables[j].rows;
 			if(tables[j].hidden == false){
@@ -542,21 +542,21 @@
 						allCount++;
 						var test  = tr[i].cells[4].innerHTML;
 						var pass  = tr[i].cells[6].innerHTML;
+						if(test && test != "" && test > 0){
+							testcount++;
+						}
 						if(test != "" && test >0 && test == pass){
-							Passcount++;
-						}	
-						if(tr[i].cells[5] && tr[i].cells[5].innerHTML != "" && tr[i].cells[5].innerHTML > 0){
-							Coveragecount++;
-						}	
+							passcount++;
+						}
 					}
 				}			
 			}			
 		}
-		console.log("Passcount : "+Passcount)
-		console.log("Coveragecount : "+Coveragecount)
+		console.log("testcount : "+testcount)
+		console.log("passcount : "+passcount)
 		console.log("allCount : "+allCount)
-		var PassRage = keepTwoDecimal(Passcount,allCount);
-		var coverage = keepTwoDecimal(Coveragecount,allCount);
+		var PassRage = keepTwoDecimal(testcount,allCount);
+		var coverage = keepTwoDecimal(passcount,allCount);
 		document.getElementById("AllTest").innerHTML = coverage; //覆盖率
 		
 		document.getElementById("AllCoverage").innerHTML = PassRage; //通过率
