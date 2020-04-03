@@ -232,8 +232,8 @@
 	</span>	
 </p> 
 <div style = "position: absolute; top: 120px; right: 10px;">
-        <h4>All Test : <span id="AllTest">00</span>%</h4>
-		<h4>All Coverage : <span id="AllCoverage">00</span>%</h4>
+        <h4>All Related Test Coverage Rate : <span id="AllTest">00</span>%</h4>
+		<h4>All Passed Coverage Rate : <span id="AllCoverage">00</span>%</h4>
 </div>
 <p style = "height: 21px;">
 
@@ -281,9 +281,10 @@
 		<th>ID</th>
 		<th>Category</th>
 		<th hidden>Releases</th>
-		<th>Description</th>
+		<th>Description</th> 
 		<th>Tests</th>
-		<th>% Passed</th>
+		<th>% Passed</th> 
+		<th hidden style="width: 120px;">Pass Percentage</th>
 		<th hidden></th>
 	</tr>
 	<%beginrelationshipsdetail Query[(walkdocordered[<%<%builtin ID%>%>])]%><%filter%>(item is node)<%endfilter%>
@@ -299,6 +300,7 @@
 			<td valign="top"><%Relationship Category%></td>
 			<td  hidden class ="noData"><%Relationship Sample Phase%></td>
 			<td valign="top"><%Relationship Text%></td>
+			
 			<script type="text/javascript">
 			//保存数据
 			
@@ -328,6 +330,7 @@
 				document.write('<td valign="top" hidden><%Relationship Validated By Pass Count%></td>');
 			}
 			</script>
+			 <td hidden valign="top"><%Pass Percentage%></td>
 		</tr>
 			
 			
@@ -529,7 +532,7 @@
 	function searchAllTest(){
 		var tables =  document.getElementsByClassName("detailrows");
 		var  allCount = 0;
-		var  Testcount = 0;
+		var  Passcount = 0;
 		var  Coveragecount = 0;
 		for(var j = 0;j<tables.length;j++){
 			var tr = tables[j].rows;
@@ -537,23 +540,26 @@
 				for(var i =0;i<tr.length;i++){
 					if(i>0 && tr[i].hidden == false){
 						allCount++;
-						if(tr[i].cells[4] && tr[i].cells[4].innerHTML != "" && tr[i].cells[4].innerHTML > 0){
-							Testcount++;
+						var test  = tr[i].cells[4].innerHTML;
+						var pass  = tr[i].cells[6].innerHTML;
+						if(test != "" && test >0 && test == pass){
+							Passcount++;
 						}	
-						if(tr[i].cells[6] && tr[i].cells[6].innerHTML != "" && tr[i].cells[6].innerHTML > 0){
+						if(tr[i].cells[5] && tr[i].cells[5].innerHTML != "" && tr[i].cells[5].innerHTML > 0){
 							Coveragecount++;
 						}	
 					}
 				}			
 			}			
 		}
-		console.log("Testcount : "+Testcount)
+		console.log("Passcount : "+Passcount)
 		console.log("Coveragecount : "+Coveragecount)
 		console.log("allCount : "+allCount)
-		var testRage = keepTwoDecimal(Testcount,allCount);
+		var PassRage = keepTwoDecimal(Passcount,allCount);
 		var coverage = keepTwoDecimal(Coveragecount,allCount);
-		document.getElementById("AllTest").innerHTML = testRage;
-		document.getElementById("AllCoverage").innerHTML = coverage;
+		document.getElementById("AllTest").innerHTML = coverage; //覆盖率
+		
+		document.getElementById("AllCoverage").innerHTML = PassRage; //通过率
 	}
 	
 	// 保证两位小数
