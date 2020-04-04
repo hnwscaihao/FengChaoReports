@@ -621,13 +621,16 @@
 	
 	//满足Release和Category条件的tr
 	function ReleasetrAndCategory(Category,Release){
-		var tables =  document.getElementsByClassName("detailrows");
-		 
+		var Releases = Release.split(",");
+		//console.log(Releases);
+		var Categorys = Category.split(",");
+		//console.log(Categorys);
+		var tables =  document.getElementsByClassName("detailrows"); 
 		for(var j = 0;j<tables.length;j++){
 				var tr = tables[j].rows;
 				for(var i =0;i<tr.length;i++){
 					if(i>0){
-						if(Category.indexOf(tr[i].cells[1].innerHTML) > -1 ||  Release.indexOf(tr[i].cells[2].innerHTML) > -1 ){
+						if(Categorys.indexOf(tr[i].cells[1].innerHTML) > -1 ||  Releases.indexOf(tr[i].cells[2].innerHTML) > -1 ){
 							tr[i].hidden = false;
 						}else{						
 							tr[i].hidden = true;
@@ -640,12 +643,14 @@
 	
     //掩藏满足Release条件的tr
 	function Releasetr(Release){
+		var Releases = Release.split(",");
+		//console.log(Releases);
 		var tables =  document.getElementsByClassName("detailrows");
 		for(var j = 0;j<tables.length;j++){
 				var tr = tables[j].rows;
 				for(var i =0;i<tr.length;i++){
 					if(i>0){
-						if(Release.indexOf(tr[i].cells[2].innerHTML) > -1 ){
+						if(Releases.indexOf(tr[i].cells[2].innerHTML) > -1 ){
 							tr[i].hidden = false;
 						}else{						
 							tr[i].hidden = true;
@@ -657,12 +662,14 @@
 
     //掩藏满足Category条件的tr
 	function yctr(Category){
+		var Categorys = Category.split(",");
+		//console.log(Categorys);
 		var tables =  document.getElementsByClassName("detailrows");
 		for(var j = 0;j<tables.length;j++){
 				var tr = tables[j].rows;
 				for(var i =0;i<tr.length;i++){
 					if(i>0){
-						if(Category.indexOf(tr[i].cells[1].innerHTML) > -1 ){
+						if(Categorys.indexOf(tr[i].cells[1].innerHTML) > -1 ){
 							tr[i].hidden = false;
 						}else{						
 							tr[i].hidden = true;
