@@ -610,10 +610,11 @@
 		ReleaseData = [];
 		for(var i = 0;i<Releases.length;i++){
 			var ls = Releases[i];
-			if(Releases[i] == " " || Releases[i] == "&nbsp;"){
-				ls = "noData";
+			 
+			if(Releases[i] != "&nbsp;"){
+				ReleaseData.push({"value":ls,"text":ls});
 			}
-    		ReleaseData.push({"value":ls,"text":ls});
+    		
     	}
 		ReleaseData.unshift({"value":"all","text":"- Please Select -"});		
 		selectMultip.reload("Release", ReleaseData);	
