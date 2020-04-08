@@ -177,8 +177,8 @@
 		var AllCategory =  [];
 		var categorys = []; 
 		var Releases = []; 
-		var host = "http://192.168.6.130/:7001"; //本机
-		//var host = "http://10.255.33.189/:7001"; //服务器
+		//var host = "http://192.168.6.130/:7001"; //本机
+		var host = "http://10.255.33.189/:7001"; //服务器
 	</script>
 	<style>
 		

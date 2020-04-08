@@ -133,7 +133,7 @@ function documentCommentCheck(){
 	var DefectNoticeExhibition = sb.postNewIssue("Defect Notice Exhibition");
 	//基础属性(必填)
 	DefectNoticeExhibition.setSummary(typeData["Summary"]+"004");
-	DefectNoticeExhibition.setProject(project);
+	DefectNoticeExhibition.setProject(typeData["Project"]);
 	
 	DefectNoticeExhibition.setAssignedUser(typeData["Assigned User"]);
 	DefectNoticeExhibition.setState("Analyzed"); 
