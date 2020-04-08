@@ -318,15 +318,15 @@
 					printnoi();
 					document.write("<td class='border'>"+x+"</td>");  // SNO
 					
-					document.write("<td class='border'>"+categorMap.get(x)+"</td>"); // category
-					document.write("<td class='border'>"+goalMap.get(x)+"</td>");
-					document.write("<td class='border'>"+metricMap.get(x)+"</td>");
-					document.write("<td class='border'>"+attributeMap.get(x)+"</td>");
-					document.write("<td class='border'>"+formulaMap.get(x)+"</td>");
-					document.write("<td class='border' style='width:40%;'>"+legendsMap.get(x)+"</td>");
-					document.write("<td class='border'>"+targetValueMap.get(x)+"</td>");
-					document.write("<td class='border' width='200px'>"+actualValueMap.get(x)+"</td>");
-					document.write("<td class='border'>"+unitMap.get(x)+"</td>");
+					document.write("<td class='border'>"+(categorMap.get(x)?categorMap.get(x):"")+"</td>"); // category
+					document.write("<td class='border'>"+(goalMap.get(x)?goalMap.get(x):"")+"</td>");
+					document.write("<td class='border'>"+(metricMap.get(x)?metricMap.get(x):"")+"</td>");
+					document.write("<td class='border'>"+(attributeMap.get(x)?attributeMap.get(x):"")+"</td>");
+					document.write("<td class='border'>"+(formulaMap.get(x)?formulaMap.get(x):"")+"</td>");
+					document.write("<td class='border' style='width:40%;'>"+(legendsMap.get(x)?legendsMap.get(x):"")+"</td>");
+					document.write("<td class='border'>"+(targetValueMap.get(x)?targetValueMap.get(x):"")+"</td>");
+					document.write("<td class='border' width='200px'>"+(actualValueMap.get(x)?actualValueMap.get(x):"")+"</td>");
+					document.write("<td class='border'>"+(unitMap.get(x)?unitMap.get(x):"")+"</td>");
 				}else{
 					var currentKeyArray = bigKeyMap.get(x);
 					var currentValArray = bigValMap.get(x);
@@ -337,15 +337,15 @@
 					for(var k=0 ; k<currentKeyArray.length ; k++){
 						printnoi();
 						document.write("<td class='border'>"+x+"</td>");  // SNO
-						document.write("<td class='border'>"+categorMap.get(x)+"</td>"); // category
-						document.write("<td class='border'>"+goalMap.get(x)+"</td>");
-						document.write("<td class='border'>"+metricMap.get(x)+"</td>");
-						document.write("<td class='border'>"+attributeMap.get(x)+"</td>");
-						document.write("<td class='border'>"+formulaMap.get(x)+"</td>");
-						document.write("<td class='border' style='width:40%;'>"+currentKeyArray[k]+"</td>");
-						document.write("<td class='border'>"+targetValueMap.get(x)+"</td>");
-						document.write("<td class='border' width='200px'>"+currentValArray[k]+"</td>");
-						document.write("<td class='border'>"+unitMap.get(x)+"</td>");
+						document.write("<td class='border'>"+(categorMap.get(x)?categorMap.get(x):"")+"</td>"); // category
+						document.write("<td class='border'>"+(goalMap.get(x)?goalMap.get(x):"")+"</td>");
+						document.write("<td class='border'>"+(metricMap.get(x)?metricMap.get(x):"")+"</td>");
+						document.write("<td class='border'>"+(attributeMap.get(x)?attributeMap.get(x):"")+"</td>");
+						document.write("<td class='border'>"+(formulaMap.get(x)?formulaMap.get(x):"")+"</td>");
+						document.write("<td class='border' style='width:40%;'>"+(currentKeyArray[k]?currentKeyArray[k]:"")+"</td>");
+						document.write("<td class='border'>"+(targetValueMap.get(x)?targetValueMap.get(x):"")+"</td>");
+						document.write("<td class='border' width='200px'>"+(currentValArray[k]?currentValArray[k]:"")+"</td>");
+						document.write("<td class='border'>"+(unitMap.get(x)?unitMap.get(x):"")+"</td>");
 						
 						
 					}

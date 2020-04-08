@@ -317,6 +317,9 @@ function main(){
 
 /** 清空字符串内所有空格*/
 function trimStr(str){
+	if(!str || str == null || str == "null"){
+		str = "";
+	}
 	var temp = new java.lang.String(str);
 	temp = temp.replaceAll(' ',"");
 	return temp;
@@ -328,6 +331,9 @@ function trimStr(str){
  * @returns {java.lang.String}
  */
 function replaceNewline(str){
+	if(!str || str == null || str == "null"){
+		str = "";
+	}
 	var temp = new java.lang.String(str);
 	temp = temp.replaceAll('\n',"");
 	temp = temp.replaceAll('\r',"");
@@ -417,11 +423,11 @@ function getSplitValues(SNO,splitFields,calculationObject,calculationState,resul
 	log("firstFieldValues="+ firstFieldValues.length);
 	var splitKPIVal = SNO + "<:>";
 	for(var fieldIndex=0; fieldIndex<firstFieldValues.length; fieldIndex++){//判断条件是否符合，并记录值到系统中
-		var firstValue = new java.lang.String(firstFieldValues[fieldIndex].trim());
+		var firstValue = firstFieldValues[fieldIndex]?new java.lang.String(firstFieldValues[fieldIndex].trim()):"";
 		log("first Value  = " + firstValue);
 		if(secondFieldValues && secondFieldValues.length>0 ){
 			for(var secondIndex=0; secondIndex<secondFieldValues.length; secondIndex++){
-				var secondValue = new java.lang.String(secondFieldValues[secondIndex].trim());
+				var secondValue = secondFieldValues[secondIndex]?new java.lang.String(secondFieldValues[secondIndex].trim()):"";
 				log("secondValue  = " + secondValue);
 				var count = 0;
 				for(var resultIndex = 0; resultIndex<resultList.length; resultIndex++){//判断数据是否符合条件
@@ -661,7 +667,7 @@ function searchKPI(project,calculationObject,calculationState,calculationConditi
 			log("ibplAndConnect = " + ibplAndConnect);
 			for(var index=0;index<ibplFields.length;index++){
 				var ibplField = ibplFields[index];
-				var ibplValue = new java.lang.String(ibplValues[index]);
+				var ibplValue = ibplValues[index]?new java.lang.String(ibplValues[index]):"noneValue";
 				var ibplOperator = ibplOperators[index];
 				var resultIbplValue = resultObj[ibplField]?new java.lang.String(resultObj[ibplField]):"";
 				log("ibplField = " + ibplField +" ibplValue = " + ibplValue + " ibplOperator = " + ibplOperator + " resultIbplValue = "+ resultIbplValue );
@@ -777,14 +783,17 @@ function queryField(field,fieldType,operator,value){
 			log("queryField = " + preOpeator + "(field[" + field + "]=" + value + ")");
 			result = preOpeator + "(field[" + field + "]=" + value + ")";
 		}else if('date' == fieldType){//
-			if(operator == "="){// = 连接，只能是today ,yesterday, tomorrow
+			if(operator == "!="){// = 连接，只能是today ,yesterday, tomorrow
 				result = "(field[" + field + "] " + value + ")";
 			}else if(operator == "!="){//!= 连接，只能是today ,yesterday, tomorrow
 				result = "not (field[" + field + "] " + value + ")";
 			}else if(operator == "<" || operator == "<="){
 				var sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+				log("sdf");
 				var sdf2 = new java.text.SimpleDateFormat("MMM d, yyyy");
+				log("sdf2");
 				var beginDate = new java.util.Date();
+				log("beginDate = " + beginDate);
 				if("today" == value){//默认是当天
 					
 				}else if("tomorrow" == value){//明天
@@ -796,9 +805,12 @@ function queryField(field,fieldType,operator,value){
 					beginDate = beginDate.setDate(beginDate.getDate()+1);
 				}
 				var endDate = new java.util.Date(beginDate.getTime());
+				log("endDate = " + endDate);
 				endDate.setYear(endDate.getYear()+1);//设置比开始时间大一年
 				var beginValue = sdf2.format(beginDate);
+				log("beginValue = " + beginValue);
 				var endValue = sdf2.format(endDate);
+				log("endValue = " + endValue);
 				result = "(field[" + field + "] between "+ beginValue + " and " + endValue+")";
 			}else{//当大于时，设置起始时间为2019年5月30号，系统干正式部署时间
 				var beginValue = "May 30, 2019";
