@@ -70,15 +70,56 @@ var typeData = {
 	"Delay Notice Date":"",
 }
 
+var typeOldData = {
+		//"Summary" : "",
+		"Description" : "",
+		"Assigned User" : "",
+		"Assigned Group" : "",
+		"Priority" : "",
+		"Defect Classification" : "",
+		"Effort" : "",
+		"Estimated Effort" : "",
+		
+		//"Actual Effort" : "",
+		"Found In Sample Phase" : "",
+		"Fixed In Sample Phase" : "",
+		"Root Cause" : "",
+		"Solution" : "",
+		//"Comment" : "",
+		"Project" : "",
+		//"Attachments" : "",
+		"Severity" : "",
+		"Origin" : "",
+		"Defect Source" : "",
+		"ASW Version" : "",
+		"BSW Version" : "",
+		"Calibration Version" : "",
+		"SW Component" : "",
+		"Found in component revision" : "",
+		"Fixed in component revision" : "",
+		"Responsibility Team" : "",
+	     
+		"Related Safety":"",
+		"Customer ID":"",
+		"Sample Phase":"",
+		//"Type":"",
+		"Actual finish date":"",
+		"Defect Level":"",
+		//"Changeed Calibration Paramenters":"",
+		"Notice Exhibition":"",
+		"Notice Users":[],
+		"Delay Notice Date":"",
+	}
+
 //主方法
-documentCommentCheck();
+copyFields();
 
  // 打印信息
 function log(s){
     eb.print(s);
 }
 
-function documentCommentCheck(){
+function copyFields(){
 	log("----------------------------------------------------");
 	
 	//先获取defect对象属性
@@ -120,8 +161,48 @@ function documentCommentCheck(){
 	typeData["Actual finish date"] = delta.getNewFieldValue("Actual finish date") == null ? "" : delta.getNewFieldValue("Actual finish date");
 	typeData["Defect Level"] = delta.getNewFieldValue("Defect Level") == null ? "" : delta.getNewFieldValue("Defect Level");
 	//typeData["Changeed Calibration Paramenters"] = delta.getNewFieldValue("Changeed Calibration Paramenters") == null ? "" : delta.getNewFieldValue("Changeed Calibration Paramenters");
-	typeData["Notice Users"] = delta.getNewFieldValue("Notice Users");    
-	typeData["Delay Notice Date"] = delta.getNewFieldValue("Delay Notice Date");    
+	typeData["Notice Users"] = delta.getNewFieldValue("Notice Users");
+	typeData["Delay Notice Date"] = delta.getNewFieldValue("Delay Notice Date"); 
+	// old 
+	//typeOldData["Summary"] = delta.getOldFieldValue("Summary") == null ? "" : delta.getOldFieldValue("Summary");
+	typeOldData["Description"] = delta.getOldFieldValue("Description") == null ? "" : delta.getOldFieldValue("Description");
+	typeOldData["Assigned User"] = delta.getOldFieldValue("Assigned User") == null ? "" : delta.getOldFieldValue("Assigned User");
+	typeOldData["Assigned Group"] = delta.getOldFieldValue("Assigned Group") == null ? "" : delta.getOldFieldValue("Assigned Group");
+	typeOldData["Priority"] = delta.getOldFieldValue("Priority") == null ? "" : delta.getOldFieldValue("Priority");
+	typeOldData["Defect Classification"] = delta.getOldFieldValue("Defect Classification") == null ? "" : delta.getOldFieldValue("Defect Classification");
+	typeOldData["Effort"] = delta.getOldFieldValue("Effort") == null ? "" : delta.getOldFieldValue("Effort");
+	typeOldData["Estimated Effort"] = delta.getOldFieldValue("Estimated Effort") == null ? "" : delta.getOldFieldValue("Estimated Effort");
+ 
+	//typeOldData["Actual Effort"] = delta.getOldFieldValue("Actual Effort") == null ? "" : delta.getOldFieldValue("Actual Effort");
+	typeOldData["Fixed In Sample Phase"] = delta.getOldFieldValue("Fixed In Sample Phase") == null ? "" : delta.getOldFieldValue("Fixed In Sample Phase");
+	typeOldData["Root Cause"] = delta.getOldFieldValue("Root Cause") == null ? "" : delta.getOldFieldValue("Root Cause");
+	typeOldData["Solution"] = delta.getOldFieldValue("Solution") == null ? "" : delta.getOldFieldValue("Solution");
+	//typeOldData["Comment"] = delta.getOldFieldValue("Comment") == null ? "" : delta.getOldFieldValue("Comment");
+	typeOldData["Project"] = delta.getOldProject();
+	//typeOldData["Attachments"] = delta.getOldFieldValue("Attachments") == null ? "" : delta.getOldFieldValue("Attachments");
+	typeOldData["Severity"] = delta.getOldFieldValue("Severity") == null ? "" : delta.getOldFieldValue("Severity");
+	//eb.abortScript("Severity:"+typeData["Severity"] ,true);  
+	typeOldData["Origin"] = delta.getOldFieldValue("Origin") == null ? "" : delta.getOldFieldValue("Origin");
+	typeOldData["Defect Source"] = delta.getOldFieldValue("Defect Source") == null ? "" : delta.getOldFieldValue("Defect Source");
+	typeOldData["ASW Version"] = delta.getOldFieldValue("ASW Version") == null ? "" : delta.getOldFieldValue("ASW Version");
+	typeOldData["BSW Version"] = delta.getOldFieldValue("BSW Version") == null ? "" : delta.getOldFieldValue("BSW Version");
+	typeOldData["Calibration Version"] = delta.getOldFieldValue("Calibration Version") == null ? "" : delta.getOldFieldValue("Calibration Version");
+	typeOldData["SW Component"] = delta.getOldFieldValue("SW Component") == null ? "" : delta.getOldFieldValue("SW Component");
+	typeOldData["Found in component revision"] = delta.getOldFieldValue("Found in component revision") == null ? "" : delta.getOldFieldValue("Found in component revision");
+	typeOldData["Fixed in component revision"] = delta.getOldFieldValue("Fixed in component revision") == null ? "" : delta.getOldFieldValue("Fixed in component revision");
+	typeOldData["Responsibility Team"] = delta.getOldFieldValue("Responsibility Team") == null ? "" : delta.getOldFieldValue("Responsibility Team");
+	
+	typeOldData["Related Safety"] = delta.getOldFieldValue("Related Safety") == null ? "" : delta.getOldFieldValue("Related Safety");
+	typeOldData["Customer ID"] = delta.getOldFieldValue("Customer ID") == null ? "" : delta.getOldFieldValue("Customer ID"); 
+	typeOldData["Sample Phase"] = delta.getOldFieldValue("Sample Phase") == null ? "" : delta.getOldFieldValue("Sample Phase");
+	//typeOldData["Type"] = delta.getOldFieldValue("Type") == null ? "" : delta.getOldFieldValue("Type");
+	
+	
+	typeOldData["Actual finish date"] = delta.getOldFieldValue("Actual finish date") == null ? "" : delta.getOldFieldValue("Actual finish date");
+	typeOldData["Defect Level"] = delta.getOldFieldValue("Defect Level") == null ? "" : delta.getOldFieldValue("Defect Level");
+	//typeOldData["Changeed Calibration Paramenters"] = delta.getOldFieldValue("Changeed Calibration Paramenters") == null ? "" : delta.getNewFieldValue("Changeed Calibration Paramenters");
+	typeOldData["Notice Users"] = delta.getOldFieldValue("Notice Users");
+	typeOldData["Delay Notice Date"] = delta.getOldFieldValue("Delay Notice Date");
    
 	
 	//获取关系字段的值
@@ -134,16 +215,20 @@ function documentCommentCheck(){
 	cmd.setCommand("im","editissue");
 // 
 	for(key in typeData){
-		if(typeData[key]!=""){ 
-			if(key == "Delay Notice Date"){
-				var sj =  new  java.lang.String(typeData["Delay Notice Date"]);
-				sj = sj.split(" ");
-				sj = sj[1]+" "+sj[2]+", "+sj[5];
-				//eb.abortScript("------------:"+sj,true);
-				 
-				cmd.addOption("field",key+"="+ sj); 
-			}else {
-				cmd.addOption("field",key+"="+typeData[key]);
+		var newValue = typeData[key];
+		if(newValue != ""){
+			var oldValue = typeOldData[key];
+			if(newValue != oldValue){//有更新才设置
+				if(key == "Delay Notice Date"){
+					var sj =  new  java.lang.String(tnewValue);
+					sj = sj.split(" ");
+					sj = sj[1]+" "+sj[2]+", "+sj[5];
+					//eb.abortScript("------------:"+sj,true);
+					 
+					cmd.addOption("field",key+"="+ sj); 
+				}else {
+					cmd.addOption("field",key+"="+newValue);
+				}
 			}
 			
 		}
