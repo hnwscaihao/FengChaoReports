@@ -220,12 +220,18 @@ function copyFields(){
 			var oldValue = typeOldData[key];
 			if(newValue != oldValue){//有更新才设置
 				if(key == "Delay Notice Date"){
-					var sj =  new  java.lang.String(tnewValue);
+					var sj =  new  java.lang.String(newValue);
 					sj = sj.split(" ");
-					sj = sj[1]+" "+sj[2]+", "+sj[5];
-					//eb.abortScript("------------:"+sj,true);
-					 
+					sj = sj[1]+" "+sj[2]+", "+sj[5]; 
 					cmd.addOption("field",key+"="+ sj); 
+				}else if(key == "Notice Users"){
+					var pdusers = new  java.lang.String(typeData["Notice Users"]);  
+					if(pdusers.split(",").length == 1){ 
+						cmd.addOption("field",key+"="+ typeData["Notice Users"]); 
+					} else{
+						pdusers = pdusers.substring(1,pdusers.length()-1); 
+						cmd.addOption("field",key+"="+ pdusers); 
+					} 
 				}else {
 					cmd.addOption("field",key+"="+newValue);
 				}
