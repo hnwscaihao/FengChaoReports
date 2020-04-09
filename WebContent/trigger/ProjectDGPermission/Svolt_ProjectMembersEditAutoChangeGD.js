@@ -172,12 +172,12 @@ function main(){
 	dynamicgroupNames.add("Hardware Engineer DG");
 
 	var NewHardwareEnginnerLeaderDG = delta
-			.getNewFieldValue("Hardware Enginner Leader DG");
+			.getNewFieldValue("Hardware Engineer Leader DG");
 	var OldHardwareEnginnerLeaderDG = delta
-			.getOldFieldValue("Hardware Enginner Leader DG");
+			.getOldFieldValue("Hardware Engineer Leader DG");
 	newList.add(NewHardwareEnginnerLeaderDG);
 	oldList.add(OldHardwareEnginnerLeaderDG);
-	dynamicgroupNames.add("Hardware Enginner Leader DG");
+	dynamicgroupNames.add("Hardware Engineer Leader DG");
 
 	var NewPRCDG = delta.getNewFieldValue("PRC DG");
 	var OldPRCDG = delta.getOldFieldValue("PRC DG");
@@ -239,8 +239,9 @@ function main(){
 	var OldTestLeaderDG = delta.getOldFieldValue("Test Leader DG");
 	newList.add(NewTestLeaderDG);
 	oldList.add(OldTestLeaderDG);
-	dynamicgroupNames.add("Test Leader DG");
-
+	dynamicgroupNames.add("Test Leader DG"); 
+	
+	var Allusers = ""; 
 	log("newList size() : " + newList.size());
 	for (var i = 0; i < newList.size(); i++) {
 		var currentNewList = newList.get(i);
@@ -260,8 +261,10 @@ function main(){
 			if (rightIndex > -1 && leftIndex > -1) {
 				newStr = currentNewListString.substring(leftIndex + 1,
 						rightIndex);
+				Allusers = 	Allusers + newStr + ",";
 			} else {
 				newStr = currentNewListString;
+				Allusers = 	Allusers + newStr + ",";
 			}
 		}
 		if (currentOldList != null) {
@@ -311,7 +314,7 @@ function main(){
 					}
 
 				}
-
+				//eb.abortScript("------------:"+newMembers ,true);
 				log("newMembers : " + newMembers);
 				var users = trim(newMembers);
 				var userJoint = users.join(",");
@@ -330,8 +333,8 @@ function main(){
 			var cmd = new Packages.com.mks.api.Command("im", "editdynamicgroup");
 			cmd.addOption(new Packages.com.mks.api.Option("projectmembership",
 					membershipStr));
-			cmd.addOption(new Packages.com.mks.api.Option("hostname",
-					"192.168.10.128"));
+			//cmd.addOption(new Packages.com.mks.api.Option("hostname", "192.168.10.128"));
+			cmd.addOption(new Packages.com.mks.api.Option("hostname", "192.168.229.133"));
 			cmd.addOption(new Packages.com.mks.api.Option("user", "admin"));
 			cmd.addOption(new Packages.com.mks.api.Option("password", "admin"));
 			cmd.addSelection(dynamicgroupName);
@@ -339,7 +342,44 @@ function main(){
 			var response = sessionBean.executeCmd(cmd);
 		}
 	}
+	 
+	//TeamMembers有改变则计算用户添加后台 
+	var NewTeamMembers = delta.getNewFieldValue("TeamMembers") == null ? "" : delta.getNewFieldValue("TeamMembers");
+	//获取的用户去重 
+	var newstr = DuplicateRemoval(Allusers)
+	var OldTeamMembers = delta.getOldFieldValue("TeamMembers") == null ? "" : delta.getOldFieldValue("TeamMembers");
+	var oldstr = new  java.lang.String(NewTeamMembers);
+	var oldary  = oldstr.split(",");
+	if(oldary.length > 1 ){
+		oldstr = oldstr.substring(1,oldstr.length()-1);
+	}
+	
+	if(newstr != oldstr){
+			var resultUsers = DuplicateRemoval(newstr + "," + oldstr); 
+			var membershipStr = "";
+			//eb.abortScript("------------:" + resultUsers ,true);
+			var users = trim(resultUsers);
+			var userJoint = users.join(",");
+			log("userJoint : " + userJoint);
+			membershipStr = projectName + "=u=" + userJoint;
+			if (membershipStr == "") {
+				membershipStr = projectName + "=nomembers"; 
+			}
 
+			var sessionBean = eb.createAPISessionBean();
+			var cmd = new Packages.com.mks.api.Command("im", "editdynamicgroup");
+			cmd.addOption(new Packages.com.mks.api.Option("projectmembership",
+					membershipStr));
+			//cmd.addOption(new Packages.com.mks.api.Option("hostname", "192.168.10.128"));
+			cmd.addOption(new Packages.com.mks.api.Option("hostname", "192.168.229.133"));
+			cmd.addOption(new Packages.com.mks.api.Option("user", "admin"));
+			cmd.addOption(new Packages.com.mks.api.Option("password", "admin"));
+			cmd.addSelection("Project Team");
+		 
+			var response = sessionBean.executeCmd(cmd);
+			//eb.abortScript("------------:" +NewTeamMembers,true);  
+	}
+ 
 	// 首先获得超级管理员人员 然后进行邮件通知
 	var assignedUserBean = server.getUserBean("admin");
 	var userFullName = assignedUserBean.getFullName();
@@ -366,6 +406,18 @@ function main(){
 			log("Connect DingDing error");
 		}
 	}
+}
+// 去重
+function DuplicateRemoval(str){
+	var ary = str.split(",");
+	var ls =  "";
+	for(var i =0;i<ary.length;i++){
+		if(ls.indexOf(ary[i]) ==  -1){
+			ls = ls + ary[i] + ",";
+		}
+	}  
+	ls = ls.substring(0,ls.length-1);
+	return ls;
 }
 
 function trim(Str){
