@@ -64,7 +64,7 @@ var typeData = {
 	//"Type":"",
 	"Actual finish date":"",
 	"Defect Level":"",
-	//"Changeed Calibration Paramenters":"",
+	"Changed Calibration Parameters":"",
 	"Notice Exhibition":"",
 	"Notice Users":[],
 	"Delay Notice Date":"",
@@ -105,7 +105,7 @@ var typeOldData = {
 		//"Type":"",
 		"Actual finish date":"",
 		"Defect Level":"",
-		//"Changeed Calibration Paramenters":"",
+		"Changed Calibration Parameters":"",
 		"Notice Exhibition":"",
 		"Notice Users":[],
 		"Delay Notice Date":"",
@@ -160,7 +160,7 @@ function copyFields(){
 	
 	typeData["Actual finish date"] = delta.getNewFieldValue("Actual finish date") == null ? "" : delta.getNewFieldValue("Actual finish date");
 	typeData["Defect Level"] = delta.getNewFieldValue("Defect Level") == null ? "" : delta.getNewFieldValue("Defect Level");
-	//typeData["Changeed Calibration Paramenters"] = delta.getNewFieldValue("Changeed Calibration Paramenters") == null ? "" : delta.getNewFieldValue("Changeed Calibration Paramenters");
+	typeData["Changed Calibration Parameters"] = delta.getNewFieldValue("Changed Calibration Parameters") == null ? "" : delta.getNewFieldValue("Changed Calibration Parameters");
 	typeData["Notice Users"] = delta.getNewFieldValue("Notice Users");
 	typeData["Delay Notice Date"] = delta.getNewFieldValue("Delay Notice Date"); 
 	// old 
@@ -200,7 +200,7 @@ function copyFields(){
 	
 	typeOldData["Actual finish date"] = delta.getOldFieldValue("Actual finish date") == null ? "" : delta.getOldFieldValue("Actual finish date");
 	typeOldData["Defect Level"] = delta.getOldFieldValue("Defect Level") == null ? "" : delta.getOldFieldValue("Defect Level");
-	//typeOldData["Changeed Calibration Paramenters"] = delta.getOldFieldValue("Changeed Calibration Paramenters") == null ? "" : delta.getNewFieldValue("Changeed Calibration Paramenters");
+	typeOldData["Changed Calibration Parameters"] = delta.getOldFieldValue("Changed Calibration Parameters") == null ? "" : delta.getOldFieldValue("Changed Calibration Parameters");
 	typeOldData["Notice Users"] = delta.getOldFieldValue("Notice Users");
 	typeOldData["Delay Notice Date"] = delta.getOldFieldValue("Delay Notice Date");
    
@@ -219,15 +219,15 @@ function copyFields(){
 		if(newValue != ""){
 			var oldValue = typeOldData[key];
 			if(newValue != oldValue){//有更新才设置
-				if(key == "Delay Notice Date"){
+				if(key == "Delay Notice Date" || key == "Actual finish date"){//时间处理
 					var sj =  new  java.lang.String(newValue);
 					sj = sj.split(" ");
 					sj = sj[1]+" "+sj[2]+", "+sj[5]; 
 					cmd.addOption("field",key+"="+ sj); 
-				}else if(key == "Notice Users"){
-					var pdusers = new  java.lang.String(typeData["Notice Users"]);  
+				}else if(key == "Notice Users" || key == "Found In Sample Phase"){ //多用户处理
+					var pdusers = new  java.lang.String(newValue);  
 					if(pdusers.split(",").length == 1){ 
-						cmd.addOption("field",key+"="+ typeData["Notice Users"]); 
+						cmd.addOption("field",key+"="+ newValue); 
 					} else{
 						pdusers = pdusers.substring(1,pdusers.length()-1); 
 						cmd.addOption("field",key+"="+ pdusers); 
