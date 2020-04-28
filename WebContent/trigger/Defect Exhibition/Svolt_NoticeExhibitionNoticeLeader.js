@@ -11,12 +11,10 @@
 
 function abort(s){
     eb.abortScript(s, true);
-}
-
+} 
 function log(s){
     eb.print(s);
-}
-log("Start Notice Exhibition Leader");
+} 
 
 var eb = bsf.lookupBean("siEnvironmentBean");//环境变量
 eb.setMessageCategory("SVOLT");//设置日志分类
@@ -362,6 +360,7 @@ importPackage(Packages.newfis.dingtalk);
 function dingMessage(delta){
 //获取token信息 
 	try{ 
+		var user11 = new java.util.ArrayList();//普通用户
 		var dingTalkNotice = new DingTalkNotice();
 		var id = delta.getIssueIDString();
 		var state = delta.getState();
@@ -372,12 +371,16 @@ function dingMessage(delta){
 			var reciveId = receiveIds[i].id;
 			var userFullName = receiveIds[i].name;
 			if(reciveId == 'admin'){  //测试判断  正式环境注释
-				var message = userFullName + "：You have one ID[" + id + "] 、state[" + state + "] Of [" + type +"] Pending disposal.";
+				user11.add(reciveId);
+				var message = userFullName + ":You have one ID[" + id + "] ,state[" + state + "] Of [" + type +"] Pending disposal.";
 				log(message);
 				dingTalkNotice.sendMessage(reciveId,"text",message);
 				log("ddSuccess----------------");
 			}
 		}
+		//钉钉日程
+		dingTalkNotice.createDingDate("There is changed data to be processed","Task status: ID ["+id+"] ["+type+"] is in ["+state+"]",0,user11,"admin",hostUrl+"/im/viewissue");
+		
 	}catch(e){
 		e.printStackTrace();
 		log("发送失败");
