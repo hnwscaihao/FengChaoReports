@@ -6,6 +6,9 @@
 // @param String Title
 //
 // @param String Note Info
+// @param String hostname
+// @param String user
+// @param String pwd
 // Print the message, we use it to trace the trigger info
 importPackage(Packages.javax.activation);
 
@@ -28,6 +31,9 @@ var params = bsf.lookupBean("parametersBean");
 var subject = params.getParameter("Subject");
 
 var title = params.getParameter("Title");		
+var hostname = params.getParameter("hostname");		
+var user = params.getParameter("user");		
+var pwd = params.getParameter("pwd");		
 var hostPort = eb.getMailHostnameAndPort();
 
 var host = hostPort[0];
@@ -323,7 +329,7 @@ function main(){
 				membershipStr = projectName + "=u=" + userJoint;
 
 			}
-
+//eb.abortScript("------------:" +membershipStr,true);  
 			if (membershipStr == "") {
 				membershipStr = projectName + "=nomembers";
 
@@ -334,9 +340,12 @@ function main(){
 			cmd.addOption(new Packages.com.mks.api.Option("projectmembership",
 					membershipStr));
 			//cmd.addOption(new Packages.com.mks.api.Option("hostname", "192.168.10.128"));
-			cmd.addOption(new Packages.com.mks.api.Option("hostname", "192.168.229.133"));
-			cmd.addOption(new Packages.com.mks.api.Option("user", "admin"));
-			cmd.addOption(new Packages.com.mks.api.Option("password", "admin"));
+			//cmd.addOption(new Packages.com.mks.api.Option("hostname", "192.168.229.133"));
+			//cmd.addOption(new Packages.com.mks.api.Option("user", "admin"));
+			//cmd.addOption(new Packages.com.mks.api.Option("password", "admin"));
+			cmd.addOption(new Packages.com.mks.api.Option("hostname", hostname));
+			cmd.addOption(new Packages.com.mks.api.Option("user", user));
+			cmd.addOption(new Packages.com.mks.api.Option("password", pwd));
 			cmd.addSelection(dynamicgroupName);
 			log("Start Cmd");
 			var response = sessionBean.executeCmd(cmd);
@@ -371,9 +380,10 @@ function main(){
 			cmd.addOption(new Packages.com.mks.api.Option("projectmembership",
 					membershipStr));
 			//cmd.addOption(new Packages.com.mks.api.Option("hostname", "192.168.10.128"));
-			cmd.addOption(new Packages.com.mks.api.Option("hostname", "192.168.229.133"));
-			cmd.addOption(new Packages.com.mks.api.Option("user", "admin"));
-			cmd.addOption(new Packages.com.mks.api.Option("password", "admin"));
+			cmd.addOption(new Packages.com.mks.api.Option("hostname", hostname));
+			cmd.addOption(new Packages.com.mks.api.Option("user", user));
+			cmd.addOption(new Packages.com.mks.api.Option("password", pwd));
+			
 			cmd.addSelection("Project Team");
 		 
 			var response = sessionBean.executeCmd(cmd);
@@ -398,10 +408,10 @@ function main(){
 			titleDis = "";
 		}
 		// 最后调用 sendMailToUser() 进行邮件发送。
-		sendMailToUser(toAddr, subject, body, userFullName, titleDis);
+		//sendMailToUser(toAddr, subject, body, userFullName, titleDis);
 
 		try {
-			dingMessage(receiveIds, userFullName);
+			//dingMessage(receiveIds, userFullName);
 		} catch (e) {
 			log("Connect DingDing error");
 		}
