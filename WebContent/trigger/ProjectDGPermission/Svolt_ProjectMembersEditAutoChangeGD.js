@@ -178,12 +178,12 @@ function main(){
 	dynamicgroupNames.add("Hardware Engineer DG");
 
 	var NewHardwareEnginnerLeaderDG = delta
-			.getNewFieldValue("Hardware Engineer Leader DG");
+			.getNewFieldValue("Hardware Leader DG");
 	var OldHardwareEnginnerLeaderDG = delta
-			.getOldFieldValue("Hardware Engineer Leader DG");
+			.getOldFieldValue("Hardware Leader DG");
 	newList.add(NewHardwareEnginnerLeaderDG);
 	oldList.add(OldHardwareEnginnerLeaderDG);
-	dynamicgroupNames.add("Hardware Engineer Leader DG");
+	dynamicgroupNames.add("Hardware Leader DG");
 
 	var NewPRCDG = delta.getNewFieldValue("PRC DG");
 	var OldPRCDG = delta.getOldFieldValue("PRC DG");
@@ -246,6 +246,18 @@ function main(){
 	newList.add(NewTestLeaderDG);
 	oldList.add(OldTestLeaderDG);
 	dynamicgroupNames.add("Test Leader DG"); 
+	
+	var NewQAManagerDG = delta.getNewFieldValue("QA Manager DG");
+	var OldQAManagerDG = delta.getOldFieldValue("QA Manager DG");
+	newList.add(NewQAManagerDG);
+	oldList.add(OldQAManagerDG);
+	dynamicgroupNames.add("QA Manager DG"); 
+	
+	var NewRiskManager = delta.getNewFieldValue("Risk Manager");
+	var OldRiskManager = delta.getOldFieldValue("Risk Manager");
+	newList.add(NewRiskManager);
+	oldList.add(OldRiskManager);
+	dynamicgroupNames.add("Risk Manager"); 
 	
 	var Allusers = ""; 
 	log("newList size() : " + newList.size());
@@ -340,12 +352,12 @@ function main(){
 			cmd.addOption(new Packages.com.mks.api.Option("projectmembership",
 					membershipStr));
 			//cmd.addOption(new Packages.com.mks.api.Option("hostname", "192.168.10.128"));
-			//cmd.addOption(new Packages.com.mks.api.Option("hostname", "192.168.229.133"));
-			//cmd.addOption(new Packages.com.mks.api.Option("user", "admin"));
-			//cmd.addOption(new Packages.com.mks.api.Option("password", "admin"));
-			cmd.addOption(new Packages.com.mks.api.Option("hostname", hostname));
-			cmd.addOption(new Packages.com.mks.api.Option("user", user));
-			cmd.addOption(new Packages.com.mks.api.Option("password", pwd));
+		    cmd.addOption(new Packages.com.mks.api.Option("hostname", "10.255.33.191"));
+			cmd.addOption(new Packages.com.mks.api.Option("user", "admin"));
+			cmd.addOption(new Packages.com.mks.api.Option("password", "Svolt@123"));
+			//cmd.addOption(new Packages.com.mks.api.Option("hostname", hostname));
+			//cmd.addOption(new Packages.com.mks.api.Option("user", user));
+			//cmd.addOption(new Packages.com.mks.api.Option("password", pwd));
 			cmd.addSelection(dynamicgroupName);
 			log("Start Cmd");
 			var response = sessionBean.executeCmd(cmd);
@@ -380,10 +392,9 @@ function main(){
 			cmd.addOption(new Packages.com.mks.api.Option("projectmembership",
 					membershipStr));
 			//cmd.addOption(new Packages.com.mks.api.Option("hostname", "192.168.10.128"));
-			cmd.addOption(new Packages.com.mks.api.Option("hostname", hostname));
-			cmd.addOption(new Packages.com.mks.api.Option("user", user));
-			cmd.addOption(new Packages.com.mks.api.Option("password", pwd));
-			
+			cmd.addOption(new Packages.com.mks.api.Option("hostname", "10.255.33.191"));
+			cmd.addOption(new Packages.com.mks.api.Option("user", "admin"));
+			cmd.addOption(new Packages.com.mks.api.Option("password", "Svolt@123"));
 			cmd.addSelection("Project Team");
 		 
 			var response = sessionBean.executeCmd(cmd);
