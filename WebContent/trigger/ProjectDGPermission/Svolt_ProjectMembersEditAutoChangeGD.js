@@ -352,7 +352,7 @@ function main(){
 			cmd.addOption(new Packages.com.mks.api.Option("projectmembership",
 					membershipStr));
 			//cmd.addOption(new Packages.com.mks.api.Option("hostname", "192.168.10.128"));
-		    cmd.addOption(new Packages.com.mks.api.Option("hostname", "10.255.33.191"));
+		    cmd.addOption(new Packages.com.mks.api.Option("hostname", "10.45.31.10"));
 			cmd.addOption(new Packages.com.mks.api.Option("user", "admin"));
 			cmd.addOption(new Packages.com.mks.api.Option("password", "Svolt@123"));
 			//cmd.addOption(new Packages.com.mks.api.Option("hostname", hostname));
@@ -392,7 +392,7 @@ function main(){
 			cmd.addOption(new Packages.com.mks.api.Option("projectmembership",
 					membershipStr));
 			//cmd.addOption(new Packages.com.mks.api.Option("hostname", "192.168.10.128"));
-			cmd.addOption(new Packages.com.mks.api.Option("hostname", "10.255.33.191"));
+			cmd.addOption(new Packages.com.mks.api.Option("hostname", "10.45.31.10"));
 			cmd.addOption(new Packages.com.mks.api.Option("user", "admin"));
 			cmd.addOption(new Packages.com.mks.api.Option("password", "Svolt@123"));
 			cmd.addSelection("Project Team");
