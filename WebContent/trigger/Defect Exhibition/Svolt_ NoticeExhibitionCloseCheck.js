@@ -8,8 +8,8 @@
 // This trigger is a pre-trigger.
 // <p>
 // <p>
-// Author : Wang Wei.
-// Create Date : 2020-3-5
+// Author : Hao Cai.
+// Create Date : 2018-12-09
 // </p>
 //已回复用户是否上传附件
 function getfj(user){
@@ -47,13 +47,13 @@ function getUserName(user){
 
  // 打印信息
 function log(s){
-    eb.print(s);
+    Packages.mks.util.Logger.message(s);
 }
 
 function documentCommentCheck(){
 	log("----------------------------------------------");
 	
-    var noticeComment = delta.getFieldValue("Comment");
+    var noticeComment = delta.getFieldValue("Comment") == null ? "" : delta.getFieldValue("Comment");
     var noticeUser = [ ];
     noticeUser = delta.getFieldValue("Notice Users").toString();
 	log("Notice Users1  =  " + noticeUser);
@@ -69,7 +69,7 @@ function documentCommentCheck(){
 		//log("Notice Users  =  " + user.trim());
 		//log("Notice comment  =  " + noticeComment);
 		
-		log(noticeComment.indexOf(user.trim()));
+		log("noticeComment----------------"+noticeComment);
 			
 		if(noticeComment.indexOf(user.trim()) == -1){
 			fla = false;
@@ -110,7 +110,6 @@ function documentCommentCheck(){
 ///START
 
 eb = bsf.lookupBean("siEnvironmentBean");//环境变量
-eb.setMessageCategory("SVOLT");//设置日志分类
 log("----- eb = " +  eb);
 sb = bsf.lookupBean("imServerBean");//全部服务对象
 log("----- sb = " +  sb);
