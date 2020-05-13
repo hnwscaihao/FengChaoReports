@@ -110,6 +110,7 @@ function documentCommentCheck(){
 ///START
 
 eb = bsf.lookupBean("siEnvironmentBean");//环境变量
+eb.setMessageCategory("SVOLT");//设置日志分类
 log("----- eb = " +  eb);
 sb = bsf.lookupBean("imServerBean");//全部服务对象
 log("----- sb = " +  sb);
