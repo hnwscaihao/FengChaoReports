@@ -373,8 +373,8 @@ function dingMessage(delta){
 			var userFullName = receiveIds[i].name;
 			if(reciveId == 'admin'){  //测试判断  正式环境注释
 				user11.add(reciveId);
-				var message = userFullName + ":You have one ID[" + id + "] ,state[" + state + "] Of [" + type +"] Pending disposal.";
-				var message = "在ALM系统 Project : " + project +", 你有一个ID(" + id + "),State(" + state + ")的（" + state + "）需要处理；ALM System - Project : " + project +"，you have a defect of ID(" + id + ") and State(" + state + ") to conduct ";
+				//var message = userFullName + ":You have one ID[" + id + "] ,state[" + state + "] Of [" + type +"] Pending disposal.";
+				var message = "在ALM系统 Project : " + project +", 你有一个ID(" + id + "),State(" + state + ")的（" + type + "）需要处理；ALM System - Project : " + project +"，you have a defect of ID(" + id + ") and State(" + state + ") to conduct ";
 			 
 				
 				log(message);
