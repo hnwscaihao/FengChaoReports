@@ -133,7 +133,7 @@ function copyFields(){
 	typeData["Estimated Effort"] = delta.getNewFieldValue("Estimated Effort") == null ? "" : delta.getNewFieldValue("Estimated Effort");
  
 	//typeData["Actual Effort"] = delta.getNewFieldValue("Actual Effort") == null ? "" : delta.getNewFieldValue("Actual Effort");
-	typeData["Found In Sample Phase"] = delta.getNewFieldValue("Found In Sample Phase");
+	typeData["Found In Sample Phase"] = delta.getNewFieldValue("Found In Sample Phase") == null ? "" : delta.getNewFieldValue("Found In Sample Phase");
 	typeData["Fixed In Sample Phase"] = delta.getNewFieldValue("Fixed In Sample Phase") == null ? "" : delta.getNewFieldValue("Fixed In Sample Phase");
 	typeData["Root Cause"] = delta.getNewFieldValue("Root Cause") == null ? "" : delta.getNewFieldValue("Root Cause");
 	typeData["Solution"] = delta.getNewFieldValue("Solution") == null ? "" : delta.getNewFieldValue("Solution");
@@ -174,6 +174,7 @@ function copyFields(){
 	typeOldData["Estimated Effort"] = delta.getOldFieldValue("Estimated Effort") == null ? "" : delta.getOldFieldValue("Estimated Effort");
  
 	//typeOldData["Actual Effort"] = delta.getOldFieldValue("Actual Effort") == null ? "" : delta.getOldFieldValue("Actual Effort");
+	typeData["Found In Sample Phase"] = delta.getOldFieldValue("Found In Sample Phase") == null ? "" : delta.getOldFieldValue("Found In Sample Phase");
 	typeOldData["Fixed In Sample Phase"] = delta.getOldFieldValue("Fixed In Sample Phase") == null ? "" : delta.getOldFieldValue("Fixed In Sample Phase");
 	typeOldData["Root Cause"] = delta.getOldFieldValue("Root Cause") == null ? "" : delta.getOldFieldValue("Root Cause");
 	typeOldData["Solution"] = delta.getOldFieldValue("Solution") == null ? "" : delta.getOldFieldValue("Solution");
@@ -225,6 +226,7 @@ function copyFields(){
 					sj = sj[1]+" "+sj[2]+", "+sj[5]; 
 					cmd.addOption("field",key+"="+ sj); 
 				}else if(key == "Notice Users" || key == "Found In Sample Phase"){ //多用户处理
+				//eb.abortScript("------------:"+newValue ,true);  
 					var pdusers = new  java.lang.String(newValue);  
 					if(pdusers.split(",").length == 1){ 
 						cmd.addOption("field",key+"="+ newValue); 
