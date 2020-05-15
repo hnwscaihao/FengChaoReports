@@ -280,7 +280,7 @@
 	<tr>
 		<th>ID</th>
 		<th>Category</th>
-		<th hidden>Releases</th>
+		<th >Releases</th>
 		<th>Description</th> 
 		<th>Tests</th>
 		<th>% Passed</th> 
@@ -298,7 +298,7 @@
 		</script>
 			<td valign="top"><a href= host + "/im/WebClient?IssueID=<%Relationship ID%>"><%Relationship ID%></a></td>
 			<td valign="top"><%Relationship Category%></td>
-			<td  hidden class ="noData"><%Relationship Sample Phase%></td>
+			<td   class ="noData"><%Relationship Sample Phase%></td>
 			<td valign="top"><%Relationship Text%></td>
 			
 			<script type="text/javascript">
@@ -413,7 +413,7 @@
     		// 通过对象获取value和text
             var category = this.value;
 			var docid = document.getElementById('DocumentID').value;
-			var releaseVal = document.getElementById('Category').value;
+			var releaseVal = document.getElementById('Release').value;
 			if(docid == "all"){
 				//显示所有table
 				tablecz("all");
@@ -631,7 +631,7 @@
 				var tr = tables[j].rows;
 				for(var i =0;i<tr.length;i++){
 					if(i>0){
-						if(Categorys.indexOf(tr[i].cells[1].innerHTML) > -1 ||  Releases.indexOf(tr[i].cells[2].innerHTML) > -1 ){
+						if(Categorys.indexOf(tr[i].cells[1].innerHTML) > -1 &&  Releases.indexOf(tr[i].cells[2].innerHTML) > -1 ){
 							tr[i].hidden = false;
 						}else{						
 							tr[i].hidden = true;

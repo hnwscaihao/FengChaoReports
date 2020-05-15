@@ -97,7 +97,7 @@ function documentCommentCheck(){
 	typeData["Root Cause"] = delta.getFieldValue("Root Cause") == null ? "" : delta.getFieldValue("Root Cause");
 	typeData["Solution"] = delta.getFieldValue("Solution") == null ? "" : delta.getFieldValue("Solution");
 	typeData["Comment"] = delta.getFieldValue("Comment") == null ? "" : delta.getFieldValue("Comment");
-	typeData["Project"] = delta.getProject();
+	typeData["Project"] = project;
 	//typeData["Attachments"] = delta.getFieldValue("Attachments") == null ? "" : delta.getFieldValue("Attachments");
 	typeData["Severity"] = delta.getFieldValue("Severity") == null ? "" : delta.getFieldValue("Severity");
 	//eb.abortScript("Severity:"+typeData["Severity"] ,true);  
@@ -143,7 +143,10 @@ function documentCommentCheck(){
 	//eb.abortScript("Notice Users:"+ pdusers.split(",").length,true); 
 	if(pdusers.split(",").length == 1){ 
 		var newUser = new  java.util.HashSet();
-		newUser.add(typeData["Notice Users"]);  
+		if(pduserss.indexOf("[")>-1){//用户有时候带[]有时候不带
+			pdusers = pdusers.substring(1,pdusers.length()-1); 
+		}
+		newUser.add(pdusers);  
 		DefectNoticeExhibition.setSetFieldValue("Notice Users",newUser);  
 	} else{
 		DefectNoticeExhibition.setSetFieldValue("Notice Users",typeData["Notice Users"]); 
@@ -225,7 +228,7 @@ function documentCommentCheck(){
 	//}
 	if(typeData["Actual finish date"]!=""){
 		var d1 = new Date(typeData["Actual finish date"]);
-		var sjstr1 = d1.getFullYear() + '-' + (d1.getMonth() + 1) + '-' + d1.getDate();
+		//var sjstr1 = d1.getFullYear() + '-' + (d1.getMonth() + 1) + '-' + d1.getDate();
 		var date1 = sjstr1.replace(/-/g,'/'); 
 		//typeData["Actual finish date"] = new Date(date1).getTime(); 
 		DefectNoticeExhibition.setFieldValue("Actual finish date",new Date(date1).getTime());
@@ -235,7 +238,7 @@ function documentCommentCheck(){
 	}
 	//客户电脑没有这个字段
 	//if(typeData["Changeed Calibration Paramenters"]!=""){
-		//  DefectNoticeExhibition.setFieldValue("Changeed Calibration Paramenters",typeData["Changeed Calibration Paramenters"]);
+		  //DefectNoticeExhibition.setFieldValue("Changeed Calibration Paramenters",typeData["Changeed Calibration Paramenters"]);
 	//}
 	 
 	log("id--------------------------" + delta.	getID());
