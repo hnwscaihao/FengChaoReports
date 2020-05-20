@@ -380,7 +380,17 @@ function main(){
 			var membershipStr = "";
 			//eb.abortScript("------------:" + resultUsers ,true);
 			var users = trim(resultUsers);
-			var userJoint = users.join(",");
+			//去除用户中的[]
+			var userList = new Array();
+			for(var i=0;i<users.length;i++){
+				if(users[i].indexOf("[")>-1){//用户有时候带[]有时候不带
+					var str = new  java.lang.String(users[i]);
+					userList[i] = str.substring(1,str.length()-1); 
+				}else {
+					userList[i] = users[i];
+				} 
+			}
+			var userJoint = userList.join(",");
 			log("userJoint : " + userJoint);
 			membershipStr = projectName + "=u=" + userJoint;
 			if (membershipStr == "") {

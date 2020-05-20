@@ -49,6 +49,8 @@ description="Text appearing at the bottom of the report page."
 
 		//project 数量
 		var Projects =[];	
+		//projectSelect
+		var ProjectSelect =[];	
 		//project type  
 		var Area =["QA Task","Non-Conformance Issue","Document","Defect Source And Defect Type","Defect Origin And TaskPhase","Defect State And DefectState","Defect ResponsibilityTeam And State","ChangeRequestType","ChangeCategory And ChangeInitiator","ChangeOrderType","Test Plan","Test Objective","Test Session","Task","Supplier Monitor Task","Release","Risk","LL & BP"];		
 		
@@ -77,6 +79,7 @@ description="Text appearing at the bottom of the report page."
 <script type="text/javascript"> 
 	if(Projects.indexOf("<%<%builtin Project%>%>") == -1){
 		Projects.push("<%<%builtin Project%>%>");
+		ProjectSelect.push({"<%<%builtin ID%>%>":"<%<%builtin Project%>%>"});
 	}
 
 	//时间判断 如果没有Actual Start Date和Actual End Date 就已Created Date为准
@@ -183,6 +186,7 @@ description="Text appearing at the bottom of the report page."
      console.log(ReleaseDataInit);
      console.log(RiskDataInit);
      console.log(LLAndBPDataInit);  
+     console.log(ProjectSelect);  
 
 
 	//设置时间不能大于当前时间  得到当前时间
@@ -376,14 +380,17 @@ description="Text appearing at the bottom of the report page."
 		} 
 	
 	//Projects下拉选
-	var ProjectElm = document.getElementById("Project");
-	for(var i = 0;i<Projects.length;i++){ 
-	   var newItem = new Option(Projects[i],Projects[i]);   
-	   ProjectElm.options.add(newItem); 
+	var ProjectElm = document.getElementById("Project");  
+	for(var i=0;i<ProjectSelect.length;i++){
+		var obj = ProjectSelect[i];
+		var projectId = Object.keys(obj)[0];  
+		var projectValue = obj[projectId]; 
+		var newItem = new Option(projectValue,projectId);   
+	    ProjectElm.options.add(newItem); 
 	   
 	   //先给统计数据初始化
-	   CountData[Projects[i]] = {};
-	} 
+	   CountData[Projects[i]] = {}; 
+	}
     
 	 //Projects下拉选改变事件 
 	ProjectElm.onchange = function(){ 
@@ -413,7 +420,7 @@ description="Text appearing at the bottom of the report page."
 		// 通过对象获取value和text
         var AreaVal = this.value;
 		var proelm = document.getElementById("Project").value;
-		//console.log(AreaVal);
+		console.log(AreaVal);
 		
 		if(proelm == "all"){
 			var ary = [];
@@ -421,21 +428,19 @@ description="Text appearing at the bottom of the report page."
 				xstr();//显示所有tr
 				xstable(proelm);//显示隐藏table
 			}else {
-				for(var i =0;i<Projects.length;i++){
-				var proid = Projects[i].split("/")[1];
-				if(Projects[i].split("/").length>2){
-					 proid = Projects[i].split("/")[1] + Projects[i].split("/")[2]
-				 }
-				for(var j =0;j<tr.length;j++){
-					if(tr[j].getAttribute("id") == proid+AreaVal || tr[j].getAttribute("id") == proid+AreaVal+" statistics" || ary.	  indexOf(tr[j].getAttribute("id")) > -1){
-						ary.push(tr[j].getAttribute("id"));
+				for(var i=0;i<ProjectSelect.length;i++){
+					var obj = ProjectSelect[i];
+					var proid = Object.keys(obj)[0];   
+					for(var j =0;j<tr.length;j++){
+						if(tr[j].getAttribute("id") == proid+AreaVal || tr[j].getAttribute("id") == proid+AreaVal+" statistics" || ary.	  indexOf(tr[j].getAttribute("id")) > -1){
+							ary.push(tr[j].getAttribute("id"));
 						//console.log(ary);
-						tr[j].hidden = false;
-					}else {
-						tr[j].hidden = true;
+							tr[j].hidden = false;
+						}else {
+							tr[j].hidden = true;
+						}
 					}
-				}
-				}
+				} 
 			}
 			
 		} else {
@@ -444,10 +449,7 @@ description="Text appearing at the bottom of the report page."
 				xstr();//显示所有tr
 				xstable(proelm);//显示隐藏table
 			}else {
-				var proid = proelm.split("/")[1]; 
-				if(proelm.split("/").length>2){
-					 proid = proelm.split("/")[1] + proelm.split("/")[2]
-				 }
+				var proid = proelm;
 				for(var i =0;i<tr.length;i++){ 
 				if(tr[i].getAttribute("id") == proid + AreaVal || tr[i].getAttribute("id") == proid + AreaVal+" statistics"){
 					//console.log(proid + AreaVal);
@@ -495,11 +497,9 @@ description="Text appearing at the bottom of the report page."
 				var proelm = tj1.value; 
 				if(proelm == "all"){
 					var ary = [];
-					for(var i =0;i<Projects.length;i++){
-						var proid = Projects[i].split("/")[1]; 
-						 if(Projects[i].split("/").length>2){
-							proid = Projects[i].split("/")[1] + Projects[i].split("/")[2]
-						}
+					for(var i=0;i<ProjectSelect.length;i++){
+						var obj = ProjectSelect[i];
+						var proid = Object.keys(obj)[0];
 						for(var j =0;j<tr1.length;j++){
 							if(tr1[j].getAttribute("id") == proid+Area1 || tr1[j].getAttribute("id") == proid+Area1+" statistics" || ary.	  indexOf(tr1[j].getAttribute("id")) > -1){
 								ary.push(tr1[j].getAttribute("id"));
@@ -508,13 +508,11 @@ description="Text appearing at the bottom of the report page."
 							}else {
 								tr1[j].hidden = true;
 							}
-						}
+						}						
 					}
+					 
 				} else {
-					var proid = proelm.split("/")[1]; 
-					if(proelm.split("/").length>2){
-						proid = proelm.split("/")[1] + proelm.split("/")[2]
-					}
+					var proid = proelm;  
 					for(var i =0;i<tr1.length;i++){ 
 						if(tr1[i].getAttribute("id") == proid + Area1 || tr1[i].getAttribute("id") == proid + Area1+" statistics"){ 
 							tr1[i].hidden = false;
@@ -547,10 +545,7 @@ description="Text appearing at the bottom of the report page."
 	function xstable(ProjectVal){
 		var title = document.getElementsByClassName("title");
 		var table = document.getElementsByClassName("detailrows fullWidth");
-		var proid = ProjectVal.split("/")[1]; 
-		if(ProjectVal.split("/").length>2){
-			proid = ProjectVal.split("/")[1] + ProjectVal.split("/")[2]
-		}
+		var proid = ProjectVal;  
 		console.log("Title : "+proid+"Title"); 
 		
 		for(var i =0;i<title.length;i++){ 
@@ -861,6 +856,8 @@ description="Text appearing at the bottom of the report page."
 	
 //给html赋值
 	function getDate(elm,date){
+		if(elm == null)
+			return;
 		//console.log(elm);
 		//console.log(date);
 		var html = '';
@@ -877,10 +874,12 @@ description="Text appearing at the bottom of the report page."
 			}			
 			html += html1+html2+'</tr>';
 		}
-		elm.innerHTML = html;
+		elm.innerHTML = html==''?"<br/>":html;
 	}
 	
 	function getDefectStateDate(elm,date){
+		if(elm == null)
+			return;
 		var html = '';
 		for(var key in date){
 			var name = "";
@@ -907,7 +906,23 @@ description="Text appearing at the bottom of the report page."
 			}			
 			html += html1+html2+'</tr>';
 		}
-		elm.innerHTML = html;
+		//elm.innerHTML = html;
+		elm.innerHTML = html==''?"<br/>":html;
+	}
+	
+	//根据名字获取projectid
+	function getProjectIdByName(projectName){
+		var projectId = "";
+		for(var i =0;i<ProjectSelect.length;i++){
+			var obj = ProjectSelect[i];
+			var name = Object.keys(obj)[0];  
+			var value = obj[name];
+			if(value == projectName){
+				projectId = name;
+				return projectId;
+			}
+		}
+		return projectId;
 	}
 
 	function getProjectDate(){
@@ -915,11 +930,8 @@ description="Text appearing at the bottom of the report page."
 		//先加载所有dom
 		for(var key in CountData){
 			var arr = CountData[key]; 
-			var projectId = key.split("/")[1];
-			 
-		    if(key.split("/").length>2){
-			    projectId = key.split("/")[1] + key.split("/")[2]
-	     	}
+			var projectId = getProjectIdByName(key);
+			 console.log("projectId====== " + projectId);
 			//console.log("sj---------:"+obj["ProjectIdA"]);
 			html += '<p class="title" id="'+projectId+'Title">'+ key +'</p>'+
 					'<table class="detailrows fullWidth" id="'+projectId+'Table">'+
@@ -1351,12 +1363,9 @@ description="Text appearing at the bottom of the report page."
 		//在给需要赋值的dom赋值
 		for(var key in CountData){
 			var arr = CountData[key];
-			 
-			var proid = key.split("/")[1]; 
-			if(key.split("/").length>2){
-				proid = key.split("/")[1] + key.split("/")[2]
-			}
-			
+			var proid = getProjectIdByName(key);
+			console.log("proid====== " + proid); 
+			console.log("proid----------------"+proid);
 			getDate(document.getElementById("QATaskData-"+proid),arr["QATaskData"]);
 			getDate(document.getElementById("ReponsibiltyTeam-"+proid),arr["ResponsibilityTeamData"]);
 			getDate(document.getElementById("Document-"+proid),arr["DocumentDate"]);
@@ -1376,7 +1385,6 @@ description="Text appearing at the bottom of the report page."
 			getDate(document.getElementById("Release-"+proid),arr["ReleaseData"]);
 			getDate(document.getElementById("Risk-"+proid),arr["RiskData"]);
 			getDate(document.getElementById("LLAndBP-"+proid),arr["LLAndBPData"]);
-			 
 		}
 		 
 	}
