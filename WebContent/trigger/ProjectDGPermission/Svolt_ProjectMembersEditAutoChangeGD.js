@@ -376,7 +376,17 @@ function main(){
 	}
 	
 	if(newstr != oldstr){
-			var resultUsers = DuplicateRemoval(newstr + "," + oldstr); 
+			var resultUsers = DuplicateRemoval(newstr); //修改，完全以动态组角色同步Team Members
+			if(resultUsers.split(",").length == 1){//将所有成员保存到TeamMembers字段中
+				var newUser = new  java.util.HashSet();
+				if(resultUsers.indexOf("[")>-1){//用户有时候带[]有时候不带
+					resultUsers = resultUsers.substring(1,pdusers.length()-1); 
+				}
+				newUser.add(resultUsers);  
+				delta.setSetFieldValue("TeamMembers",newUser);  
+			} else{
+				delta.setSetFieldValue("TeamMembers",resultUsers); 
+			}
 			var membershipStr = "";
 			//eb.abortScript("------------:" + resultUsers ,true);
 			var users = trim(resultUsers);
